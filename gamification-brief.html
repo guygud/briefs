@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бриф на геймификацию</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface-hover: #243044;
+      --border: #2d3a4d;
+      --text: #e6edf3;
+      --text-muted: #8b9cb3;
+      --accent: #58a6ff;
+      --accent-hover: #79b8ff;
+      --success: #3fb950;
+      --radius: 10px;
+      --font: 'Manrope', -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0 20px 60px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 32px 0 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .progress-wrap {
+      margin-top: 20px;
+    }
+
+    .progress-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--surface);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+
+    .btn {
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+    }
+
+    .accordion {
+      margin-top: 8px;
+    }
+
+    .accordion-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .accordion-header:hover {
+      background: var(--surface-hover);
+    }
+
+    .accordion-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .accordion-toggle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .accordion-item.open .accordion-toggle {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 0 20px 24px;
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    .field-group {
+      margin-bottom: 20px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .field-group input,
+    .field-group textarea {
+      width: 100%;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .field-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .segment-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .segment-card h4 {
+      font-size: 0.95rem;
+      margin: 0 0 12px;
+      color: var(--accent);
+    }
+
+    .segment-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      cursor: pointer;
+    }
+
+    .segment-option input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .funnel-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .funnel-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: grab;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .funnel-item:hover {
+      background: var(--surface-hover);
+    }
+
+    .funnel-item.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+
+    .funnel-item.drag-over {
+      border-color: var(--accent);
+      background: rgba(88, 166, 255, 0.1);
+    }
+
+    .funnel-handle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: grab;
+    }
+
+    .funnel-id {
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 32px;
+    }
+
+    .funnel-desc {
+      flex: 1;
+      font-size: 0.9rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-item input {
+      margin-top: 4px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .chain-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .chain-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .chain-header input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .chain-header h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .chain-block textarea {
+      width: 100%;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .add-chain-btn {
+      margin-top: 12px;
+      background: transparent;
+      border: 2px dashed var(--border);
+      color: var(--text-muted);
+      padding: 14px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .add-chain-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        color: #111;
+        padding: 20px;
+      }
+
+      .actions-bar,
+      .progress-wrap,
+      .accordion-toggle,
+      .funnel-handle,
+      .btn,
+      .add-chain-btn {
+        display: none !important;
+      }
+
+      .accordion-item {
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+      }
+
+      .accordion-item .accordion-body {
+        display: block !important;
+      }
+
+      .accordion-header {
+        cursor: default;
+        background: #eee;
+      }
+
+      .segment-card,
+      .chain-block,
+      .funnel-item {
+        background: #fff;
+        border: 1px solid #ddd;
+      }
+
+      .funnel-item {
+        cursor: default;
+      }
+
+      :root {
+        --bg: #fff;
+        --surface: #f5f5f5;
+        --text: #111;
+        --text-muted: #555;
+        --accent: #0066cc;
+        --border: #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Бриф на геймификацию</h1>
+      <p class="subtitle">Заполните форму — поделитесь ссылкой или скачайте JSON</p>
+      <div class="progress-wrap">
+        <div class="progress-label"><span id="progress-text">0</span> из 5 секций заполнено</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="actions-bar">
+      <button type="button" class="btn btn-primary" id="btn-share">Поделиться брифом</button>
+      <button type="button" class="btn btn-secondary" id="btn-json">Скачать JSON</button>
+      <button type="button" class="btn btn-secondary" id="btn-print">Печать / PDF</button>
+    </div>
+
+    <form id="brief-form" class="accordion">
+      <!-- Секция 1: Продукт -->
+      <div class="accordion-item open" data-section="1">
+        <div class="accordion-header">
+          <h2>1. Продукт</h2>
+          <span class="accordion-toggle">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="field-group">
+            <label for="product-name">Название</label>
+            <input type="text" id="product-name" name="productName" placeholder="Название продукта">
+          </div>
+          <div class="field-group">
+            <label for="product-guides">Ссылка на гайды</label>
+            <input type="url" id="product-guides" name="productGuides" placeholder="https://...">
+          </div>
+          <div class="field-group">
+            <label for="product-ta">Целевая аудитория</label>
+            <textarea id="product-ta" name="productTA" placeholder="Опишите ЦА"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция 2: Сегменты -->
+      <div class="accordion-item" data-section="2">
+        <div class="accordion-header">
+          <h2>2. Целевая аудитория и сегменты</h2>
+          <span class="accordion-toggle">▼</span>
+        </div>
+        <div class="accordion-body">
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Выберите 1 основной (радио) и до 2 дополнительных (чекбоксы)</p>
+          <div id="segments-container"></div>
+        </div>
+      </div>
+
+      <!-- Секция 3: Воронка -->
+      <div class="accordion-item" data-section="3">
+        <div class="accordion-header">
+          <h2>3. Элементы воронки</h2>
+          <span class="accordion-toggle">▼</span>
+        </div>
+        <div class="accordion-body">
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Перетащите элементы — от важного к менее важному</p>
+          <ul class="funnel-list" id="funnel-list"></ul>
+        </div>
+      </div>
+
+      <!-- Секция 4: Метрики -->
+      <div class="accordion-item" data-section="4">
+        <div class="accordion-header">
+          <h2>4. Метрики</h2>
+          <span class="accordion-toggle">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="field-group">
+            <label for="metric-northstar">3.1 Северная звезда (North Star)</label>
+            <input type="text" id="metric-northstar" name="metricNorthStar" placeholder='Пример: "кол-во пользователей, которые 2+ раза в месяц пополняют и держат портфель диверсифицированно 60+ дней"'>
+          </div>
+          <div class="field-group">
+            <label for="metric-funnel">3.2 Воронка</label>
+            <input type="text" id="metric-funnel" name="metricFunnel" placeholder="Install → Sign up → KYC → Open account → First deposit → First trade → D7 active → D30 active">
+          </div>
+          <div class="field-group">
+            <label>3.3 Поведенческие метрики</label>
+            <div class="checkbox-group" id="metric-behavioral"></div>
+          </div>
+          <div class="field-group">
+            <label>3.4 Качественные метрики</label>
+            <div class="checkbox-group" id="metric-qualitative"></div>
+          </div>
+          <div class="field-group">
+            <label for="metric-support">Основные темы обращений в поддержку</label>
+            <textarea id="metric-support" name="metricSupport" placeholder="Опишите основные темы"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция 5: Цепочки -->
+      <div class="accordion-item" data-section="5">
+        <div class="accordion-header">
+          <h2>5. Цепочки действий</h2>
+          <span class="accordion-toggle">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div id="chains-container"></div>
+          <button type="button" class="add-chain-btn" id="add-chain-btn">+ Добавить свою цепочку</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const SEGMENTS = [
+      { id: 'novice', label: 'Новички (0–1 сделка)' },
+      { id: 'doubtful', label: '"Сомневающиеся" (счёт открыт, но без пополнений)' },
+      { id: 'first30', label: '"Первые 30 дней" (формируется привычка)' },
+      { id: 'active', label: 'Активные трейдеры' },
+      { id: 'longterm', label: 'Долгосрочные инвесторы/накопители' },
+      { id: 'premium', label: 'Премиум/крупные счета' }
+    ];
+
+    const FUNNEL_ITEMS = [
+      { id: 'A2', desc: 'Рост конверсии "открытие счёта → первое пополнение"' },
+      { id: 'A3', desc: 'Рост конверсии "пополнение → первая сделка"' },
+      { id: 'A4', desc: 'Рост частоты сделок (D7/D30 trades per user)' },
+      { id: 'A5', desc: 'Рост удержания D7/D30/D90' },
+      { id: 'A6', desc: 'Рост AUM (средние активы на пользователя)' },
+      { id: 'A7', desc: 'Рост доли "регулярных инвесторов" (пополнения 2+ раза/мес)' },
+      { id: 'A8', desc: 'Рост доли "диверсифицированных портфелей"' },
+      { id: 'A9', desc: 'Рост использования "умных" функций (автопополнение, цели, ребалансировка)' },
+      { id: 'A10', desc: 'Снижение оттока/паузы после просадки портфеля' },
+      { id: 'A11', desc: 'Снижение нагрузки на поддержку' }
+    ];
+
+    const METRIC_BEHAVIORAL = [
+      'Кол-во пополнений/мес',
+      'Средний чек пополнения',
+      'Кол-во сделок/мес',
+      'Доля пользователей с портфелем > N инструментов',
+      'Доля пользователей, использующих "цели/копилки/автопополнение"'
+    ];
+
+    const METRIC_QUALITATIVE = [
+      'NPS/CSAT по онбордингу',
+      'NPS/CSAT по обучению',
+      'NPS/CSAT по "понятности рисков"',
+      'Основные темы обращений в поддержку'
+    ];
+
+    const DEFAULT_CHAINS = [
+      { id: 'chain1', title: 'Цепочка 1: Ускорить первую ценность', enabled: false, steps: 'Пройти короткий "профиль риска" (3–5 вопросов)\nВыбрать цель ("подушка/накопления/доход")\nПолучить 1–3 персонализированные стартовые подборки\nПополнить на минимальную сумму\nКупить 1 инструмент из подборки\n\nОжидаемый эффект: +CR "deposit→first trade", ниже time-to-first-trade.' },
+      { id: 'chain2', title: 'Цепочка 2: Сформировать привычку', enabled: false, steps: 'Настроить автопополнение "в день зарплаты"\nВключить "цель" (визуал прогресса)\nРаз в неделю чек-ин: "прогресс цели + один совет/обучение"\nПуш/инбокс напоминание при пропуске\n\nМетрики: +% автопополнений, +D30/D90 retention, +AUM.' },
+      { id: 'chain3', title: 'Цепочка 3: Обучение вместо импульсивных решений', enabled: false, steps: 'Когда портфель проседает на X% — показать "что происходит"\nМикро-урок "волатильность и горизонт" (30–60 сек)\nПредложить "план действий": ничего / докупить / ребалансировать\nОтметить "выдержал просадку N дней"\n\nМетрики: -churn, -sell-off в просадку, +D90.' },
+      { id: 'chain4', title: 'Цепочка 4: Диверсификация', enabled: false, steps: 'Показать "индекс диверсификации" (простая шкала)\nДать 2–3 "простых шага" (добавить облигации/ETF/другой сектор)\nЗапустить челлендж "собери базовый портфель из 3 классов активов"\n\nМетрики: +% портфелей с N инструментов, +доля ETF/фондов, +AUM.' }
+    ];
+
+    const STORAGE_KEY = 'gamification-brief';
+    const HASH_PREFIX = 'data=';
+
+    function getFormData() {
+      const data = {
+        product: {
+          name: document.getElementById('product-name').value,
+          guides: document.getElementById('product-guides').value,
+          ta: document.getElementById('product-ta').value
+        },
+        segments: {},
+        funnel: [],
+        metrics: {
+          northStar: document.getElementById('metric-northstar').value,
+          funnel: document.getElementById('metric-funnel').value,
+          behavioral: [],
+          qualitative: [],
+          support: document.getElementById('metric-support').value
+        },
+        chains: []
+      };
+
+      SEGMENTS.forEach(s => {
+        const main = document.querySelector(`input[name="segment-main"][value="${s.id}"]`);
+        const extra = document.getElementById(`segment-extra-${s.id}`);
+        if (main?.checked || extra?.checked) {
+          data.segments[s.id] = {
+            main: main?.checked || false,
+            pains: document.getElementById(`segment-pains-${s.id}`)?.value || '',
+            triggers: document.getElementById(`segment-triggers-${s.id}`)?.value || ''
+          };
+        }
+      });
+
+      document.querySelectorAll('#funnel-list .funnel-item').forEach((el, i) => {
+        data.funnel.push({ id: el.dataset.id, order: i });
+      });
+
+      document.querySelectorAll('#metric-behavioral input:checked').forEach(cb => {
+        data.metrics.behavioral.push(cb.value);
+      });
+      document.querySelectorAll('#metric-qualitative input:checked').forEach(cb => {
+        data.metrics.qualitative.push(cb.value);
+      });
+
+      document.querySelectorAll('.chain-block').forEach(block => {
+        const titleEl = block.querySelector('.chain-title-input') || block.querySelector('h4');
+        data.chains.push({
+          id: block.dataset.chainId,
+          title: titleEl?.textContent?.trim() || '',
+          enabled: block.querySelector('.chain-enabled')?.checked || false,
+          steps: block.querySelector('.chain-steps')?.value || '',
+          custom: block.dataset.custom === 'true'
+        });
+      });
+
+      return data;
+    }
+
+    function setFormData(data) {
+      if (!data) return;
+      if (data.product) {
+        document.getElementById('product-name').value = data.product.name || '';
+        document.getElementById('product-guides').value = data.product.guides || '';
+        document.getElementById('product-ta').value = data.product.ta || '';
+      }
+      if (data.segments) {
+        Object.entries(data.segments).forEach(([id, seg]) => {
+          const main = document.querySelector(`input[name="segment-main"][value="${id}"]`);
+          const extra = document.getElementById(`segment-extra-${id}`);
+          const details = document.getElementById(`segment-details-${id}`);
+          if (main) main.checked = seg.main;
+          if (extra) extra.checked = !seg.main;
+          if (details) details.style.display = 'block';
+          const pains = document.getElementById(`segment-pains-${id}`);
+          const triggers = document.getElementById(`segment-triggers-${id}`);
+          if (pains) pains.value = seg.pains || '';
+          if (triggers) triggers.value = seg.triggers || '';
+        });
+      }
+      if (data.funnel && data.funnel.length) {
+        const order = data.funnel.sort((a, b) => a.order - b.order).map(f => f.id);
+        const items = FUNNEL_ITEMS.slice().sort((a, b) => {
+          const ai = order.indexOf(a.id);
+          const bi = order.indexOf(b.id);
+          return (ai >= 0 ? ai : 999) - (bi >= 0 ? bi : 999);
+        });
+        renderFunnel(items);
+      }
+      if (data.metrics) {
+        document.getElementById('metric-northstar').value = data.metrics.northStar || '';
+        document.getElementById('metric-funnel').value = data.metrics.funnel || '';
+        document.getElementById('metric-support').value = data.metrics.support || '';
+        (data.metrics.behavioral || []).forEach(v => {
+          const cb = document.querySelector(`#metric-behavioral input[value="${v}"]`);
+          if (cb) cb.checked = true;
+        });
+        (data.metrics.qualitative || []).forEach(v => {
+          const cb = document.querySelector(`#metric-qualitative input[value="${v}"]`);
+          if (cb) cb.checked = true;
+        });
+      }
+      if (data.chains && data.chains.length) {
+        renderChains(data.chains);
+      }
+    }
+
+    function renderSegments() {
+      const container = document.getElementById('segments-container');
+      container.innerHTML = SEGMENTS.map(s => `
+        <div class="segment-card" data-segment="${s.id}">
+          <h4>${s.label}</h4>
+          <div class="segment-option">
+            <input type="radio" name="segment-main" value="${s.id}" id="segment-main-${s.id}">
+            <label for="segment-main-${s.id}">Основной сегмент</label>
+          </div>
+          <div class="segment-option">
+            <input type="checkbox" id="segment-extra-${s.id}" value="${s.id}">
+            <label for="segment-extra-${s.id}">Дополнительный</label>
+          </div>
+          <div class="segment-details" id="segment-details-${s.id}" style="display:none; margin-top:12px;">
+            <div class="field-group">
+              <label>Боли/барьеры</label>
+              <textarea id="segment-pains-${s.id}" placeholder="страх ошибки, непонимание рисков, лень, нет цели..."></textarea>
+            </div>
+            <div class="field-group">
+              <label>Триггеры</label>
+              <textarea id="segment-triggers-${s.id}" placeholder="зарплата, новости, цель подушка/ипотека/путешествие..."></textarea>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.segment-card').forEach(card => {
+        const id = card.dataset.segment;
+        const details = document.getElementById(`segment-details-${id}`);
+        const main = document.getElementById(`segment-main-${id}`);
+        const extra = document.getElementById(`segment-extra-${id}`);
+
+        const showDetails = () => {
+          details.style.display = (main.checked || extra.checked) ? 'block' : 'none';
+          updateProgress();
+        };
+
+        main.addEventListener('change', () => { if (main.checked) extra.checked = false; showDetails(); });
+        extra.addEventListener('change', () => { if (extra.checked) main.checked = false; showDetails(); });
+      });
+    }
+
+    function renderFunnel(items) {
+      const list = document.getElementById('funnel-list');
+      const order = items || FUNNEL_ITEMS;
+      list.innerHTML = order.map(item => `
+        <li class="funnel-item" data-id="${item.id}" draggable="true">
+          <span class="funnel-handle">⋮⋮</span>
+          <span class="funnel-id">${item.id}</span>
+          <span class="funnel-desc">${item.desc}</span>
+        </li>
+      `).join('');
+
+      list.querySelectorAll('.funnel-item').forEach(el => {
+        el.addEventListener('dragstart', handleDragStart);
+        el.addEventListener('dragover', handleDragOver);
+        el.addEventListener('drop', handleDrop);
+        el.addEventListener('dragend', handleDragEnd);
+      });
+    }
+
+    let draggedEl = null;
+
+    function handleDragStart(e) {
+      draggedEl = e.target.closest('.funnel-item');
+      draggedEl.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', draggedEl.dataset.id);
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      const target = e.target.closest('.funnel-item');
+      if (target && target !== draggedEl) {
+        target.classList.add('drag-over');
+      }
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const target = e.target.closest('.funnel-item');
+      if (target && draggedEl && target !== draggedEl) {
+        const list = document.getElementById('funnel-list');
+        const all = Array.from(list.children);
+        const fromIdx = all.indexOf(draggedEl);
+        const toIdx = all.indexOf(target);
+        if (fromIdx < toIdx) target.parentNode.insertBefore(draggedEl, target.nextSibling);
+        else target.parentNode.insertBefore(draggedEl, target);
+      }
+      document.querySelectorAll('.funnel-item').forEach(el => el.classList.remove('drag-over'));
+    }
+
+    function handleDragEnd() {
+      if (draggedEl) draggedEl.classList.remove('dragging');
+      draggedEl = null;
+      document.querySelectorAll('.funnel-item').forEach(el => el.classList.remove('drag-over'));
+      updateProgress();
+      saveToStorage();
+    }
+
+    function renderMetricCheckboxes() {
+      const bh = document.getElementById('metric-behavioral');
+      bh.innerHTML = METRIC_BEHAVIORAL.map(m => `
+        <label class="checkbox-item">
+          <input type="checkbox" value="${m}">
+          <span>${m}</span>
+        </label>
+      `).join('');
+
+      const ql = document.getElementById('metric-qualitative');
+      ql.innerHTML = METRIC_QUALITATIVE.map(m => `
+        <label class="checkbox-item">
+          <input type="checkbox" value="${m}">
+          <span>${m}</span>
+        </label>
+      `).join('');
+    }
+
+    function renderChains(chainsData) {
+      const container = document.getElementById('chains-container');
+      const chains = chainsData && chainsData.length ? chainsData : DEFAULT_CHAINS.map(c => ({
+        id: c.id,
+        title: c.title,
+        enabled: c.enabled,
+        steps: c.steps,
+        custom: false
+      }));
+
+      container.innerHTML = chains.map((c, i) => `
+        <div class="chain-block" data-chain-id="${c.id}" data-custom="${c.custom || false}">
+          <div class="chain-header">
+            <input type="checkbox" class="chain-enabled" ${c.enabled ? 'checked' : ''}>
+            <h4 class="chain-title-input" contenteditable="true">${c.title || `Цепочка ${i + 1}`}</h4>
+          </div>
+          <textarea class="chain-steps" placeholder="Опишите шаги и ожидаемые метрики...">${c.steps || ''}</textarea>
+        </div>
+      `).join('');
+    }
+
+    function addCustomChain() {
+      const container = document.getElementById('chains-container');
+      const id = 'chain-custom-' + Date.now();
+      const div = document.createElement('div');
+      div.className = 'chain-block';
+      div.dataset.chainId = id;
+      div.dataset.custom = 'true';
+      div.innerHTML = `
+        <div class="chain-header">
+          <input type="checkbox" class="chain-enabled">
+          <h4 class="chain-title-input" contenteditable="true">Моя цепочка</h4>
+        </div>
+        <textarea class="chain-steps" placeholder="Опишите шаги и ожидаемые метрики..."></textarea>
+      `;
+      container.appendChild(div);
+      updateProgress();
+    }
+
+    function filledSections() {
+      let n = 0;
+      const data = getFormData();
+      if (data.product.name || data.product.guides || data.product.ta) n++;
+      if (Object.keys(data.segments).length) n++;
+      if (data.funnel.length) n++;
+      if (data.metrics.northStar || data.metrics.funnel || data.metrics.behavioral.length || data.metrics.qualitative.length || data.metrics.support) n++;
+      if (data.chains.some(c => c.enabled || c.steps)) n++;
+      return n;
+    }
+
+    function updateProgress() {
+      const n = filledSections();
+      document.getElementById('progress-text').textContent = n;
+      document.getElementById('progress-fill').style.width = (n / 5 * 100) + '%';
+    }
+
+    function saveToHash() {
+      const data = getFormData();
+      const json = JSON.stringify(data);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      return window.location.origin + window.location.pathname + '#' + HASH_PREFIX + b64;
+    }
+
+    function loadFromHash() {
+      const hash = window.location.hash;
+      if (!hash.startsWith('#' + HASH_PREFIX)) return null;
+      try {
+        const b64 = hash.slice(HASH_PREFIX.length + 1);
+        const json = decodeURIComponent(escape(atob(b64)));
+        return JSON.parse(json);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
+      } catch (e) {}
+    }
+
+    function loadFromStorage() {
+      try {
+        const s = localStorage.getItem(STORAGE_KEY);
+        return s ? JSON.parse(s) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    document.querySelectorAll('.accordion-header').forEach(h => {
+      h.addEventListener('click', () => {
+        const item = h.closest('.accordion-item');
+        item.classList.toggle('open');
+      });
+    });
+
+    document.getElementById('brief-form').addEventListener('input', () => {
+      updateProgress();
+      saveToStorage();
+    });
+    document.getElementById('brief-form').addEventListener('change', () => {
+      updateProgress();
+      saveToStorage();
+    });
+
+    document.getElementById('btn-share').addEventListener('click', () => {
+      const url = saveToHash();
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Ссылка скопирована в буфер');
+      }).catch(() => showToast('Не удалось скопировать'));
+    });
+
+    document.getElementById('btn-json').addEventListener('click', () => {
+      const data = getFormData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'gamification-brief.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('JSON скачан');
+    });
+
+    document.getElementById('btn-print').addEventListener('click', () => {
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.add('open'));
+      window.print();
+    });
+
+    document.getElementById('add-chain-btn').addEventListener('click', addCustomChain);
+
+    renderSegments();
+    renderFunnel();
+    renderMetricCheckboxes();
+    renderChains();
+
+    const hashData = loadFromHash();
+    if (hashData) {
+      setFormData(hashData);
+    } else {
+      const stored = loadFromStorage();
+      if (stored) setFormData(stored);
+    }
+
+    updateProgress();
+  </script>
+</body>
+</html>
