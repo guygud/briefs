@@ -768,8 +768,10 @@ const SCENARIOS = [
     need: '«Мне нужно остановить ботов. Что-нибудь недорогое.»',
     requires: { shield: 20 },
     harmLimit: 25, collateralLimit: 999, goldBudget: 12, teamHappyMin: 45,
-    activeSlots: ['foundation'],
-    hint: '💡 Загляни во вкладку 🪨 Камни — там найдёшь защитные ингредиенты. Нажми на слот Основа, чтобы вложить ингредиент.',
+    activeSlots: ['foundation', 'observation'],
+    requiredSlots: ['observation'],
+    requiredNote: 'Слот «Наблюдение» пуст — нельзя доказать, что зелье сработало',
+    hint: '💡 Загляни во вкладку 🪨 Камни — защитные ингредиенты. Слот Наблюдение ждёт 💨 Дым.',
     debrief: {
       success: '🎉 Боты отступили! Архип продал все товары живым покупателям. Он доволен и обещает скидку.',
       partial: '⚠️ Боты остановлены, но зелье навредило — честные покупатели тоже пострадали.',
@@ -785,7 +787,9 @@ const SCENARIOS = [
     requires: { shield: 25 },
     harmLimit: 18, collateralLimit: 8, goldBudget: 18, teamHappyMin: 50,
     activeSlots: ['foundation', 'observation', 'rollout'],
-    hint: '💡 Раскатка помогает снизить ущерб от агрессивных ингредиентов. Наблюдение покажет, всё ли прошло чисто.',
+    requiredSlots: ['rollout'],
+    requiredNote: 'Слот «Раскатка» пуст — выкатили на всех сразу, страшно',
+    hint: '💡 Раскатка 🚀 снижает ущерб. Без неё фазаны в панике. Наблюдение покажет, прошло ли чисто.',
     debrief: {
       success: '🎉 Вороны рассеялись. Фазаны пойманы. Мирон прислал корзину с перепёлками.',
       partial: '⚠️ Вороны отступили, но зелье задело своих — фазаны тоже разбежались.',
@@ -800,8 +804,10 @@ const SCENARIOS = [
     need: '«Стрелы должны долетать быстро. P95 важнее P50.»',
     requires: { speed: 25 },
     harmLimit: 15, collateralLimit: 999, goldBudget: 15, teamHappyMin: 50,
-    activeSlots: ['catalyst', 'observation'],
-    hint: '💡 Нужно ускорение ⚡ — ищи в Эликсирах и Дыму. Трейсинг поможет увидеть, где стрела зависла.',
+    activeSlots: ['foundation', 'catalyst', 'observation'],
+    requiredSlots: ['catalyst'],
+    requiredNote: 'Слот «Катализатор» пуст — скорость не улучшена изнутри, только снаружи',
+    hint: '💡 Нужно ускорение ⚡ — Катализатор берёт Эликсиры. Трейсинг покажет где стрела зависла.',
     debrief: {
       success: '🎉 Стрелы долетают мгновенно. Царевна получила письмо. Свадьба назначена.',
       partial: '⚠️ Быстрее, но зелье дало побочку — у стрел облезло оперение.',
@@ -816,8 +822,10 @@ const SCENARIOS = [
     need: '«Письма должны приходить в нужном формате. Схема важнее скорости.»',
     requires: { contract: 25 },
     harmLimit: 15, collateralLimit: 999, goldBudget: 14, teamHappyMin: 50,
-    activeSlots: ['filter', 'observation'],
-    hint: '💡 Нужен контракт 📜 — валидация схемы, а не скорость. Кеш и скорость тут не помогут.',
+    activeSlots: ['foundation', 'filter', 'observation'],
+    requiredSlots: ['filter'],
+    requiredNote: 'Слот «Фильтр» пуст — граница между царствами не закреплена',
+    hint: '💡 Нужен контракт 📜 — Фильтр принимает Камни и Эликсиры. Кеш тут не поможет.',
     debrief: {
       success: '🎉 Письма приходят точно по форме. Прокопий повышен до главного гонца.',
       partial: '⚠️ Схема работает, но зелье дало побочки — часть писем задержалась.',
@@ -832,8 +840,10 @@ const SCENARIOS = [
     need: '«Хочу дышать. Убери лишнее. Не добавляй новое.»',
     requires: { simplicity: 20 },
     harmLimit: 12, collateralLimit: 999, goldBudget: 12, teamHappyMin: 55,
-    activeSlots: ['catalyst', 'stabilizer'],
-    hint: '💡 Нужна простота 🧹 — убирай, а не добавляй. Постмортем поможет не повторить ошибку.',
+    activeSlots: ['foundation', 'catalyst', 'stabilizer'],
+    requiredSlots: ['stabilizer'],
+    requiredNote: 'Слот «Стабилизатор» пуст — изменения не закреплены, монолит снова запутается',
+    hint: '💡 Нужна простота 🧹 — Катализатор убирает лишнее, Стабилизатор закрепляет результат.',
     debrief: {
       success: '🎉 Монолит задышал! Агафья сварила первое новое зелье за три года.',
       partial: '⚠️ Стало проще, но зелье навредило — один из старых слоёв оказался нужным.',
@@ -848,7 +858,7 @@ const SCENARIOS = [
     need: '«Хочу видеть что происходит. Настоящие причины, а не шум.»',
     requires: { insight: 30 },
     harmLimit: 15, collateralLimit: 999, goldBudget: 16, teamHappyMin: 55,
-    activeSlots: ['observation', 'stabilizer', 'rollout'],
+    activeSlots: ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'],
     hint: '💡 Нужна видимость 🔭 — смотри в Дым. Несколько дымовых ингредиентов дают разные грани картины.',
     debrief: {
       success: '🎉 Причины найдены! Тит молчит три дня подряд — команда выспалась.',
@@ -864,7 +874,7 @@ const SCENARIOS = [
     need: '«Сначала найдите причину — потом ускорьте стрелы.»',
     requires: { speed: 20, insight: 20 },
     harmLimit: 18, collateralLimit: 999, goldBudget: 20, teamHappyMin: 55,
-    activeSlots: ['catalyst', 'observation', 'stabilizer'],
+    activeSlots: ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'],
     hint: '💡 Нужны оба эффекта: скорость ⚡ и видимость 🔭. Стабилизатор принимает и эликсиры, и дым.',
     debrief: {
       success: '🎉 Причина найдена, стрелы летят, колокола молчат. Иван и Тит обнялись.',
@@ -952,27 +962,40 @@ function calcStats() {
 function calcResult(stats) {
   const s = sc();
 
-  const solved = Object.entries(s.requires).every(
+  const effectsMet = Object.entries(s.requires).every(
     ([eff, need]) => (stats.effects[eff] || 0) >= need
   );
 
-  const hurtAllies =
+  const overBudget = stats.totalGold > s.goldBudget;
+  const isFinal    = s.id === 'final';
+
+  // Hard budget block on tasks 1-7; soft (hurtAllies) on final
+  const solved = effectsMet && (isFinal || !overBudget);
+
+  const hurtAlliesBase =
     stats.totalHarm > s.harmLimit ||
     (s.collateralLimit < 999 && stats.totalCollateral > s.collateralLimit);
 
   const teamUnhappy = stats.adoptionPct < (s.teamHappyMin || 50);
 
-  // Waste: active slots with ingredients that give zero contribution to required effects
+  // Waste: skip ritual layer and rollout slot (they improve adoption/safety, not effects)
   const requiredEffects = Object.keys(s.requires);
   const wasteIds = stats.placed
-    .filter(({ i }) => {
+    .filter(({ roleId, i }) => {
+      if (roleId === 'rollout' || i.layer === 'ritual') return false;
       const contribs = Object.entries(i.effectPower || {})
         .filter(([eff, v]) => v > 0 && requiredEffects.includes(eff));
       return contribs.length === 0;
     })
     .map(({ i }) => i.id);
 
-  return { solved, hurtAllies, teamUnhappy, wasteIds };
+  // requiredSlots soft rule: if a mandated slot is empty → force partial
+  const emptyRequired = (s.requiredSlots || []).filter(roleId => !slotFills[roleId]);
+  const forcedPartial  = solved && emptyRequired.length > 0;
+
+  const hurtAllies = hurtAlliesBase || (isFinal && overBudget) || forcedPartial;
+
+  return { solved, hurtAllies, teamUnhappy, wasteIds, overBudget, emptyRequired };
 }
 
 // ─── RENDER QUEST ───────────────────────────────────────────────
@@ -1178,26 +1201,26 @@ function showResult() {
   const result = calcResult(stats);
   const s = sc();
 
-  const { solved, hurtAllies, teamUnhappy, wasteIds } = result;
+  const { solved, hurtAllies, teamUnhappy, wasteIds, overBudget, emptyRequired } = result;
 
-  // Choose debrief text
+  // Choose debrief text (teamUnhappy also counts as partial)
   let debriefText;
-  if (!solved)           debriefText = s.debrief.fail;
-  else if (hurtAllies)   debriefText = s.debrief.partial;
-  else                   debriefText = s.debrief.success;
+  if (!solved)                        debriefText = s.debrief.fail;
+  else if (hurtAllies || teamUnhappy) debriefText = s.debrief.partial;
+  else                                debriefText = s.debrief.success;
 
-  const overBudget = stats.totalGold > s.goldBudget;
-
-  // Main icon
+  // Main icon (teamUnhappy also downgrades to partial)
   let mainIcon, mainTitle;
-  if (!solved)         { mainIcon = '💀'; mainTitle = 'Задача не выполнена'; }
-  else if (hurtAllies) { mainIcon = '⚠️'; mainTitle = 'Частичный успех'; }
-  else                 { mainIcon = '🏆'; mainTitle = 'Успех!'; }
+  if (!solved)                        { mainIcon = '💀'; mainTitle = 'Задача не выполнена'; }
+  else if (hurtAllies || teamUnhappy) { mainIcon = '⚠️'; mainTitle = 'Частичный успех'; }
+  else                                { mainIcon = '🏆'; mainTitle = 'Успех!'; }
 
   // Event rows
   const solvedRow = solved
     ? `<div class="event-row good"><span class="ev-icon">✅</span> Задача решена</div>`
-    : `<div class="event-row bad"><span class="ev-icon">❌</span> Задача не решена — эффектов не хватило</div>`;
+    : overBudget
+      ? `<div class="event-row bad"><span class="ev-icon">❌</span> Задача не выполнена — бюджет превышен (${stats.totalGold} > ${s.goldBudget} 💰)</div>`
+      : `<div class="event-row bad"><span class="ev-icon">❌</span> Задача не решена — эффектов не хватило</div>`;
 
   const alliesRow = hurtAllies
     ? `<div class="event-row bad"><span class="ev-icon">💔</span> Задело своих — побочный ущерб слишком высок</div>`
@@ -1207,8 +1230,12 @@ function showResult() {
     ? `<div class="event-row warn"><span class="ev-icon">😑</span> Команда недовольна — слишком много боли при внедрении</div>`
     : `<div class="event-row good"><span class="ev-icon">😊</span> Команда приняла зелье</div>`;
 
-  const budgetRow = overBudget
-    ? `<div class="event-row warn"><span class="ev-icon">💸</span> Бюджет превышен (${stats.totalGold} > ${s.goldBudget} 💰)</div>`
+  const budgetRow = overBudget && solved
+    ? `<div class="event-row warn"><span class="ev-icon">💸</span> Бюджет превышен (${stats.totalGold} > ${s.goldBudget} 💰) — в финале это сошло с рук</div>`
+    : '';
+
+  const requiredSlotRow = emptyRequired.length > 0
+    ? `<div class="event-row warn"><span class="ev-icon">🔒</span> ${s.requiredNote || 'Ключевой слот пуст — максимум частичный успех'}</div>`
     : '';
 
   // Waste note
@@ -1226,8 +1253,9 @@ function showResult() {
     : '';
 
   // Details
+  const requiredSet = new Set(Object.keys(s.requires));
   const effDetailRows = Object.entries(stats.effects)
-    .filter(([, v]) => v > 0 || Object.keys(s.requires).includes)
+    .filter(([eff, v]) => v > 0 || requiredSet.has(eff))
     .map(([eff, v]) => {
       const m = EFFECT_META[eff];
       const need = s.requires[eff];
@@ -1248,6 +1276,7 @@ function showResult() {
       ${alliesRow}
       ${teamRow}
       ${budgetRow}
+      ${requiredSlotRow}
     </div>
     ${wasteHtml}
     ${conflictHtml}
