@@ -23,25 +23,20 @@
       --purple: #a371f7;
       --radius: 10px;
       --font: 'Manrope', system-ui, sans-serif;
+
+      --raw-bg:   rgba(248, 81, 73,  0.12);
+      --raw-fg:   #f85149;
+      --clean-bg: rgba(63,  185, 80,  0.12);
+      --clean-fg: #3fb950;
+      --any-bg:   rgba(139, 148, 158, 0.08);
+      --any-fg:   #8b949e;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.5;
-    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
 
-    header {
-      padding: 20px 24px 0;
-      display: flex;
-      align-items: baseline;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
+    header { padding: 20px 24px 0; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
     header h1 { font-size: 1.3rem; font-weight: 700; }
     header p  { font-size: 0.85rem; color: var(--muted); }
 
@@ -50,170 +45,145 @@
       grid-template-columns: 280px 1fr 320px;
       gap: 16px;
       padding: 16px 24px 40px;
-      min-height: calc(100vh - 60px);
       align-items: start;
     }
+    @media (max-width: 900px) { .game-layout { grid-template-columns: 1fr; } }
 
-    @media (max-width: 900px) {
-      .game-layout { grid-template-columns: 1fr; }
-    }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+    .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-    }
-
-    .col-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    /* ---- Quest column ---- */
+    /* ---- Quest ---- */
     .quest-card { position: sticky; top: 16px; }
-
-    .quest-badge {
-      display: inline-block;
-      font-size: 0.7rem; font-weight: 700;
-      padding: 3px 10px; border-radius: 20px; margin-bottom: 12px;
-    }
+    .quest-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
     .quest-badge.ddos    { background: rgba(248,81,73,0.15);  color: var(--danger); border: 1px solid rgba(248,81,73,0.4); }
     .quest-badge.latency { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid rgba(88,166,255,0.4); }
-
     .quest-requester { font-size: 1rem; font-weight: 600; margin-bottom: 10px; }
     .quest-story     { font-size: 0.9rem; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
-
-    .quest-needs {
-      background: var(--surface2);
-      border-radius: 8px; padding: 12px; font-size: 0.85rem;
-    }
+    .quest-needs     { background: var(--surface2); border-radius: 8px; padding: 12px; font-size: 0.85rem; }
     .quest-needs strong { display: block; color: var(--text); margin-bottom: 6px; }
-
-    .quest-need-row {
-      display: flex; justify-content: space-between;
-      color: var(--muted); padding: 2px 0;
-    }
+    .quest-need-row  { display: flex; justify-content: space-between; color: var(--muted); padding: 2px 0; }
     .quest-need-row span:last-child { color: var(--text); font-weight: 500; }
-
-    .quest-hint {
-      margin-top: 12px; padding: 10px 12px;
-      background: rgba(88,166,255,0.08);
-      border: 1px solid rgba(88,166,255,0.25);
-      border-radius: 8px;
-      font-size: 0.82rem; color: var(--accent);
-      display: none;
-    }
+    .quest-hint { margin-top: 12px; padding: 10px 12px; background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.25); border-radius: 8px; font-size: 0.82rem; color: var(--accent); display: none; }
     .quest-hint.visible { display: block; }
-
-    .btn-next {
-      margin-top: 16px; width: 100%; padding: 10px;
-      background: transparent; border: 1px solid var(--border);
-      border-radius: 8px; color: var(--muted);
-      font-family: var(--font); font-size: 0.9rem;
-      cursor: pointer; transition: border-color 0.2s, color 0.2s;
-    }
+    .btn-next { margin-top: 16px; width: 100%; padding: 10px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: var(--font); font-size: 0.9rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
     .btn-next:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ---- Cauldron column ---- */
+    /* ---- Cauldron ---- */
     .cauldron-col { display: flex; flex-direction: column; gap: 14px; }
 
-    /* Gold budget */
+    /* Gold */
     .gold-display { margin-bottom: 14px; }
-    .gold-bar-label {
-      display: flex; justify-content: space-between;
-      font-size: 0.8rem; color: var(--muted); margin-bottom: 4px;
-    }
-    .gold-bar-label .gold-val { font-weight: 700; }
-    .gold-bar-label .gold-val.over { color: var(--danger); }
-    .gold-bar-label .gold-val.warn { color: var(--warn); }
+    .gold-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+    .gold-val { font-weight: 700; }
+    .gold-val.over { color: var(--danger); }
+    .gold-val.warn { color: var(--warn); }
 
-    /* Slots */
+    /* Connector bars (shared by slots AND ingredient cards) */
+    .conn-bar {
+      height: 20px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .conn-bar .conn-bar-label { margin-left: auto; opacity: 0.7; }
+    .conn-bar.raw   { background: var(--raw-bg);   color: var(--raw-fg); }
+    .conn-bar.clean { background: var(--clean-bg); color: var(--clean-fg); }
+    .conn-bar.any   { background: var(--any-bg);   color: var(--any-fg); }
+    .conn-bar.empty { background: rgba(48,54,61,0.4); color: var(--border); }
+    /* top bar gets rounded top corners, bottom gets rounded bottom corners */
+    .conn-bar.top    { border-radius: var(--radius) var(--radius) 0 0; }
+    .conn-bar.bottom { border-radius: 0 0 var(--radius) var(--radius); }
+
+    /* Chain source (above first slot) */
+    .chain-source {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+    .chain-source .source-pill {
+      margin-left: auto;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--raw-bg);
+      color: var(--raw-fg);
+    }
+
+    /* Slot chain */
     .slots-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 14px; }
 
     .slot-card {
-      background: var(--surface2);
       border: 1.5px solid var(--border);
-      border-radius: 8px; padding: 10px 12px;
+      border-radius: var(--radius);
       cursor: pointer;
-      transition: border-color 0.18s, background 0.18s;
-      position: relative;
+      transition: border-color 0.18s;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    .slot-card:hover { border-color: var(--accent); }
-    .slot-card.active {
-      border-color: var(--accent);
-      background: rgba(88,166,255,0.07);
-      box-shadow: 0 0 0 2px rgba(88,166,255,0.2);
-    }
-    .slot-card.filled  { border-color: var(--success); }
-    .slot-card.conflict { border-color: var(--danger); }
-    .slot-card.waste   { border-color: var(--warn); }
+    .slot-card:hover         { border-color: var(--accent); }
+    .slot-card.active        { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(88,166,255,0.2); }
+    .slot-card.filled        { border-color: var(--success); }
+    .slot-card.conflict      { border-color: var(--danger); }
+    .slot-card.waste         { border-color: var(--warn); }
 
     .slot-inner {
       display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      background: var(--surface2);
     }
-    .slot-connectors {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      flex-shrink: 0;
-    }
-    .slot-connectors.right { margin-left: auto; }
-    .conn-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      border: 2px solid var(--border);
-      flex-shrink: 0;
-    }
-    .conn-dot.raw   { background: var(--danger);  border-color: var(--danger); }
-    .conn-dot.clean { background: var(--success); border-color: var(--success); }
-    .conn-dot.any   { background: var(--muted);   border-color: var(--muted); }
-    .conn-dot.empty { background: transparent;    border-color: var(--border); }
-    .conn-label { font-size: 0.6rem; color: var(--muted); line-height: 1; }
+    .slot-card.active .slot-inner { background: rgba(88,166,255,0.05); }
 
-    .slot-body { flex: 1; min-width: 0; }
-    .slot-label-row {
-      display: flex; align-items: center; gap: 6px; margin-bottom: 2px;
-    }
-    .slot-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .slot-layer-hint { font-size: 0.68rem; color: var(--border); }
-    .slot-ingredient { font-size: 0.88rem; font-weight: 600; color: var(--text); }
-    .slot-empty-text { font-size: 0.82rem; color: var(--muted); font-style: italic; }
+    .slot-body      { flex: 1; min-width: 0; }
+    .slot-label-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+    .slot-label     { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .slot-layer-hint    { font-size: 0.68rem; color: var(--border); }
+    .slot-ingredient    { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+    .slot-empty-text    { font-size: 0.82rem; color: var(--muted); font-style: italic; }
     .slot-conflict-warn { font-size: 0.72rem; color: var(--danger); margin-top: 3px; }
     .slot-waste-warn    { font-size: 0.72rem; color: var(--warn); margin-top: 3px; }
 
     .slot-clear {
-      flex-shrink: 0;
-      width: 22px; height: 22px;
-      border-radius: 50%; border: 1px solid var(--border);
-      background: var(--surface); color: var(--muted);
-      font-size: 0.9rem; cursor: pointer;
+      flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--muted); font-size: 0.9rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.15s, color 0.15s;
     }
     .slot-clear:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
 
+    /* Bridge between slots */
     .slot-bridge {
       display: flex; align-items: center; justify-content: center;
-      height: 20px; font-size: 0.8rem; color: var(--border);
-      position: relative;
+      height: 20px; position: relative;
     }
     .slot-bridge::before {
-      content: '';
-      position: absolute; left: 50%; top: 0;
-      width: 2px; height: 100%;
-      transform: translateX(-50%);
+      content: ''; position: absolute; left: 50%; top: 0;
+      width: 2px; height: 100%; transform: translateX(-50%);
       background: var(--border);
     }
     .slot-bridge .bridge-icon {
-      background: var(--surface); padding: 0 6px;
-      position: relative; z-index: 1; font-size: 0.72rem;
+      background: var(--surface); padding: 0 8px;
+      position: relative; z-index: 1; font-size: 0.7rem; font-weight: 700;
     }
-    .slot-bridge.ok .bridge-icon { color: var(--success); }
-    .slot-bridge.bad .bridge-icon { color: var(--danger); }
-    .slot-bridge.ok::before  { background: var(--success); opacity: 0.4; }
-    .slot-bridge.bad::before { background: var(--danger);  opacity: 0.5; }
+    .slot-bridge.ok  .bridge-icon { color: var(--success); }
+    .slot-bridge.bad .bridge-icon { color: var(--danger);  }
+    .slot-bridge.ok::before  { background: rgba(63,185,80,0.4); }
+    .slot-bridge.bad::before { background: rgba(248,81,73,0.5); }
 
     /* Meters */
     .meter-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
@@ -227,116 +197,72 @@
     .meter-fill.force      { background: var(--purple); }
     .meter-fill.precision  { background: var(--accent); }
     .meter-fill.collateral { background: var(--orange); }
-    .meter-limit-line {
-      position: absolute; top: 0; height: 100%; width: 2px;
-      background: rgba(255,255,255,0.5);
-    }
+    .meter-limit-line { position: absolute; top: 0; height: 100%; width: 2px; background: rgba(255,255,255,0.5); }
 
     .cauldron-actions { display: flex; gap: 10px; margin-top: 4px; }
-
-    .btn-brew {
-      flex: 1; padding: 12px;
-      background: var(--accent); color: #fff;
-      border: none; border-radius: 8px;
-      font-family: var(--font); font-size: 1rem; font-weight: 600;
-      cursor: pointer; transition: background 0.2s, transform 0.1s;
-    }
+    .btn-brew  { flex: 1; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: var(--font); font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; }
     .btn-brew:hover  { background: #79b8ff; }
     .btn-brew:active { transform: scale(0.97); }
-
-    .btn-reset {
-      padding: 12px 18px; background: transparent;
-      border: 1px solid var(--border); border-radius: 8px;
-      color: var(--muted); font-family: var(--font); font-size: 0.9rem;
-      cursor: pointer; transition: border-color 0.2s, color 0.2s;
-    }
+    .btn-reset { padding: 12px 18px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: var(--font); font-size: 0.9rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
     .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
 
-    /* Result panel */
+    /* Result */
     .result-panel { display: none; border-radius: var(--radius); padding: 18px; animation: fadeIn 0.3s ease; }
     .result-panel.show    { display: block; }
     .result-panel.success { background: rgba(63,185,80,0.1);  border: 1px solid rgba(63,185,80,0.4); }
     .result-panel.partial { background: rgba(210,153,34,0.1); border: 1px solid rgba(210,153,34,0.4); }
     .result-panel.fail    { background: rgba(248,81,73,0.1);  border: 1px solid rgba(248,81,73,0.4); }
-
     .result-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
     .result-panel.success .result-title { color: var(--success); }
     .result-panel.partial .result-title { color: var(--warn); }
     .result-panel.fail    .result-title { color: var(--danger); }
     .result-text   { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; }
     .result-extras { font-size: 0.8rem; color: var(--muted); }
+    .result-extras > div { margin-bottom: 4px; }
     .result-extras strong { color: var(--warn); }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
 
     /* ---- Ingredients column ---- */
     .selection-banner {
-      display: none;
-      background: rgba(88,166,255,0.1);
-      border: 1px solid rgba(88,166,255,0.35);
-      border-radius: 8px; padding: 8px 12px;
-      font-size: 0.82rem; color: var(--accent);
-      margin-bottom: 8px;
+      display: none; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.35);
+      border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: var(--accent); margin-bottom: 8px;
     }
     .selection-banner.visible { display: block; }
-    .browse-hint {
-      font-size: 0.75rem; color: var(--muted);
-      text-align: center; padding: 6px 0 10px;
-      font-style: italic;
-    }
+    .browse-hint { font-size: 0.75rem; color: var(--muted); text-align: center; padding: 6px 0 10px; font-style: italic; }
 
     .tab-bar { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
-
-    .tab-btn {
-      flex: 1; padding: 7px 6px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; color: var(--muted);
-      font-family: var(--font); font-size: 0.78rem;
-      cursor: pointer; transition: all 0.15s;
-      white-space: nowrap; text-align: center;
-    }
+    .tab-btn { flex: 1; padding: 7px 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: var(--font); font-size: 0.78rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; text-align: center; }
     .tab-btn:hover  { border-color: var(--accent); color: var(--text); }
     .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-    .tab-btn.tab-dimmed { opacity: 0.35; cursor: default; }
-    .tab-btn.tab-dimmed:hover { border-color: var(--border); color: var(--muted); }
-
-    .tab-badge {
-      display: none; background: var(--success); color: #fff;
-      border-radius: 10px; padding: 0 5px; font-size: 0.65rem; font-weight: 700; margin-left: 4px;
-    }
+    .tab-btn.tab-dimmed { opacity: 0.35; cursor: default; pointer-events: none; }
+    .tab-badge { display: none; background: var(--success); color: #fff; border-radius: 10px; padding: 0 5px; font-size: 0.65rem; font-weight: 700; margin-left: 4px; }
     .tab-badge.visible { display: inline; }
 
-    .ingredients-col {
-      display: flex; flex-direction: column; gap: 10px;
-      overflow-y: auto; max-height: calc(100vh - 140px);
-    }
+    .ingredients-col { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: calc(100vh - 140px); }
 
+    /* Ingredient card — flex column, conn-bars at top/bottom */
     .ingredient-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 12px 14px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       transition: border-color 0.2s;
     }
-    .ingredient-card.in-use { border-color: var(--success); }
-    .ingredient-card.waste  { border-color: var(--warn); opacity: 0.8; }
+    .ingredient-card.in-use    { border-color: var(--success); }
+    .ingredient-card.waste     { border-color: var(--warn); }
     .ingredient-card.selectable { cursor: pointer; }
-    .ingredient-card.selectable:hover { border-color: var(--accent); background: rgba(88,166,255,0.05); }
-    .ingredient-card.disabled { opacity: 0.45; cursor: default; }
-    .ingredient-card.disabled:hover { border-color: var(--border); background: var(--surface); }
+    .ingredient-card.selectable:hover { border-color: var(--accent); }
+    .ingredient-card.disabled  { opacity: 0.42; }
+
+    .ing-content { padding: 12px 14px; }
 
     .ing-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
-    .ing-name { font-size: 0.9rem; font-weight: 600; flex: 1; }
+    .ing-name   { font-size: 0.9rem; font-weight: 600; flex: 1; }
 
-    .btn-pick {
-      flex-shrink: 0; padding: 4px 12px;
-      background: var(--accent); color: #fff;
-      border: none; border-radius: 6px;
-      font-family: var(--font); font-size: 0.78rem; font-weight: 600;
-      cursor: pointer; transition: background 0.15s;
-    }
+    .btn-pick { flex-shrink: 0; padding: 4px 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
     .btn-pick:hover { background: #79b8ff; }
 
     .disabled-reason { flex-shrink: 0; font-size: 0.75rem; color: var(--danger); }
@@ -345,18 +271,14 @@
     .ing-desc   { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
     .ing-params { display: flex; flex-wrap: wrap; gap: 5px; }
 
-    .param-tag {
-      font-size: 0.7rem; padding: 2px 8px;
-      border-radius: 20px; background: var(--surface2); color: var(--muted);
-    }
-    .param-tag.force      { background: rgba(163,113,247,0.15); color: var(--purple); }
-    .param-tag.precision  { background: rgba(88,166,255,0.15);  color: var(--accent); }
-    .param-tag.harm       { background: rgba(248,81,73,0.15);   color: var(--danger); }
-    .param-tag.smooth     { background: rgba(63,185,80,0.15);   color: var(--success); }
-    .param-tag.smoothbad  { background: rgba(210,153,34,0.15);  color: var(--warn); }
-    .param-tag.gold       { background: rgba(210,153,34,0.1);   color: var(--warn); }
-    .param-tag.collateral { background: rgba(255,150,30,0.15);  color: var(--orange); }
-    .param-tag.connector  { background: var(--surface2); color: var(--muted); font-family: monospace; }
+    .param-tag           { font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; background: var(--surface2); color: var(--muted); }
+    .param-tag.force     { background: rgba(163,113,247,0.15); color: var(--purple); }
+    .param-tag.precision { background: rgba(88,166,255,0.15);  color: var(--accent); }
+    .param-tag.harm      { background: rgba(248,81,73,0.15);   color: var(--danger); }
+    .param-tag.smooth    { background: rgba(63,185,80,0.15);   color: var(--success); }
+    .param-tag.smoothbad { background: rgba(210,153,34,0.15);  color: var(--warn); }
+    .param-tag.gold      { background: rgba(210,153,34,0.1);   color: var(--warn); }
+    .param-tag.collateral{ background: rgba(255,150,30,0.15);  color: var(--orange); }
 
     .waste-badge { display: none; font-size: 0.7rem; color: var(--warn); margin-top: 4px; }
     .ingredient-card.waste .waste-badge { display: block; }
@@ -366,18 +288,17 @@
 
 <header>
   <h1>🧪 Зельевар Staff-инженера</h1>
-  <p>Заполни слоты котла. Не убей пациента. Сдай задачу.</p>
+  <p>Заполни слоты котла. Смотри на тип трафика. Не убей пациента.</p>
 </header>
 
 <div class="game-layout">
 
-  <!-- Левая колонка: Просьба -->
   <div>
     <div class="col-label">Просьба</div>
     <div class="card quest-card">
       <span class="quest-badge" id="quest-badge"></span>
       <div class="quest-requester" id="quest-requester"></div>
-      <div class="quest-story" id="quest-story"></div>
+      <div class="quest-story"    id="quest-story"></div>
       <div class="quest-needs">
         <strong>Что нужно зелью:</strong>
         <div id="quest-needs-list"></div>
@@ -387,7 +308,6 @@
     </div>
   </div>
 
-  <!-- Средняя колонка: Котёл -->
   <div class="cauldron-col">
     <div class="col-label">Котёл</div>
     <div class="card">
@@ -395,7 +315,7 @@
       <div class="slots-list" id="cauldron-slots"></div>
       <div id="meters"></div>
       <div class="cauldron-actions">
-        <button class="btn-brew" id="btn-brew">⚗️ Сварить зелье</button>
+        <button class="btn-brew"  id="btn-brew">⚗️ Сварить зелье</button>
         <button class="btn-reset" id="btn-reset">Сброс</button>
       </div>
     </div>
@@ -406,14 +326,13 @@
     </div>
   </div>
 
-  <!-- Правая колонка: Ингредиенты -->
   <div>
     <div class="selection-banner" id="selection-banner"></div>
     <div class="tab-bar" id="tab-bar">
-      <button class="tab-btn active" data-layer="stone">🪨 Камни <span class="tab-badge" id="badge-stone"></span></button>
-      <button class="tab-btn" data-layer="elixir">🧪 Эликсиры <span class="tab-badge" id="badge-elixir"></span></button>
-      <button class="tab-btn" data-layer="smoke">💨 Дым <span class="tab-badge" id="badge-smoke"></span></button>
-      <button class="tab-btn" data-layer="ritual">🕯️ Ритуалы <span class="tab-badge" id="badge-ritual"></span></button>
+      <button class="tab-btn active" data-layer="stone">🪨 Камни   <span class="tab-badge" id="badge-stone"></span></button>
+      <button class="tab-btn"        data-layer="elixir">🧪 Эликсиры <span class="tab-badge" id="badge-elixir"></span></button>
+      <button class="tab-btn"        data-layer="smoke">💨 Дым      <span class="tab-badge" id="badge-smoke"></span></button>
+      <button class="tab-btn"        data-layer="ritual">🕯️ Ритуалы <span class="tab-badge" id="badge-ritual"></span></button>
     </div>
     <div class="ingredients-col" id="ingredients-col"></div>
   </div>
@@ -425,23 +344,28 @@
   // ДАННЫЕ
   // =====================================================================
   //
-  // Слои: stone (периметр), elixir (внутри сервиса),
-  //       smoke (наблюдение), ritual (процессы команды)
+  // Слои: stone (периметр) | elixir (внутри сервиса) |
+  //       smoke (наблюдение) | ritual (процессы команды)
   //
   // inputType / outputType: raw | clean | any
-  //   raw   = необработанный трафик
-  //   clean = после периметровой фильтрации
-  //   any   = совместим с любым
+  //   raw   — необработанный внешний трафик
+  //   clean — после периметровой фильтрации
+  //   any   — совместим с любым
   //
-  // collateralBase: фиксированный "залп по своим" при установке в слот
+  // Камни-правило:
+  //   rate_limit: raw→raw  (лимитирует, но НЕ фильтрует — можно ставить перед другими камнями)
+  //   waf / ddos_screen: raw→clean  (полноценная фильтрация — меняет тип трафика)
+  //
+  // collateralBase — фиксированный "залп по своим" при установке в слот
 
   const INGREDIENTS = [
+    // ---- Камни (stone) — периметр ----
     {
       id: 'rate_limit', layer: 'stone',
       name: '💧 Капли Rate Limit',
-      desc: 'Ставим лимиты на запросы. Работает грубо, но надёжно. Птицы и фазаны не разбираются.',
+      desc: 'Ставим лимиты на запросы. Грубо, но надёжно. Птицы и фазаны не разбираются.',
       gold: 2, harm: 8, smooth: -5, force: 25, precision: 0,
-      inputType: 'raw', outputType: 'clean',
+      inputType: 'raw', outputType: 'raw',   // лимитирует, но не фильтрует
       collateralBase: 6
     },
     {
@@ -449,7 +373,7 @@
       name: '🛡️ Дорогой DDoS-экран',
       desc: 'Большой экран, большой счёт. Прайс-лист толще птичьей стаи.',
       gold: 12, harm: 3, smooth: -2, force: 40, precision: 0,
-      inputType: 'raw', outputType: 'clean'
+      inputType: 'raw', outputType: 'clean'  // полная очистка трафика
     },
     {
       id: 'waf_rune', layer: 'stone',
@@ -459,6 +383,7 @@
       inputType: 'raw', outputType: 'clean',
       collateralBase: 5
     },
+    // ---- Эликсиры (elixir) — внутри сервиса ----
     {
       id: 'cache_powder', layer: 'elixir',
       name: '🫙 Порошок Кеширования',
@@ -473,6 +398,7 @@
       gold: 5, harm: 2, smooth: 3, force: 0, precision: 24,
       inputType: 'any', outputType: 'any'
     },
+    // ---- Дым (smoke) — наблюдение ----
     {
       id: 'observability', layer: 'smoke',
       name: '🔭 Свиток Наблюдения',
@@ -494,6 +420,7 @@
       gold: 4, harm: 0, smooth: 6, force: 0, precision: 16,
       inputType: 'any', outputType: 'any'
     },
+    // ---- Ритуалы (ritual) — процессы команды ----
     {
       id: 'feature_flag', layer: 'ritual',
       name: '🕯️ Свеча Фиче-Флага',
@@ -504,9 +431,23 @@
     {
       id: 'canary_dust', layer: 'ritual',
       name: '🐤 Канареечная Пыль',
-      desc: '5% пользователей идут первыми. Нужен необработанный поток для разделения.',
+      desc: '5% пользователей идут первыми. Нужен необработанный поток для разделения — после фильтра не работает.',
       gold: 3, harm: -2, smooth: 10, force: 0, precision: 3,
-      inputType: 'raw', outputType: 'any'
+      inputType: 'raw', outputType: 'any'   // ← нужен raw! конфликтует с ddos_screen/waf
+    },
+    {
+      id: 'ab_test', layer: 'ritual',
+      name: '🔬 Свиток А/Б-теста',
+      desc: 'Делим пользователей на две группы. Данных больше, решений больше, споров тоже.',
+      gold: 4, harm: 0, smooth: 8, force: 0, precision: 5,
+      inputType: 'any', outputType: 'any'
+    },
+    {
+      id: 'postmortem', layer: 'ritual',
+      name: '📋 Постмортем-хроники',
+      desc: 'Разбираем что пошло не так. Не чинит сейчас, зато следующий раз будет меньше паники.',
+      gold: 1, harm: -3, smooth: 6, force: 0, precision: 0,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'reactor_dust', layer: 'ritual',
@@ -529,22 +470,21 @@
       id: 'onboarding',
       axis: 'force',
       axisLabel: '🛡️ Сила (защита от DDoS)',
-      badge: 'ddos',
-      badgeText: '🎓 Обучение',
+      badge: 'ddos', badgeText: '🎓 Обучение',
       requester: '🛒 Купец Архип',
       story: 'Архип запустил большую распродажу. Через час сервер лёг — боты скупали товары за миллисекунды. Живые покупатели видят только ошибку 503.',
       need: '«Мне нужно остановить ботов. Что-нибудь недорогое.»',
       needForce: 18, needPrecision: 0,
       harmLimit: 25, collateralLimit: 999,
       goldBudget: 12,
-      hint: '💡 С чего начать: загляни во вкладку 🪨 Камни — там инструменты для защиты периметра.',
+      hint: '💡 С чего начать: загляни во вкладку 🪨 Камни. Обрати внимание на цвет разъёмов — трафик приходит красным (raw).',
       slots: [
         { id: 's1', label: 'Защита №1', allowedLayers: ['stone'] },
         { id: 's2', label: 'Защита №2', allowedLayers: ['stone'] }
       ],
       debrief: {
-        success:  '🎉 Боты отступили! Архип продал все товары живым покупателям. Он доволен и оставил щедрый отзыв.',
-        partial:  '⚠️ Боты почти остановлены, но зелье навредило: несколько честных покупателей тоже заблокированы. Попробуй снизить вред.',
+        success:  '🎉 Боты отступили! Архип продал все товары живым покупателям. Он доволен.',
+        partial:  '⚠️ Боты почти остановлены, но зелье навредило: несколько честных покупателей заблокированы.',
         fail:     '💀 Боты проигнорировали зелье. Архип требует возврат денег.'
       }
     },
@@ -552,10 +492,9 @@
       id: 'ddos',
       axis: 'force',
       axisLabel: '🛡️ Сила (защита от DDoS)',
-      badge: 'ddos',
-      badgeText: 'DDoS-атака',
+      badge: 'ddos', badgeText: 'DDoS-атака',
       requester: '🐦 Птицелов Мирон',
-      story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Но тут прилетают вороны — тысячи ворон — и мешают сетям летать. Жертв нет, но фазаны недоступны.',
+      story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Но тут прилетают вороны — тысячи ворон — и мешают сетям летать.',
       need: '«Нужно прогнать ворон. Сеть должна дышать. Бюджет не резиновый.»',
       needForce: 25, needPrecision: 0,
       harmLimit: 18, collateralLimit: 8,
@@ -568,7 +507,7 @@
       debrief: {
         success:            '🎉 Вороны рассеялись. Фазаны пойманы. Мирон прислал корзину с перепёлками.',
         partial:            '⚠️ Вороны отступили, но зелье токсично: два фазана сбежали, команда жалуется.',
-        partial_collateral: '⚠️ Вороны прогнаны, но вместе с ними разбежались и фазаны: Rate Limit бьёт по своим.',
+        partial_collateral: '⚠️ Вороны прогнаны, но вместе с ними и фазаны: Rate Limit не разбирает своих.',
         fail:               '💀 Вороны не заметили зелья. Фазаны в панике. Мирон требует постмортем.'
       }
     },
@@ -576,11 +515,10 @@
       id: 'latency',
       axis: 'precision',
       axisLabel: '⚡ Точность (снижение латентности)',
-      badge: 'latency',
-      badgeText: 'Высокая латентность',
+      badge: 'latency', badgeText: 'Высокая латентность',
       requester: '🏹 Иван-царевич',
-      story: 'Иван шлёт стрелы-письма царевне-лягушке. Стрелы летят... и зависают в воздухе на p99. Царевна думает, Иван молчит. Отношения под угрозой.',
-      need: '«Стрелы должны долетать быстро. P95 важнее P50. Зелье не должно навредить стреле.»',
+      story: 'Иван шлёт стрелы-письма царевне-лягушке. Стрелы летят... и зависают в воздухе на p99. Царевна думает, Иван молчит.',
+      need: '«Стрелы должны долетать быстро. P95 важнее P50.»',
       needForce: 0, needPrecision: 25,
       harmLimit: 15, collateralLimit: 8,
       goldBudget: 20,
@@ -592,8 +530,8 @@
       ],
       debrief: {
         success:            '🎉 Стрелы долетают моментально. Царевна получила письмо. Свадьба назначена.',
-        partial:            '⚠️ Стрелы долетели, но зелье дало побочку: у стрел облезло оперение. Тёща недовольна.',
-        partial_collateral: '⚠️ Зелье сработало, но Rate Limit задержал каждую вторую стрелу. Царевна сомневается.',
+        partial:            '⚠️ Стрелы долетели, но зелье дало побочку: у стрел облезло оперение.',
+        partial_collateral: '⚠️ Зелье сработало, но Rate Limit задержал каждую вторую стрелу.',
         fail:               '💀 Стрелы всё ещё висят в воздухе. Царевна ушла в другой дата-центр.',
         force_debrief:      'Стрелы застряли не в очереди — их перехватывали вороны. Ты налил Силы в задачу на Точность.',
         precision_debrief:  'Стрелы стояли в очереди у ворот тайм-аута. Правильное зелье, правильная причина.'
@@ -606,16 +544,16 @@
   // =====================================================================
 
   let currentScenarioIdx = 0;
-  let slotFills   = {};   // { slotId: ingredientId | null }
-  let activeSlotId = null; // слот в режиме выбора ингредиента
+  let slotFills    = {};    // { slotId: ingredientId | null }
+  let activeSlotId = null;
   let currentLayer = 'stone';
-  let wasteIds = new Set();
+  let wasteIds     = new Set();
 
   function currentScenario() { return SCENARIOS[currentScenarioIdx]; }
-  function ingById(id)        { return INGREDIENTS.find(i => i.id === id) || null; }
+  function ingById(id)       { return id ? INGREDIENTS.find(i => i.id === id) || null : null; }
 
   // =====================================================================
-  // МЕХАНИКА: совместимость разъёмов
+  // МЕХАНИКА
   // =====================================================================
 
   function isCompatible(outType, inType) {
@@ -624,26 +562,16 @@
     return outType === inType;
   }
 
-  // =====================================================================
-  // ВЫЧИСЛЕНИЯ
-  // =====================================================================
-
   function calcStats() {
     const sc = currentScenario();
     let totalGold = 0, totalHarm = 0, totalSmooth = 0,
         rawForce = 0, rawPrecision = 0, totalCollateral = 0;
 
-    // Строим массив (slot, ing | null) в порядке слотов
-    const filled = sc.slots.map(slot => ({
-      slot,
-      ing: ingById(slotFills[slot.id])
-    }));
+    const filled = sc.slots.map(slot => ({ slot, ing: ingById(slotFills[slot.id]) }));
 
-    // Определяем слоты с конфликтом разъёмов (соседние)
     const penaltySlotIds = new Set();
     for (let i = 0; i < filled.length - 1; i++) {
-      const a = filled[i].ing;
-      const b = filled[i + 1].ing;
+      const a = filled[i].ing, b = filled[i + 1].ing;
       if (a && b && !isCompatible(a.outputType, b.inputType)) {
         penaltySlotIds.add(filled[i].slot.id);
         penaltySlotIds.add(filled[i + 1].slot.id);
@@ -656,22 +584,19 @@
       totalHarm   += ing.harm;
       totalSmooth += ing.smooth;
       if (ing.collateralBase) totalCollateral += ing.collateralBase;
-      const penalty = penaltySlotIds.has(slot.id) ? 0.7 : 1.0;
-      rawForce     += ing.force     * penalty;
-      rawPrecision += ing.precision * penalty;
+      const p = penaltySlotIds.has(slot.id) ? 0.7 : 1.0;
+      rawForce     += ing.force     * p;
+      rawPrecision += ing.precision * p;
     });
 
     const adoption = Math.min(100, Math.max(0, 60 + totalSmooth));
     const factor   = 0.3 + 0.7 * adoption / 100;
-
     return {
       totalGold, totalHarm, totalSmooth, adoption,
       rawForce, rawPrecision,
       effectiveForce:     rawForce     * factor,
       effectivePrecision: rawPrecision * factor,
-      totalCollateral,
-      penaltySlotIds,
-      filled
+      totalCollateral, penaltySlotIds, filled
     };
   }
 
@@ -686,9 +611,9 @@
   }
 
   function calcWaste(stats) {
-    const sc        = currentScenario();
-    const need      = sc.axis === 'force' ? sc.needForce : sc.needPrecision;
-    const threshold = need * 0.10;
+    const sc = currentScenario();
+    const need = sc.axis === 'force' ? sc.needForce : sc.needPrecision;
+    const threshold = need * 0.1;
     const ids = new Set();
     stats.filled.forEach(({ ing }) => {
       if (!ing) return;
@@ -699,7 +624,7 @@
   }
 
   // =====================================================================
-  // РЕНДЕР: карточка просьбы
+  // РЕНДЕР: просьба
   // =====================================================================
 
   function renderQuest() {
@@ -712,8 +637,7 @@
     document.getElementById('quest-story').textContent     = sc.story;
 
     const collRow = sc.collateralLimit < 999
-      ? `<div class="quest-need-row"><span>Залп по своим</span><span>≤ ${sc.collateralLimit}</span></div>`
-      : '';
+      ? `<div class="quest-need-row"><span>Залп по своим</span><span>≤ ${sc.collateralLimit}</span></div>` : '';
 
     document.getElementById('quest-needs-list').innerHTML = `
       <div class="quest-need-row"><span>Нужная ось</span><span>${sc.axisLabel}</span></div>
@@ -725,12 +649,8 @@
     `;
 
     const hintEl = document.getElementById('quest-hint');
-    if (sc.hint) {
-      hintEl.textContent = sc.hint;
-      hintEl.classList.add('visible');
-    } else {
-      hintEl.classList.remove('visible');
-    }
+    hintEl.textContent = sc.hint || '';
+    hintEl.classList.toggle('visible', !!sc.hint);
   }
 
   // =====================================================================
@@ -742,13 +662,12 @@
     const pct = Math.min(100, stats.totalGold / sc.goldBudget * 100);
     const cls = stats.totalGold > sc.goldBudget ? 'over'
               : stats.totalGold >= sc.goldBudget * 0.85 ? 'warn' : '';
-
     document.getElementById('gold-display').innerHTML = `
       <div class="gold-bar-label">
         <span>💰 Золото</span>
         <span class="gold-val ${cls}">${stats.totalGold} / ${sc.goldBudget}</span>
       </div>
-      <div class="meter-track">
+      <div class="meter-track" style="margin-bottom:14px">
         <div class="meter-fill gold" style="width:${pct}%"></div>
         <div class="meter-limit-line" style="left:100%"></div>
       </div>
@@ -759,41 +678,56 @@
   // РЕНДЕР: слоты котла
   // =====================================================================
 
+  function connBarHtml(type, side, label) {
+    const t = type || 'empty';
+    const lbl = { raw: 'raw', clean: 'clean', any: 'any', empty: '' }[t] || '';
+    const dirLabel = side === 'top' ? `← ${lbl}` : `${lbl} →`;
+    return `<div class="conn-bar ${t} ${side}"><span class="conn-bar-label">${lbl ? dirLabel : ''}</span></div>`;
+  }
+
   function renderSlots(stats) {
     const sc        = currentScenario();
     const container = document.getElementById('cauldron-slots');
     const LAYER_ICON = { stone: '🪨', elixir: '🧪', smoke: '💨', ritual: '🕯️' };
-    const CONN_LABEL  = { raw: 'raw', clean: 'clean', any: 'any' };
 
     let html = '';
+
+    // Источник трафика
+    html += `
+      <div class="chain-source">
+        🌐 <strong>Интернет</strong>
+        <span class="source-pill">raw</span>
+      </div>
+      <div class="slot-bridge">
+        <span class="bridge-icon" style="color:var(--raw-fg)">↓ raw</span>
+      </div>`;
+
     sc.slots.forEach((slot, idx) => {
-      const ing       = ingById(slotFills[slot.id]);
-      const isActive  = activeSlotId === slot.id;
+      const ing        = ingById(slotFills[slot.id]);
+      const isActive   = activeSlotId === slot.id;
       const isConflict = stats.penaltySlotIds.has(slot.id);
-      const isWaste   = ing && wasteIds.has(ing.id);
-      const layerHint = slot.allowedLayers.map(l => LAYER_ICON[l]).join('/');
+      const isWaste    = ing && wasteIds.has(ing.id);
+      const layerHint  = slot.allowedLayers.map(l => LAYER_ICON[l]).join('/');
 
       let cardCls = 'slot-card';
-      if (isActive)   cardCls += ' active';
-      if (ing && !isConflict && !isWaste) cardCls += ' filled';
-      if (isConflict) cardCls += ' conflict';
-      if (isWaste)    cardCls += ' waste';
+      if (isActive)    cardCls += ' active';
+      else if (isConflict) cardCls += ' conflict';
+      else if (isWaste)    cardCls += ' waste';
+      else if (ing)        cardCls += ' filled';
 
-      const inDot  = ing ? `<div class="conn-dot ${ing.inputType}"  title="Вход: ${CONN_LABEL[ing.inputType]}"></div>`  : `<div class="conn-dot empty"></div>`;
-      const outDot = ing ? `<div class="conn-dot ${ing.outputType}" title="Выход: ${CONN_LABEL[ing.outputType]}"></div>` : `<div class="conn-dot empty"></div>`;
+      const topType    = ing ? ing.inputType  : 'empty';
+      const bottomType = ing ? ing.outputType : 'empty';
 
-      const clearBtn = ing ? `<button class="slot-clear" data-slot="${slot.id}" title="Убрать">×</button>` : '';
+      const clearBtn = ing
+        ? `<button class="slot-clear" data-slot="${slot.id}" title="Убрать">×</button>` : '';
 
-      const conflictWarn = isConflict ? `<div class="slot-conflict-warn">⚡ Конфликт разъёмов −30% мощи</div>` : '';
-      const wasteWarn    = isWaste    ? `<div class="slot-waste-warn">⚠️ Лишний — почти не влияет на нужную ось</div>` : '';
+      const conflictWarn = isConflict ? `<div class="slot-conflict-warn">⚡ Конфликт разъёмов − 30% мощи</div>` : '';
+      const wasteWarn    = isWaste    ? `<div class="slot-waste-warn">⚠️ Лишний — не влияет на нужную ось</div>` : '';
 
       html += `
         <div class="${cardCls}" data-slot="${slot.id}">
+          ${connBarHtml(topType, 'top', 'вход')}
           <div class="slot-inner">
-            <div class="slot-connectors" title="Вход/Выход">
-              ${inDot}
-              ${outDot}
-            </div>
             <div class="slot-body">
               <div class="slot-label-row">
                 <span class="slot-label">${slot.label}</span>
@@ -801,20 +735,17 @@
               </div>
               ${ing
                 ? `<div class="slot-ingredient">${ing.name}</div>`
-                : `<div class="slot-empty-text">${isActive ? '← выбери ингредиент справа' : 'нажми чтобы выбрать'}</div>`
-              }
-              ${conflictWarn}
-              ${wasteWarn}
+                : `<div class="slot-empty-text">${isActive ? '← выбери ингредиент справа' : 'нажми чтобы выбрать'}</div>`}
+              ${conflictWarn}${wasteWarn}
             </div>
             ${clearBtn}
           </div>
+          ${connBarHtml(bottomType, 'bottom', 'выход')}
         </div>`;
 
-      // Мостик между слотами
       if (idx < sc.slots.length - 1) {
         const nextIng = ingById(slotFills[sc.slots[idx + 1].id]);
-        let bridgeCls     = 'slot-bridge';
-        let bridgeContent = '<span class="bridge-icon">↓</span>';
+        let bridgeCls = 'slot-bridge', bridgeContent = '<span class="bridge-icon">↓</span>';
         if (ing && nextIng) {
           const ok = isCompatible(ing.outputType, nextIng.inputType);
           bridgeCls    += ok ? ' ok' : ' bad';
@@ -828,7 +759,6 @@
 
     container.innerHTML = html;
 
-    // События на слоты
     container.querySelectorAll('.slot-card').forEach(card => {
       card.addEventListener('click', e => {
         if (e.target.closest('.slot-clear')) return;
@@ -837,7 +767,6 @@
           activeSlotId = null;
         } else {
           activeSlotId = slotId;
-          // Автопереключение на первый доступный слой
           const slot = currentScenario().slots.find(s => s.id === slotId);
           if (slot && !slot.allowedLayers.includes(currentLayer)) {
             currentLayer = slot.allowedLayers[0];
@@ -866,7 +795,6 @@
   function renderMeters(stats) {
     const sc = currentScenario();
     const maxHarm = 40, maxPower = 120, maxColl = 30;
-
     const harmPct  = Math.min(100, Math.max(0, stats.totalHarm / maxHarm * 100));
     const harmLim  = sc.harmLimit / maxHarm * 100;
     const adoptPct = stats.adoption;
@@ -916,40 +844,35 @@
   }
 
   // =====================================================================
-  // РЕНДЕР: панель ингредиентов
+  // РЕНДЕР: ингредиенты
   // =====================================================================
 
   function renderIngredients(stats) {
-    const sc = currentScenario();
+    const sc  = currentScenario();
     const col = document.getElementById('ingredients-col');
 
-    const pickingSlot    = activeSlotId ? sc.slots.find(s => s.id === activeSlotId) : null;
-    const allowedLayers  = pickingSlot ? pickingSlot.allowedLayers : null;
-    const inUseIds       = new Set(Object.values(slotFills).filter(Boolean));
+    const pickingSlot   = activeSlotId ? sc.slots.find(s => s.id === activeSlotId) : null;
+    const allowedLayers = pickingSlot ? pickingSlot.allowedLayers : null;
+    const inUseIds      = new Set(Object.values(slotFills).filter(Boolean));
 
-    // Баннер выбора
+    // Баннер
     const bannerEl = document.getElementById('selection-banner');
     if (pickingSlot) {
-      const LAYER_NAME = { stone: '🪨 Камни', elixir: '🧪 Эликсиры', smoke: '💨 Дым', ritual: '🕯️ Ритуалы' };
-      bannerEl.innerHTML = `🎯 Выбираешь для: <strong>«${pickingSlot.label}»</strong> — ${pickingSlot.allowedLayers.map(l => LAYER_NAME[l]).join(' или ')}`;
+      const LN = { stone: '🪨 Камни', elixir: '🧪 Эликсиры', smoke: '💨 Дым', ritual: '🕯️ Ритуалы' };
+      bannerEl.innerHTML = `🎯 Выбираешь для: <strong>«${pickingSlot.label}»</strong> — ${pickingSlot.allowedLayers.map(l => LN[l]).join(' или ')}`;
       bannerEl.classList.add('visible');
     } else {
       bannerEl.classList.remove('visible');
     }
 
-    // Вкладки: подсветка / затемнение
+    // Вкладки
     document.querySelectorAll('.tab-btn').forEach(btn => {
       const layer = btn.dataset.layer;
-      if (allowedLayers) {
-        btn.classList.toggle('tab-dimmed', !allowedLayers.includes(layer));
-      } else {
-        btn.classList.remove('tab-dimmed');
-      }
+      btn.classList.toggle('tab-dimmed', !!(allowedLayers && !allowedLayers.includes(layer)));
     });
 
     col.innerHTML = '';
 
-    // Подсказка в режиме просмотра
     if (!pickingSlot) {
       const hint = document.createElement('div');
       hint.className = 'browse-hint';
@@ -957,66 +880,57 @@
       col.appendChild(hint);
     }
 
-    const visibleIngs = INGREDIENTS.filter(ing => {
-      if (ing.layer !== currentLayer) return false;
-      if (allowedLayers && !allowedLayers.includes(ing.layer)) return false;
-      return true;
-    });
+    INGREDIENTS
+      .filter(ing => ing.layer === currentLayer)
+      .filter(ing => !allowedLayers || allowedLayers.includes(ing.layer))
+      .forEach(ing => {
+        const isInUseElsewhere = inUseIds.has(ing.id) && slotFills[activeSlotId] !== ing.id;
+        const curCost    = ingById(slotFills[activeSlotId])?.gold || 0;
+        const canAfford  = !pickingSlot || (stats.totalGold - curCost + ing.gold <= sc.goldBudget);
+        const isDisabled = !!(pickingSlot && (isInUseElsewhere || !canAfford));
+        const isInSlot   = inUseIds.has(ing.id);
+        const isWaste    = wasteIds.has(ing.id);
 
-    visibleIngs.forEach(ing => {
-      const isInUseElsewhere = inUseIds.has(ing.id) && slotFills[activeSlotId] !== ing.id;
-      const currentSlotIngCost = slotFills[activeSlotId] ? (ingById(slotFills[activeSlotId])?.gold || 0) : 0;
-      const canAfford = !pickingSlot || (stats.totalGold - currentSlotIngCost + ing.gold <= sc.goldBudget);
-      const isDisabled = pickingSlot && (isInUseElsewhere || !canAfford);
-      const isCurrentlyInSlot = Object.values(slotFills).includes(ing.id);
-      const isWaste = wasteIds.has(ing.id);
+        let cardCls = 'ingredient-card';
+        if (isInSlot && !pickingSlot) cardCls += ' in-use';
+        if (isWaste  && isInSlot)     cardCls += ' waste';
+        if (isDisabled)  cardCls += ' disabled';
+        else if (pickingSlot) cardCls += ' selectable';
 
-      let cardCls = 'ingredient-card';
-      if (isCurrentlyInSlot && !pickingSlot) cardCls += ' in-use';
-      if (isWaste && isCurrentlyInSlot)      cardCls += ' waste';
-      if (isDisabled)  cardCls += ' disabled';
-      else if (pickingSlot) cardCls += ' selectable';
+        const tags = [];
+        if (ing.force > 0)      tags.push(`<span class="param-tag force">🛡️ +${ing.force}</span>`);
+        if (ing.precision > 0)  tags.push(`<span class="param-tag precision">⚡ +${ing.precision}</span>`);
+        if (ing.harm > 0)       tags.push(`<span class="param-tag harm">☠️ вред +${ing.harm}</span>`);
+        if (ing.harm < 0)       tags.push(`<span class="param-tag smooth">🌿 вред ${ing.harm}</span>`);
+        if (ing.smooth > 0)     tags.push(`<span class="param-tag smooth">💚 +${ing.smooth}</span>`);
+        if (ing.smooth < 0)     tags.push(`<span class="param-tag smoothbad">💚 ${ing.smooth}</span>`);
+        tags.push(`<span class="param-tag gold">💰 ${ing.gold}</span>`);
+        if (ing.collateralBase) tags.push(`<span class="param-tag collateral">🎯 залп +${ing.collateralBase}</span>`);
 
-      const tags = [];
-      if (ing.force > 0)       tags.push(`<span class="param-tag force">🛡️ +${ing.force}</span>`);
-      if (ing.precision > 0)   tags.push(`<span class="param-tag precision">⚡ +${ing.precision}</span>`);
-      if (ing.harm > 0)        tags.push(`<span class="param-tag harm">☠️ вред +${ing.harm}</span>`);
-      if (ing.harm < 0)        tags.push(`<span class="param-tag smooth">🌿 вред ${ing.harm}</span>`);
-      if (ing.smooth > 0)      tags.push(`<span class="param-tag smooth">💚 +${ing.smooth}</span>`);
-      if (ing.smooth < 0)      tags.push(`<span class="param-tag smoothbad">💚 ${ing.smooth}</span>`);
-      tags.push(`<span class="param-tag gold">💰 ${ing.gold}</span>`);
-      if (ing.collateralBase)  tags.push(`<span class="param-tag collateral">🎯 залп +${ing.collateralBase}</span>`);
-      const connIn  = { raw: '🔴', clean: '🟢', any: '⚪' };
-      const connOut = { raw: '🔴', clean: '🟢', any: '⚪' };
-      tags.push(`<span class="param-tag connector" title="Вход → Выход">${connIn[ing.inputType]}→${connOut[ing.outputType]}</span>`);
+        let actionHtml = '';
+        if (pickingSlot && !isDisabled)   actionHtml = `<button class="btn-pick" data-ing="${ing.id}">Взять</button>`;
+        else if (isDisabled && !canAfford) actionHtml = `<span class="disabled-reason">Дорого</span>`;
+        else if (isDisabled)               actionHtml = `<span class="disabled-reason">Уже в котле</span>`;
+        else if (isInSlot && !pickingSlot) actionHtml = `<span class="in-use-badge">✓ В котле</span>`;
 
-      let actionHtml = '';
-      if (pickingSlot && !isDisabled) {
-        actionHtml = `<button class="btn-pick" data-ing="${ing.id}">Взять</button>`;
-      } else if (isDisabled && !canAfford) {
-        actionHtml = `<span class="disabled-reason">Дорого</span>`;
-      } else if (isDisabled && isInUseElsewhere) {
-        actionHtml = `<span class="disabled-reason">Уже в котле</span>`;
-      } else if (isCurrentlyInSlot && !pickingSlot) {
-        actionHtml = `<span class="in-use-badge">✓ В котле</span>`;
-      }
+        const div = document.createElement('div');
+        div.className  = cardCls;
+        div.dataset.id = ing.id;
+        div.innerHTML  = `
+          ${connBarHtml(ing.inputType, 'top', 'вход')}
+          <div class="ing-content">
+            <div class="ing-header">
+              <span class="ing-name">${ing.name}</span>
+              ${actionHtml}
+            </div>
+            <div class="ing-desc">${ing.desc}</div>
+            <div class="ing-params">${tags.join('')}</div>
+            <div class="waste-badge">⚠️ Лишний — вклад в нужную ось меньше 10%</div>
+          </div>
+          ${connBarHtml(ing.outputType, 'bottom', 'выход')}`;
+        col.appendChild(div);
+      });
 
-      const div = document.createElement('div');
-      div.className  = cardCls;
-      div.dataset.id = ing.id;
-      div.innerHTML  = `
-        <div class="ing-header">
-          <span class="ing-name">${ing.name}</span>
-          ${actionHtml}
-        </div>
-        <div class="ing-desc">${ing.desc}</div>
-        <div class="ing-params">${tags.join('')}</div>
-        <div class="waste-badge">⚠️ Лишний — вклад в нужную ось меньше 10%</div>
-      `;
-      col.appendChild(div);
-    });
-
-    // События «Взять»
     col.querySelectorAll('.btn-pick').forEach(btn => {
       btn.addEventListener('click', () => {
         slotFills[activeSlotId] = btn.dataset.ing;
@@ -1025,7 +939,6 @@
       });
     });
 
-    // Клик по карточке в режиме выбора
     col.querySelectorAll('.ingredient-card.selectable').forEach(card => {
       card.addEventListener('click', e => {
         if (e.target.closest('.btn-pick')) return;
@@ -1039,7 +952,7 @@
   }
 
   // =====================================================================
-  // РЕНДЕР: бейджи вкладок
+  // ВСПОМОГАТЕЛЬНЫЕ
   // =====================================================================
 
   function updateTabBadges() {
@@ -1053,60 +966,44 @@
     });
   }
 
-  // Синхронизирует активную вкладку с currentLayer
   function syncTabBar() {
     document.querySelectorAll('.tab-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.layer === currentLayer);
     });
   }
 
-  // =====================================================================
-  // РЕЗУЛЬТАТ
-  // =====================================================================
-
-  function hideResult() {
-    document.getElementById('result-panel').className = 'result-panel';
-  }
+  function hideResult() { document.getElementById('result-panel').className = 'result-panel'; }
 
   function showResult(stats) {
-    const result  = calcResult(stats);
-    const sc      = currentScenario();
-    const panel   = document.getElementById('result-panel');
+    const result   = calcResult(stats);
+    const sc       = currentScenario();
+    const panel    = document.getElementById('result-panel');
     const cssClass = result.startsWith('partial') ? 'partial' : result;
-
     panel.className = `result-panel show ${cssClass}`;
 
     const titles = {
-      success:            '✅ Зелье сварено удачно!',
-      partial:            '⚠️ Сработало, но с побочками',
-      partial_collateral: '⚠️ Сработало, но задело своих',
-      fail:               '💀 Зелье не помогло'
+      success: '✅ Зелье сварено удачно!', fail: '💀 Зелье не помогло',
+      partial: '⚠️ Сработало, но с побочками',
+      partial_collateral: '⚠️ Сработало, но задело своих'
     };
     document.getElementById('result-title').textContent = titles[result];
 
     let text = sc.debrief[result] || sc.debrief.partial || '';
-
     if (sc.id === 'latency' && result !== 'fail') {
-      const forceSum = stats.filled
-        .filter(({ ing }) => ing && ing.force > 5)
-        .reduce((s, { ing }) => s + ing.force, 0);
-      const precSum = stats.filled
-        .filter(({ ing }) => ing && ing.precision > 5)
-        .reduce((s, { ing }) => s + ing.precision, 0);
-      const extra = forceSum > precSum ? sc.debrief.force_debrief : sc.debrief.precision_debrief;
+      const fSum = stats.filled.filter(({ ing }) => ing && ing.force > 5).reduce((s, { ing }) => s + ing.force, 0);
+      const pSum = stats.filled.filter(({ ing }) => ing && ing.precision > 5).reduce((s, { ing }) => s + ing.precision, 0);
+      const extra = fSum > pSum ? sc.debrief.force_debrief : sc.debrief.precision_debrief;
       if (extra) text += ' ' + extra;
     }
-
     document.getElementById('result-text').textContent = text;
 
-    // Предупреждение о разъёмах
     let extrasHtml = '';
     if (stats.penaltySlotIds.size > 0) {
-      extrasHtml += `<div style="margin-bottom:6px"><strong>⚡ Несовместимые разъёмы:</strong> часть мощи потеряна — ингредиенты не договорились о типе трафика.</div>`;
+      extrasHtml += `<div><strong>⚡ Конфликт разъёмов:</strong> часть мощи потеряна — ингредиенты не договорились о типе трафика.</div>`;
     }
     const wastes = stats.filled.filter(({ ing }) => ing && wasteIds.has(ing.id)).map(({ ing }) => ing.name);
     if (wastes.length > 0) {
-      extrasHtml += `<div><strong>🗑️ Лишнее:</strong> ${wastes.join(', ')} — вклад в нужную ось меньше 10%.</div>`;
+      extrasHtml += `<div><strong>🗑️ Лишнее:</strong> ${wastes.join(', ')} — вклад меньше 10% от нужной оси.</div>`;
     }
     document.getElementById('result-extras').innerHTML = extrasHtml;
   }
@@ -1122,13 +1019,11 @@
     renderSlots(stats);
     renderMeters(stats);
     if (rerender) renderIngredients(stats);
-    else          updateTabBadges();
+    else updateTabBadges();
   }
 
   function resetCauldron() {
-    slotFills    = {};
-    activeSlotId = null;
-    wasteIds     = new Set();
+    slotFills = {}; activeSlotId = null; wasteIds = new Set();
     hideResult();
     updateUI(true);
   }
@@ -1138,7 +1033,7 @@
   // =====================================================================
 
   document.getElementById('btn-brew').addEventListener('click', () => {
-    const stats  = calcStats();
+    const stats   = calcStats();
     const brewBtn = document.getElementById('btn-brew');
     brewBtn.textContent = '🌀 Варится...';
     brewBtn.disabled = true;
