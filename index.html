@@ -18,511 +18,198 @@
   --warn: #d29922;
   --gold-color: #f0a030;
   --radius: 10px;
+  --domain-web:   #5a9ef8;
+  --domain-db:    #e07840;
+  --domain-infra: #3fc87a;
+  --domain-glass: #b08af7;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-header h1 { font-size: 1.1rem; font-weight: 700; }
-header .sub { font-size: .8rem; color: var(--muted); }
-.scenario-switcher {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: .82rem;
-  transition: background .15s, border-color .15s;
-}
-.btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  font-weight: 600;
-}
-.btn.primary:hover { opacity: .85; }
-.btn.danger { border-color: var(--danger); color: var(--danger); }
-.btn.danger:hover { background: var(--danger); color: #fff; }
-.scenario-idx { font-size: .8rem; color: var(--muted); }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; flex-direction:column; }
 
-main {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 280px 1fr 320px;
-  gap: 0;
-  overflow: hidden;
+header {
+  background:var(--surface); border-bottom:1px solid var(--border);
+  padding:10px 20px; display:flex; align-items:center; gap:14px;
 }
-.col {
-  padding: 16px;
-  overflow-y: auto;
-  height: calc(100vh - 54px);
+header h1 { font-size:1.05rem; font-weight:700; }
+header .sub { font-size:.78rem; color:var(--muted); }
+.scenario-switcher { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.scenario-idx { font-size:.8rem; color:var(--muted); }
+
+.btn {
+  background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  padding:6px 14px; border-radius:6px; cursor:pointer; font-size:.82rem;
+  transition:background .15s,border-color .15s;
 }
-.col-left { border-right: 1px solid var(--border); }
-.col-right { border-left: 1px solid var(--border); }
+.btn:hover { background:var(--accent); border-color:var(--accent); color:#fff; }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+.btn.primary:hover { opacity:.85; }
+.btn.danger { border-color:var(--danger); color:var(--danger); }
+.btn.danger:hover { background:var(--danger); color:#fff; }
+.btn.sm { padding:3px 9px; font-size:.76rem; }
+
+main { flex:1; display:grid; grid-template-columns:280px 1fr 320px; overflow:hidden; }
+.col { padding:14px; overflow-y:auto; height:calc(100vh - 48px); }
+.col-left  { border-right:1px solid var(--border); }
+.col-right { border-left:1px solid var(--border); }
 
 /* Quest card */
-.quest-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
-  margin-bottom: 14px;
-}
-.quest-badge {
-  display: inline-block;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 2px 8px;
-  font-size: .72rem;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.quest-requester { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
-.quest-story { font-size: .82rem; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
-.quest-need {
-  background: var(--surface2);
-  border-left: 3px solid var(--accent);
-  padding: 8px 10px;
-  border-radius: 4px;
-  font-size: .82rem;
-  font-style: italic;
-  margin-bottom: 10px;
-}
-.quest-hint {
-  background: rgba(124,106,247,.1);
-  border: 1px solid rgba(124,106,247,.3);
-  border-radius: 6px;
-  padding: 7px 10px;
-  font-size: .78rem;
-  color: #a99ef7;
-  line-height: 1.4;
-}
-.requires-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.require-chip {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: .78rem;
-  font-weight: 700;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-.require-chip.met { border-color: var(--success); color: var(--success); }
-.require-chip.unmet { border-color: var(--danger); color: var(--danger); }
+.quest-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px; margin-bottom:12px; }
+.quest-badge { display:inline-block; background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:2px 8px; font-size:.7rem; color:var(--muted); margin-bottom:6px; }
+.quest-requester { font-size:.98rem; font-weight:700; margin-bottom:5px; }
+.quest-story { font-size:.8rem; color:var(--muted); line-height:1.5; margin-bottom:8px; }
+.quest-need { background:var(--surface2); border-left:3px solid var(--accent); padding:7px 10px; border-radius:4px; font-size:.8rem; font-style:italic; margin-bottom:8px; }
+.quest-hint { background:rgba(124,106,247,.1); border:1px solid rgba(124,106,247,.3); border-radius:6px; padding:6px 10px; font-size:.76rem; color:#a99ef7; line-height:1.4; }
+.target-badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.target-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:12px; font-size:.72rem; font-weight:700; background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+.target-badge.fragile  { border-color:var(--danger); color:var(--danger); }
+.target-badge.stubborn { border-color:var(--warn);   color:var(--warn);   }
+.requires-row { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.require-chip { display:flex; align-items:center; gap:3px; padding:3px 9px; border-radius:20px; font-size:.75rem; font-weight:700; background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+.require-chip.met   { border-color:var(--success); color:var(--success); }
+.require-chip.unmet { border-color:var(--danger);  color:var(--danger);  }
 
 /* Cauldron */
-.cauldron-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.cauldron-title { font-weight: 700; font-size: .95rem; }
-.gold-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(240,160,48,.12);
-  border: 1px solid rgba(240,160,48,.4);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: .82rem;
-  font-weight: 700;
-  color: var(--gold-color);
-}
-.gold-badge.over { border-color: var(--danger); color: var(--danger); background: rgba(248,81,73,.12); }
+.cauldron-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.cauldron-title { font-weight:700; font-size:.92rem; }
+.gold-badge { display:flex; align-items:center; gap:4px; background:rgba(240,160,48,.12); border:1px solid rgba(240,160,48,.4); border-radius:20px; padding:3px 10px; font-size:.8rem; font-weight:700; color:var(--gold-color); }
+.gold-badge.over { border-color:var(--danger); color:var(--danger); background:rgba(248,81,73,.12); }
 
-.slots-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 14px;
+/* Slot groups */
+.slot-groups-wrapper { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+.slot-group { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.slot-group.locked { opacity:.35; pointer-events:none; }
+.slot-group-header {
+  display:flex; align-items:center; gap:6px;
+  padding:6px 10px; background:var(--surface2);
+  border-bottom:1px solid var(--border); font-size:.78rem;
 }
+.slot-group-header .gh-icon { font-size:.9rem; }
+.slot-group-header .gh-label { font-weight:700; flex:1; }
+.slot-group-header .gh-meta  { color:var(--muted); font-size:.7rem; }
+.slot-group-header .gh-add {
+  background:none; border:1px dashed var(--border); color:var(--muted);
+  border-radius:5px; padding:1px 7px; cursor:pointer; font-size:.75rem;
+  transition:all .15s;
+}
+.slot-group-header .gh-add:hover { border-color:var(--accent); color:var(--accent); }
+.slot-group-body { display:flex; flex-wrap:wrap; gap:8px; padding:8px; }
+.slot-group-locked-msg { padding:8px 10px; font-size:.75rem; color:var(--muted); }
 
 .slot-card {
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-  transition: border-color .18s, opacity .18s;
-  min-height: 80px;
-  position: relative;
+  flex:1; min-width:130px; max-width:200px;
+  border:1.5px solid var(--border); border-radius:8px; overflow:hidden;
+  cursor:pointer; transition:border-color .18s; position:relative; min-height:70px;
 }
-.slot-card:hover:not(.locked):not(.active-target) { border-color: var(--accent); }
-.slot-card.locked {
-  opacity: 0.35;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-.slot-card.active-target {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(124,106,247,.25);
-}
-.slot-card.filled { border-color: var(--border); }
-.slot-card.filled:hover:not(.locked) { border-color: #5a9ef8; }
-
-.slot-header {
-  background: var(--surface2);
-  padding: 5px 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: .72rem;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-}
-.slot-header .slot-icon { font-size: .9rem; }
-.slot-header .slot-label { font-weight: 600; flex: 1; }
-.slot-header .slot-layers { font-size: .66rem; opacity: .7; }
-.slot-lock { font-size: 1rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: .5; }
-
-.slot-body {
-  padding: 7px 8px;
-  min-height: 52px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.slot-empty {
-  font-size: .76rem;
-  color: var(--muted);
-  text-align: center;
-}
-.slot-ing-name {
-  font-size: .8rem;
-  font-weight: 600;
-  margin-bottom: 3px;
-  line-height: 1.3;
-}
-.slot-ing-effects {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-}
+.slot-card:hover:not(.locked-slot) { border-color:var(--accent); }
+.slot-card.active-target { border-color:var(--accent); box-shadow:0 0 0 2px rgba(124,106,247,.25); }
+.slot-card.filled:hover:not(.locked-slot) { border-color:#5a9ef8; }
+.slot-card.locked-slot { opacity:.3; cursor:not-allowed; pointer-events:none; }
+.slot-header { background:var(--surface2); padding:4px 8px; display:flex; align-items:center; gap:4px; font-size:.7rem; color:var(--muted); border-bottom:1px solid var(--border); }
+.slot-header .sh-label { flex:1; font-weight:600; font-size:.68rem; }
+.slot-body { padding:6px 8px; min-height:48px; display:flex; flex-direction:column; justify-content:center; }
+.slot-empty { font-size:.72rem; color:var(--muted); text-align:center; }
+.slot-ing-name { font-size:.76rem; font-weight:600; margin-bottom:3px; line-height:1.3; }
+.slot-ing-effects { display:flex; flex-wrap:wrap; gap:2px; }
 .slot-ing-remove {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: .8rem;
-  line-height: 1;
-  padding: 2px 4px;
-  border-radius: 4px;
+  position:absolute; top:4px; right:5px; background:none; border:none;
+  color:var(--muted); cursor:pointer; font-size:.75rem; padding:1px 3px; border-radius:3px;
 }
-.slot-ing-remove:hover { color: var(--danger); background: rgba(248,81,73,.12); }
+.slot-ing-remove:hover { color:var(--danger); background:rgba(248,81,73,.12); }
+
+/* Domain colors */
+.dom-web   { color:var(--domain-web);   border-color:var(--domain-web)!important; }
+.dom-db    { color:var(--domain-db);    border-color:var(--domain-db)!important; }
+.dom-infra { color:var(--domain-infra); border-color:var(--domain-infra)!important; }
+.dom-glass { color:var(--domain-glass); border-color:var(--domain-glass)!important; }
 
 /* Effect chips */
-.effect-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 1px 6px;
-  border-radius: 12px;
-  font-size: .7rem;
-  font-weight: 700;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-.effect-chip.shield    { border-color: #5a9ef8; color: #5a9ef8; }
-.effect-chip.speed     { border-color: #f0c040; color: #f0c040; }
-.effect-chip.insight   { border-color: #b08af7; color: #b08af7; }
-.effect-chip.rollout   { border-color: #3fb950; color: #3fb950; }
-.effect-chip.contract  { border-color: #f09050; color: #f09050; }
-.effect-chip.simplicity{ border-color: #50d0d0; color: #50d0d0; }
+.effect-chip { display:inline-flex; align-items:center; gap:2px; padding:1px 5px; border-radius:10px; font-size:.68rem; font-weight:700; background:var(--surface2); border:1px solid var(--border); color:var(--muted); }
+.effect-chip.shield    { border-color:#5a9ef8; color:#5a9ef8; }
+.effect-chip.speed     { border-color:#f0c040; color:#f0c040; }
+.effect-chip.insight   { border-color:#b08af7; color:#b08af7; }
+.effect-chip.rollout   { border-color:#3fb950; color:#3fb950; }
+.effect-chip.contract  { border-color:#f09050; color:#f09050; }
+.effect-chip.simplicity{ border-color:#50d0d0; color:#50d0d0; }
 
 /* Effects preview */
-.effects-preview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 14px;
-  padding: 10px;
-  background: var(--surface2);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-}
-.effects-preview-title {
-  width: 100%;
-  font-size: .72rem;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-.eff-req-chip {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: .8rem;
-  font-weight: 700;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-}
-.eff-req-chip.met    { border-color: var(--success); color: var(--success); }
-.eff-req-chip.unmet  { border-color: var(--danger);  color: var(--danger);  }
-.eff-req-chip .eff-val { font-size: .7rem; opacity: .8; }
+.effects-preview { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; padding:8px 10px; background:var(--surface2); border-radius:var(--radius); border:1px solid var(--border); }
+.effects-preview-title { width:100%; font-size:.7rem; color:var(--muted); margin-bottom:3px; }
+.eff-req-chip { display:flex; align-items:center; gap:4px; padding:4px 9px; border-radius:18px; font-size:.76rem; font-weight:700; background:var(--bg); border:1.5px solid var(--border); }
+.eff-req-chip.met   { border-color:var(--success); color:var(--success); }
+.eff-req-chip.unmet { border-color:var(--danger);  color:var(--danger);  }
+.eff-req-chip .eff-val { font-size:.68rem; opacity:.8; }
 
 /* Cauldron actions */
-.cauldron-actions {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.cauldron-actions .btn { flex: 1; text-align: center; }
+.cauldron-actions { display:flex; gap:8px; margin-bottom:10px; }
+.cauldron-actions .btn { flex:1; text-align:center; }
 
-/* Result panel */
-#result-panel {
-  display: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
-  margin-top: 10px;
-}
-.result-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.result-icon { font-size: 2rem; }
-.result-title { font-size: 1rem; font-weight: 700; }
-.result-subtitle { font-size: .8rem; color: var(--muted); }
-.event-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-.event-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border-radius: 7px;
-  font-size: .85rem;
-  font-weight: 600;
-}
-.event-row.good { background: rgba(63,185,80,.1);  color: #3fb950; }
-.event-row.bad  { background: rgba(248,81,73,.1);   color: #f85149; }
-.event-row.warn { background: rgba(240,160,48,.1);  color: #f0a030; }
-.event-row .ev-icon { font-size: 1rem; }
-.result-story {
-  font-size: .82rem;
-  color: var(--muted);
-  line-height: 1.5;
-  margin-bottom: 10px;
-  padding: 8px 10px;
-  background: var(--surface2);
-  border-radius: 6px;
-}
-.waste-note {
-  font-size: .78rem;
-  color: var(--warn);
-  padding: 6px 10px;
-  background: rgba(210,153,34,.1);
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-.details-toggle {
-  background: none;
-  border: 1px dashed var(--border);
-  color: var(--muted);
-  border-radius: 6px;
-  padding: 5px 12px;
-  cursor: pointer;
-  font-size: .8rem;
-  width: 100%;
-  transition: border-color .15s, color .15s;
-}
-.details-toggle:hover { border-color: var(--accent); color: var(--accent); }
-#result-details {
-  display: none;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-.details-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-bottom: 8px;
-}
-.detail-item {
-  background: var(--surface2);
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: .78rem;
-}
-.detail-item .d-label { color: var(--muted); font-size: .7rem; margin-bottom: 2px; }
-.detail-item .d-value { font-weight: 700; }
-.detail-item .d-value.ok { color: var(--success); }
-.detail-item .d-value.bad { color: var(--danger); }
-.conflict-list { margin-top: 6px; }
-.conflict-item {
-  font-size: .76rem;
-  color: var(--warn);
-  padding: 4px 8px;
-  background: rgba(210,153,34,.08);
-  border-radius: 4px;
-  margin-bottom: 3px;
-}
+/* Result */
+#result-panel { display:none; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px; margin-top:8px; }
+.result-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.result-icon { font-size:1.8rem; }
+.result-title { font-size:.98rem; font-weight:700; }
+.result-subtitle { font-size:.78rem; color:var(--muted); }
+.event-rows { display:flex; flex-direction:column; gap:5px; margin-bottom:10px; }
+.event-row { display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:7px; font-size:.82rem; font-weight:600; }
+.event-row.good { background:rgba(63,185,80,.1);  color:#3fb950; }
+.event-row.bad  { background:rgba(248,81,73,.1);   color:#f85149; }
+.event-row.warn { background:rgba(240,160,48,.1);  color:#f0a030; }
+.result-story { font-size:.8rem; color:var(--muted); line-height:1.5; margin-bottom:8px; padding:7px 10px; background:var(--surface2); border-radius:6px; }
+.waste-note { font-size:.76rem; color:var(--warn); padding:5px 9px; background:rgba(210,153,34,.1); border-radius:6px; margin-bottom:8px; }
+.conflict-list { margin-bottom:8px; }
+.conflict-item { font-size:.74rem; color:var(--warn); padding:3px 8px; background:rgba(210,153,34,.08); border-radius:4px; margin-bottom:2px; }
+.details-toggle { background:none; border:1px dashed var(--border); color:var(--muted); border-radius:6px; padding:4px 10px; cursor:pointer; font-size:.78rem; width:100%; transition:all .15s; }
+.details-toggle:hover { border-color:var(--accent); color:var(--accent); }
+#result-details { display:none; margin-top:8px; padding-top:8px; border-top:1px solid var(--border); }
+.details-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:6px; }
+.detail-item { background:var(--surface2); border-radius:6px; padding:5px 9px; font-size:.76rem; }
+.detail-item .d-label { color:var(--muted); font-size:.68rem; margin-bottom:1px; }
+.detail-item .d-value { font-weight:700; }
+.detail-item .d-value.ok  { color:var(--success); }
+.detail-item .d-value.bad { color:var(--danger); }
 
-/* Right col — ingredients */
-.pick-mode-banner {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  background: rgba(124,106,247,.15);
-  border: 1px solid rgba(124,106,247,.4);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 10px;
-  font-size: .82rem;
-}
-.pick-mode-banner.visible { display: flex; }
-.pick-cancel { margin-left: auto; background: none; border: none; color: var(--accent); cursor: pointer; font-size: .8rem; }
+/* Right panel — ingredients */
+.pick-mode-banner { display:none; align-items:center; gap:7px; background:rgba(124,106,247,.15); border:1px solid rgba(124,106,247,.4); border-radius:8px; padding:7px 10px; margin-bottom:8px; font-size:.8rem; }
+.pick-mode-banner.visible { display:flex; }
+.pick-cancel { margin-left:auto; background:none; border:none; color:var(--accent); cursor:pointer; font-size:.78rem; }
 
-.tab-bar {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-.tab-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: .78rem;
-  color: var(--muted);
-  transition: all .15s;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.tab-btn:hover { color: var(--text); border-color: var(--accent); }
-.tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.tab-btn.grayed { opacity: .4; pointer-events: none; }
+.tab-bar { display:flex; gap:3px; margin-bottom:8px; flex-wrap:wrap; }
+.tab-btn { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:4px 9px; cursor:pointer; font-size:.74rem; color:var(--muted); transition:all .15s; }
+.tab-btn:hover { color:var(--text); border-color:var(--accent); }
+.tab-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.tab-btn.grayed { opacity:.35; pointer-events:none; }
 
-.ing-list { display: flex; flex-direction: column; gap: 7px; }
-.ing-card {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 12px;
-  cursor: pointer;
-  transition: border-color .18s;
-  position: relative;
-}
-.ing-card:hover { border-color: var(--accent); }
-.ing-card.placed { border-color: #5a9ef8; opacity: .7; pointer-events: none; }
-.ing-card.trap { border-color: rgba(248,81,73,.3); }
-.ing-card .ing-name { font-size: .85rem; font-weight: 700; margin-bottom: 4px; }
-.ing-card .ing-desc { font-size: .75rem; color: var(--muted); margin-bottom: 6px; line-height: 1.4; }
-.ing-card .ing-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: center;
-}
-.ing-card .ing-meta .gold-tag {
-  background: rgba(240,160,48,.12);
-  border: 1px solid rgba(240,160,48,.4);
-  color: var(--gold-color);
-  border-radius: 10px;
-  padding: 1px 7px;
-  font-size: .7rem;
-  font-weight: 700;
-}
-.ing-card .ing-meta .harm-tag {
-  background: rgba(248,81,73,.1);
-  border: 1px solid rgba(248,81,73,.3);
-  color: #f85149;
-  border-radius: 10px;
-  padding: 1px 7px;
-  font-size: .7rem;
-  font-weight: 700;
-}
-.ing-card .ing-meta .adopt-tag {
-  background: rgba(63,185,80,.1);
-  border: 1px solid rgba(63,185,80,.3);
-  color: #3fb950;
-  border-radius: 10px;
-  padding: 1px 7px;
-  font-size: .7rem;
-}
-.ing-card .ing-meta .adopt-neg {
-  background: rgba(210,153,34,.1);
-  border: 1px solid rgba(210,153,34,.3);
-  color: #d29922;
-  border-radius: 10px;
-  padding: 1px 7px;
-  font-size: .7rem;
-}
-.ing-placed-label {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: .68rem;
-  color: #5a9ef8;
-  background: rgba(90,158,248,.1);
-  border-radius: 4px;
-  padding: 1px 5px;
-}
+.ing-list { display:flex; flex-direction:column; gap:6px; }
+.ing-card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:9px 11px; cursor:pointer; transition:border-color .18s; position:relative; }
+.ing-card:hover { border-color:var(--accent); }
+.ing-card.placed  { border-color:#5a9ef8; opacity:.65; pointer-events:none; }
+.ing-card.trap    { border-color:rgba(248,81,73,.3); }
+.ing-card.cross   { border-color:rgba(240,160,48,.4); }
+.ing-name { font-size:.82rem; font-weight:700; margin-bottom:3px; }
+.ing-desc { font-size:.73rem; color:var(--muted); margin-bottom:5px; line-height:1.4; }
+.ing-meta { display:flex; flex-wrap:wrap; gap:3px; align-items:center; }
+.gold-tag   { background:rgba(240,160,48,.12); border:1px solid rgba(240,160,48,.4);  color:var(--gold-color); border-radius:9px; padding:1px 6px; font-size:.68rem; font-weight:700; }
+.cross-tag  { background:rgba(240,160,48,.08); border:1px solid rgba(240,160,48,.3);  color:#d29922; border-radius:9px; padding:1px 6px; font-size:.68rem; }
+.harm-tag   { background:rgba(248,81,73,.1);   border:1px solid rgba(248,81,73,.3);   color:#f85149; border-radius:9px; padding:1px 6px; font-size:.68rem; }
+.adopt-tag  { background:rgba(63,185,80,.1);   border:1px solid rgba(63,185,80,.3);   color:#3fb950; border-radius:9px; padding:1px 6px; font-size:.68rem; }
+.adopt-neg  { background:rgba(210,153,34,.1);  border:1px solid rgba(210,153,34,.3);  color:#d29922; border-radius:9px; padding:1px 6px; font-size:.68rem; }
+.dom-tag    { border-radius:9px; padding:1px 6px; font-size:.68rem; font-weight:700; border:1px solid; }
+.ing-placed-label { position:absolute; top:5px; right:7px; font-size:.66rem; color:#5a9ef8; background:rgba(90,158,248,.1); border-radius:3px; padding:1px 4px; }
+.ing-conflict-warn { font-size:.68rem; color:var(--warn); margin-top:3px; display:none; }
+.ing-conflict-warn.show { display:block; }
+.ing-forbidden { font-size:.68rem; color:var(--danger); margin-top:3px; }
 
-/* Conflict warning on ingredient */
-.ing-conflict-warn {
-  font-size: .7rem;
-  color: var(--warn);
-  margin-top: 4px;
-  display: none;
-}
-.ing-conflict-warn.show { display: block; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
 </style>
 </head>
 <body>
-
 <header>
-  <span style="font-size:1.4rem">🧪</span>
+  <span style="font-size:1.3rem">🧪</span>
   <div>
     <h1>Зельевар Staff-инженера</h1>
-    <div class="sub">Выбери ингредиенты — свари зелье — реши задачу</div>
+    <div class="sub">Выбери Основу → добавь Реагенты и Катализаторы → проведи Ритуал</div>
   </div>
   <div class="scenario-switcher">
     <span class="scenario-idx" id="scenario-idx">1 / 8</span>
@@ -532,233 +219,253 @@ main {
 </header>
 
 <main>
-  <!-- LEFT: Quest card -->
-  <div class="col col-left" id="col-quest">
-    <div class="quest-card" id="quest-card"><!-- rendered by JS --></div>
-  </div>
-
-  <!-- CENTER: Cauldron -->
+  <div class="col col-left"  id="col-quest"></div>
   <div class="col col-center" id="col-cauldron">
     <div class="cauldron-header">
       <span class="cauldron-title">🫕 Котёл</span>
       <div class="gold-badge" id="gold-badge">💰 0 / 0</div>
     </div>
-
-    <div class="slots-grid" id="slots-grid"><!-- rendered by JS --></div>
-
-    <div class="effects-preview" id="effects-preview"><!-- rendered by JS --></div>
-
+    <div class="slot-groups-wrapper" id="slot-groups"></div>
+    <div class="effects-preview" id="effects-preview"></div>
     <div class="cauldron-actions">
       <button class="btn primary" id="btn-brew">⚗️ Сварить зелье</button>
-      <button class="btn danger" id="btn-reset">🗑 Сбросить</button>
+      <button class="btn danger"  id="btn-reset">🗑 Сбросить</button>
     </div>
-
-    <div id="result-panel"><!-- rendered by JS --></div>
+    <div id="result-panel"></div>
   </div>
-
-  <!-- RIGHT: Ingredients -->
   <div class="col col-right" id="col-ingredients">
     <div class="pick-mode-banner" id="pick-banner">
       <span id="pick-banner-text">Выбери ингредиент</span>
       <button class="pick-cancel" id="pick-cancel">✕ Отмена</button>
     </div>
     <div class="tab-bar" id="tab-bar">
-      <button class="tab-btn active" data-layer="stone">🪨 Камни</button>
-      <button class="tab-btn" data-layer="elixir">⚗️ Эликсиры</button>
-      <button class="tab-btn" data-layer="smoke">💨 Дым</button>
-      <button class="tab-btn" data-layer="ritual">🕯️ Ритуалы</button>
+      <button class="tab-btn" data-ct="foundation">🏰 Основы</button>
+      <button class="tab-btn active" data-ct="reagent">⚗️ Реагенты</button>
+      <button class="tab-btn" data-ct="catalyst">🔬 Катализаторы</button>
+      <button class="tab-btn" data-ct="stabilizer">⚖️ Стабилизаторы</button>
+      <button class="tab-btn" data-ct="ritual">🕯️ Ритуалы</button>
     </div>
-    <div class="ing-list" id="ing-list"><!-- rendered by JS --></div>
+    <div class="ing-list" id="ing-list"></div>
   </div>
 </main>
 
 <script>
-// ─── EFFECTS META ───────────────────────────────────────────────
+// ─── CONSTANTS ───────────────────────────────────────────────────
 const EFFECT_META = {
-  shield:     { icon: '🛡', label: 'Защита',    cls: 'shield' },
-  speed:      { icon: '⚡', label: 'Скорость',  cls: 'speed' },
-  insight:    { icon: '🔭', label: 'Видимость', cls: 'insight' },
-  rollout:    { icon: '🚀', label: 'Раскатка',  cls: 'rollout' },
-  contract:   { icon: '📜', label: 'Контракт',  cls: 'contract' },
-  simplicity: { icon: '🧹', label: 'Простота',  cls: 'simplicity' },
+  shield:     { icon:'🛡', label:'Защита',    cls:'shield' },
+  speed:      { icon:'⚡', label:'Скорость',  cls:'speed' },
+  insight:    { icon:'🔭', label:'Видимость', cls:'insight' },
+  rollout:    { icon:'🚀', label:'Раскатка',  cls:'rollout' },
+  contract:   { icon:'📜', label:'Контракт',  cls:'contract' },
+  simplicity: { icon:'🧹', label:'Простота',  cls:'simplicity' },
 };
-
-const LAYER_META = {
-  stone:  { icon: '🪨', label: 'Камень' },
-  elixir: { icon: '⚗️', label: 'Эликсир' },
-  smoke:  { icon: '💨', label: 'Дым' },
-  ritual: { icon: '🕯️', label: 'Ритуал' },
+const DOMAIN_META = {
+  web:   { icon:'🌐', label:'WEB',   cls:'dom-web' },
+  db:    { icon:'📚', label:'DB',    cls:'dom-db' },
+  infra: { icon:'🧰', label:'INFRA', cls:'dom-infra' },
+  glass: { icon:'🔭', label:'GLASS', cls:'dom-glass' },
 };
-
-// ─── SLOT ROLES ─────────────────────────────────────────────────
-const SLOT_ROLES = {
-  foundation:  { label: 'Основа',       icon: '🏗️', allowedLayers: ['stone'] },
-  catalyst:    { label: 'Катализатор',  icon: '⚗️', allowedLayers: ['elixir'] },
-  stabilizer:  { label: 'Стабилизатор', icon: '⚖️', allowedLayers: ['elixir', 'smoke'] },
-  filter:      { label: 'Фильтр',       icon: '🧹', allowedLayers: ['stone', 'elixir'] },
-  observation: { label: 'Наблюдение',   icon: '🔭', allowedLayers: ['smoke'] },
-  rollout:     { label: 'Раскатка',     icon: '🚀', allowedLayers: ['ritual'] },
+const CARDTYPE_META = {
+  foundation: { icon:'🏰', label:'Основа' },
+  reagent:    { icon:'⚗️',  label:'Реагент' },
+  catalyst:   { icon:'🔬', label:'Катализатор' },
+  stabilizer: { icon:'⚖️', label:'Стабилизатор' },
+  ritual:     { icon:'🕯️', label:'Ритуал' },
 };
-const SLOT_ORDER = ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'];
+const CROSS_PENALTY = 3;
 
-// ─── INGREDIENTS ────────────────────────────────────────────────
+// ─── INGREDIENTS (80 cards) ──────────────────────────────────────
 const INGREDIENTS = [
-  // ── STONE ──
-  {
-    id: 'rate_limit', layer: 'stone',
-    name: '💧 Капли Rate Limit',
-    desc: 'Ставим лимиты на запросы. Грубо, но надёжно. Птицы и фазаны не разбираются.',
-    effectPower: { shield: 25 },
-    adoption: -5, harm: 8, gold: 2, collateralBase: 6,
-    conflicts: ['canary_dust'],
-    conflictNote: 'Rate Limit фильтрует весь поток — Канарейке нечего делать на уже отсеянном трафике',
-  },
-  {
-    id: 'ddos_screen', layer: 'stone',
-    name: '🛡️ Дорогой DDoS-экран',
-    desc: 'Большой экран, большой счёт. Зато надёжно и без вопросов.',
-    effectPower: { shield: 40 },
-    adoption: -2, harm: 3, gold: 12,
-    conflicts: [],
-  },
-  {
-    id: 'waf', layer: 'stone',
-    name: '🔮 Руны WAF',
-    desc: 'Магические правила фильтрации запросов. Немного токсично для честных пользователей.',
-    effectPower: { shield: 20, contract: 10 },
-    adoption: -4, harm: 7, gold: 8, collateralBase: 5,
-    conflicts: ['canary_dust'],
-    conflictNote: 'WAF переписывает заголовки — Канарейка не получит честную случайную выборку',
-  },
-  {
-    id: 'cdn_shield', layer: 'stone',
-    name: '🌐 Щит CDN',
-    desc: 'Раздаём контент с края сети. Боты отсекаются на подлёте, живые ускоряются.',
-    effectPower: { shield: 15, speed: 12 },
-    adoption: 2, harm: 2, gold: 7,
-    conflicts: [],
-  },
-  // ── ELIXIR ──
-  {
-    id: 'schema_validator', layer: 'elixir',
-    name: '📜 Свиток Валидации',
-    desc: 'Проверяем формат данных на входе. Кривые схемы не проходят дальше.',
-    effectPower: { contract: 30 },
-    adoption: 3, harm: 1, gold: 5,
-    conflicts: ['cache_powder'],
-    conflictNote: 'Кеш возвращает данные без проверки схемы — контракт может нарушиться тихо',
-  },
-  {
-    id: 'cache_powder', layer: 'elixir',
-    name: '🫙 Порошок Кеширования',
-    desc: 'Кешируем ответы. Быстро, но может протухнуть. Схему не проверяет.',
-    effectPower: { speed: 18 },
-    adoption: 0, harm: 5, gold: 5,
-    conflicts: ['schema_validator'],
-    conflictNote: 'Кеш может вернуть данные старой схемы — нарушает контракт незаметно',
-  },
-  {
-    id: 'queue_tuner', layer: 'elixir',
-    name: '🧵 Перо Настройки Очередей',
-    desc: 'Тонкая настройка таймаутов и размеров очередей. Скучно, но работает.',
-    effectPower: { speed: 24 },
-    adoption: 3, harm: 2, gold: 5,
-    conflicts: [],
-  },
-  {
-    id: 'dead_code_remover', layer: 'elixir',
-    name: '🧹 Метла Мёртвого Кода',
-    desc: 'Выметаем то, что никто не трогал три года. Сразу дышать легче.',
-    effectPower: { simplicity: 25 },
-    adoption: 8, harm: 0, gold: 3,
-    conflicts: [],
-  },
-  {
-    id: 'circuit_breaker', layer: 'elixir',
-    name: '⚡ Предохранитель',
-    desc: 'Отключает нестабильный сервис до восстановления. Не даёт каскаду упасть.',
-    effectPower: { shield: 15, rollout: 5 },
-    adoption: 5, harm: 0, gold: 6,
-    conflicts: [],
-  },
-  // ── SMOKE ──
-  {
-    id: 'observability', layer: 'smoke',
-    name: '🔭 Свиток Наблюдения',
-    desc: 'Метрики, дашборды, алерты. Видно что происходит.',
-    effectPower: { insight: 20 },
-    adoption: 8, harm: 1, gold: 6,
-    conflicts: [],
-  },
-  {
-    id: 'tracing', layer: 'smoke',
-    name: '🔷 Кристалл Трейсинга',
-    desc: 'Каждый запрос оставляет цветной след. P99 становится понятен.',
-    effectPower: { insight: 28, speed: 5 },
-    adoption: 2, harm: 1, gold: 7,
-    conflicts: [],
-  },
-  {
-    id: 'metrics', layer: 'smoke',
-    name: '📊 Громоотвод Метрик',
-    desc: 'Гистограммы и счётчики. Просто и понятно, без лишних подробностей.',
-    effectPower: { insight: 16 },
-    adoption: 6, harm: 0, gold: 4,
-    conflicts: [],
-  },
-  // ── RITUAL ──
-  {
-    id: 'feature_flag', layer: 'ritual',
-    name: '🕯️ Свеча Фиче-Флага',
-    desc: 'Откатить одной кнопкой. Команда выдыхает.',
-    effectPower: { rollout: 20 },
-    adoption: 12, harm: -1, gold: 2,
-    conflicts: [],
-  },
-  {
-    id: 'canary_dust', layer: 'ritual',
-    name: '🐤 Канареечная Пыль',
-    desc: '5% пользователей идут первыми на новую версию. Нужен нефильтрованный поток.',
-    effectPower: { rollout: 30 },
-    adoption: 10, harm: -2, gold: 3,
-    conflicts: ['rate_limit', 'waf'],
-    conflictNote: 'Rate Limit / WAF уже отфильтровали трафик — канарейке не на чём делать выборку',
-  },
-  {
-    id: 'ab_test', layer: 'ritual',
-    name: '🔬 Свиток А/Б-теста',
-    desc: 'Два потока, два результата. Данных становится больше, решения — обоснованнее.',
-    effectPower: { rollout: 15, insight: 8 },
-    adoption: 8, harm: 0, gold: 4,
-    conflicts: [],
-  },
-  {
-    id: 'postmortem', layer: 'ritual',
-    name: '📋 Постмортем-хроники',
-    desc: 'Разбираем ошибки вместе. Меньше повторяем. Вред снижается.',
-    effectPower: { simplicity: 10 },
-    adoption: 6, harm: -3, gold: 1,
-    conflicts: [],
-  },
-  {
-    id: 'reactor_dust', layer: 'ritual',
-    name: '💨 Пыль Реактивного Переписывания',
-    desc: 'Переписать всё с нуля на новом языке? Команда отвлеклась. Дедлайн сорван.',
-    effectPower: {},
-    adoption: -8, harm: 10, gold: 15,
-    conflicts: [],
-  },
-  {
-    id: 'blockchain', layer: 'ritual',
-    name: '⛓️ Кристалл Блокчейна',
-    desc: 'Добавляет серьёзности и непредсказуемости в равных пропорциях.',
-    effectPower: {},
-    adoption: -10, harm: 12, gold: 18,
-    conflicts: [],
-  },
+  // ── FOUNDATIONS (4) ──
+  { id:'web_gate',       cardType:'foundation', domain:'web',   name:'🏰 Врата Веба',         desc:'В этом котле хорошо работают фильтры, кеш и всё, что стоит на входе. Чужие карты обходятся дороже.', gold:0 },
+  { id:'db_ledger',      cardType:'foundation', domain:'db',    name:'📚 Книга Учёта',         desc:'Здесь лучше растворяются закладки, запросы и распределение страниц. DB-карты в родной стихии.', gold:0 },
+  { id:'infra_workshop', cardType:'foundation', domain:'infra', name:'🧰 Мастерская Инфры',    desc:'Любит кластеры, очереди и оркестраторов. Не любит ручной колхоз. INFRA-карты без наценки.', gold:0 },
+  { id:'glass_room',     cardType:'foundation', domain:'glass', name:'🔭 Стеклянная Комната',  desc:'Всё становится видимым. Прежде чем резать — посмотри. GLASS-карты работают точнее всего.', gold:0 },
+
+  // ── WEB REAGENTS (6) ──
+  { id:'rate_limit',  cardType:'reagent', domain:'web',  name:'💧 Rate Limit',            desc:'Режем поток. Грубо, но надёжно. Птицы и фазаны не разбираются.',
+    effectPower:{shield:25}, adoption:-5, harm:8,  gold:2,  collateralBase:6,
+    conflicts:['canary','ab_test'], conflictNote:'Rate Limit фильтрует поток — канарейке/А/Б нечего делать' },
+  { id:'waf',         cardType:'reagent', domain:'web',  name:'🔮 WAF Руны',               desc:'Магические правила фильтрации. Ложные блокировки в комплекте.',
+    effectPower:{shield:20,contract:10}, adoption:-4, harm:7,  gold:8,  collateralBase:5,
+    conflicts:['canary','ab_test'], conflictNote:'WAF переписывает заголовки — канарейка не получит честную выборку' },
+  { id:'ddos_screen', cardType:'reagent', domain:'web',  name:'🧱 DDoS-Экран',             desc:'Мощно. Дорого. Без вопросов.',
+    effectPower:{shield:40}, adoption:-2, harm:3,  gold:12 },
+  { id:'hard_cache',  cardType:'reagent', domain:'web',  name:'🫙 Жёсткий Cache',          desc:'Быстро, но данные могут протухнуть. Схему не проверяет.',
+    effectPower:{speed:18}, adoption:0,  harm:5,  gold:5,
+    conflicts:['size_limits'], conflictNote:'Жёсткий кеш возвращает данные старой схемы — контракт нарушается тихо' },
+  { id:'compression', cardType:'reagent', domain:'web',  name:'🧪 Сжатие-Эликсир',         desc:'Легче в сети, жарче CPU.',
+    effectPower:{speed:15}, adoption:0,  harm:4,  gold:4 },
+  { id:'cut_heavy',   cardType:'reagent', domain:'web',  name:'🪓 Отсечь Тяжёлые',          desc:'Режем дорогие ручки. Функциональность тоже.',
+    effectPower:{speed:20}, adoption:-5, harm:6,  gold:3 },
+
+  // ── DB REAGENTS (6) ──
+  { id:'remove_n1',    cardType:'reagent', domain:'db', name:'🧯 Убрать N+1',              desc:'Ускоряет. Риск: сломать логику.',
+    effectPower:{speed:22}, adoption:0,  harm:6, gold:4 },
+  { id:'conn_pool',    cardType:'reagent', domain:'db', name:'🧵 Пул Соединений',           desc:'Стабилизирует. Легко задушить.',
+    effectPower:{speed:15}, adoption:0,  harm:4, gold:3 },
+  { id:'hard_locks',   cardType:'reagent', domain:'db', name:'🔒 Жёсткие Блокировки',       desc:'Консистентность ценой латентности и очередей.',
+    effectPower:{contract:20}, adoption:-4, harm:8, gold:5 },
+  { id:'mat_view',     cardType:'reagent', domain:'db', name:'🗃️ Материализованный Слепок', desc:'Быстро. Данные устаревают.',
+    effectPower:{speed:20}, adoption:0,  harm:6, gold:6 },
+  { id:'batching',     cardType:'reagent', domain:'db', name:'📦 Батчинг Записей',          desc:'Меньше накладных. Задержка чуть выше.',
+    effectPower:{speed:12}, adoption:2,  harm:3, gold:3 },
+  { id:'read_replica', cardType:'reagent', domain:'db', name:'🧲 Read Replica',             desc:'Разгружает чтение. Рассинхрон и лаг.',
+    effectPower:{speed:25}, adoption:0,  harm:5, gold:7 },
+
+  // ── INFRA REAGENTS (6) ──
+  { id:'queue_pass',      cardType:'reagent', domain:'infra', name:'🧵 Очередь-Перевал',    desc:'Сглаживает пики. Письма доходят чуть позже.',
+    effectPower:{speed:18}, adoption:-2, harm:3, gold:4 },
+  { id:'resource_limits', cardType:'reagent', domain:'infra', name:'🎛️ Лимиты Ресурсов',   desc:'Спасает от падения. Троттлинг.',
+    effectPower:{shield:15}, adoption:-3, harm:5, gold:3 },
+  { id:'circuit_breaker', cardType:'reagent', domain:'infra', name:'⚡ Circuit Breaker',     desc:'Отрубает нестабильную зависимость. Деградация функционала.',
+    effectPower:{shield:20,rollout:5}, adoption:5, harm:0, gold:6 },
+  { id:'load_balance',    cardType:'reagent', domain:'infra', name:'🧭 Балансировка',        desc:'Распределяет нагрузку. Сложнее дебажить.',
+    effectPower:{speed:15}, adoption:0, harm:2, gold:5 },
+  { id:'autoscale',       cardType:'reagent', domain:'infra', name:'⛽ Автоскейл',           desc:'Выдерживает пики. Дорого.',
+    effectPower:{speed:20}, adoption:0, harm:0, gold:8 },
+  { id:'cold_restart',    cardType:'reagent', domain:'infra', name:'🧊 Холодный Рестарт',    desc:'Лечит "залипло". Краткий простой.',
+    effectPower:{shield:15}, adoption:-6, harm:10, gold:2 },
+
+  // ── GLASS REAGENTS (6) ──
+  { id:'struct_log',   cardType:'reagent', domain:'glass', name:'📝 Структурный Лог',       desc:'Видно что и где. Шум и стоимость хранения.',
+    effectPower:{insight:18}, adoption:2,  harm:2, gold:4 },
+  { id:'metrics_p99',  cardType:'reagent', domain:'glass', name:'📊 Метрики P95/P99',        desc:'Видно хвосты. Теперь все спорят.',
+    effectPower:{insight:22}, adoption:-2, harm:1, gold:5 },
+  { id:'tracing',      cardType:'reagent', domain:'glass', name:'🔷 Distributed Tracing',   desc:'Виден путь запроса. Оверхед.',
+    effectPower:{insight:28,speed:5}, adoption:2, harm:1, gold:7 },
+  { id:'corr_id',      cardType:'reagent', domain:'glass', name:'🕯️ Корреляционный ID',      desc:'Связывает события. Надо протащить везде.',
+    effectPower:{insight:15,contract:10}, adoption:3, harm:0, gold:3 },
+  { id:'prod_profile', cardType:'reagent', domain:'glass', name:'🧪 Профилирование на Проде',desc:'Находит узкое место. Страшно.',
+    effectPower:{insight:20}, adoption:-3, harm:5, gold:6 },
+  { id:'alerting',     cardType:'reagent', domain:'glass', name:'📣 Алертинг',               desc:'Ловит раньше. Алерт-усталость.',
+    effectPower:{insight:16}, adoption:-3, harm:0, gold:4 },
+
+  // ── WEB CATALYSTS (5) ──
+  { id:'bot_sigs',      cardType:'catalyst', domain:'web', name:'🧾 Сигнатуры Ботов',       desc:'Точнее фильтруем, меньше своих.',
+    effectPower:{shield:10}, adoption:8,  harm:0, gold:3 },
+  { id:'canon_req',     cardType:'catalyst', domain:'web', name:'🧪 Канонизация Запросов',   desc:'Нормализуем — кеш и фильтры работают точнее.',
+    effectPower:{contract:12,speed:5}, adoption:5, harm:0, gold:3 },
+  { id:'fail2ban',      cardType:'catalyst', domain:'web', name:'🧿 Fail2ban-Оберег',         desc:'Повторных ворон отсекает мягче.',
+    effectPower:{shield:10}, adoption:8,  harm:0, gold:2 },
+  { id:'cache_key',     cardType:'catalyst', domain:'web', name:'🧊 Cache Key Грамота',       desc:'Меньше протухания и коллизий.',
+    effectPower:{speed:8,contract:15}, adoption:4, harm:0, gold:3 },
+  { id:'safe_timeouts', cardType:'catalyst', domain:'web', name:'🧷 Безопасные Таймауты',    desc:'Меньше зависаний. Но надо аккуратно.',
+    effectPower:{speed:5,contract:10}, adoption:5, harm:0, gold:2 },
+
+  // ── DB CATALYSTS (5) ──
+  { id:'explain_plan',   cardType:'catalyst', domain:'db', name:'🗂️ План-Объяснялка',        desc:'Видим, почему медленно.',
+    effectPower:{insight:15,speed:8}, adoption:5, harm:0, gold:3 },
+  { id:'hint_optimizer', cardType:'catalyst', domain:'db', name:'🧭 Подсказки Оптимизатору', desc:'Направляем план. Риск: можно перегнуть.',
+    effectPower:{speed:18}, adoption:3, harm:2, gold:4 },
+  { id:'slow_sample',    cardType:'catalyst', domain:'db', name:'🧪 Сэмплинг Медленных',     desc:'Ловим "хвосты" запросов.',
+    effectPower:{insight:20}, adoption:5, harm:1, gold:4 },
+  { id:'stat_cleanup',   cardType:'catalyst', domain:'db', name:'🧹 Чистка Статистики',       desc:'Планировщик прозревает.',
+    effectPower:{speed:10,simplicity:8}, adoption:6, harm:0, gold:2 },
+  { id:'size_limits',    cardType:'catalyst', domain:'db', name:'📏 Контроль Размеров',       desc:'Меньше "случайно вытащили всю БД".',
+    effectPower:{contract:20}, adoption:5, harm:0, gold:3,
+    conflicts:['hard_cache'], conflictNote:'Жёсткий кеш игнорирует лимиты выборки — контракт нарушается тихо' },
+
+  // ── INFRA CATALYSTS (5) ──
+  { id:'backpressure', cardType:'catalyst', domain:'infra', name:'📦 Backpressure-Узелок',   desc:'Система "говорит нет" вовремя.',
+    effectPower:{shield:12,contract:10}, adoption:5, harm:0, gold:3 },
+  { id:'idempotency',  cardType:'catalyst', domain:'infra', name:'🪝 Idempotency-Руна',       desc:'Повторы не ломают мир.',
+    effectPower:{contract:20}, adoption:8, harm:0, gold:4 },
+  { id:'runbook',      cardType:'catalyst', domain:'infra', name:'🧰 Runbook-Свиток',         desc:'Быстрее реакция. Выше принятие.',
+    effectPower:{rollout:8}, adoption:15, harm:-1, gold:2 },
+  { id:'chaos_probe',  cardType:'catalyst', domain:'infra', name:'🧪 Chaos-Проба',            desc:'Проверяем устойчивость контролируемо.',
+    effectPower:{insight:15,rollout:10}, adoption:5, harm:2, gold:4 },
+  { id:'dep_limits',   cardType:'catalyst', domain:'infra', name:'🧯 Лимиты Зависимостей',   desc:'Защищает от каскада.',
+    effectPower:{shield:10,contract:12}, adoption:4, harm:0, gold:3 },
+
+  // ── GLASS CATALYSTS (5) ──
+  { id:'svc_map',     cardType:'catalyst', domain:'glass', name:'🗺️ Service Map',            desc:'Кто кого зовёт.',
+    effectPower:{insight:18,rollout:5}, adoption:6, harm:0, gold:4 },
+  { id:'slo_seal',    cardType:'catalyst', domain:'glass', name:'🧪 SLO/SLI Печать',         desc:'Понятные цели и алерты.',
+    effectPower:{insight:20,contract:15}, adoption:8, harm:0, gold:5 },
+  { id:'span_attrs',  cardType:'catalyst', domain:'glass', name:'🧭 Span-Атрибуты',           desc:'Трейсинг становится полезным.',
+    effectPower:{insight:15,speed:5}, adoption:5, harm:0, gold:3 },
+  { id:'pocket_dash', cardType:'catalyst', domain:'glass', name:'📦 Карманный Дашборд',      desc:'"Одна панель — что горит".',
+    effectPower:{insight:12}, adoption:10, harm:0, gold:3 },
+  { id:'log_search',  cardType:'catalyst', domain:'glass', name:'🔍 Поиск по Логам',          desc:'Быстрое расследование инцидентов.',
+    effectPower:{insight:15,simplicity:8}, adoption:6, harm:0, gold:3 },
+
+  // ── WEB STABILIZERS (4) ──
+  { id:'routing_rewrite', cardType:'stabilizer', domain:'web', name:'🧱 Перепись Роутинга',   desc:'Упрощаем входные пути.',
+    effectPower:{simplicity:20,contract:10}, adoption:5, harm:0, gold:8 },
+  { id:'rm_redirects',    cardType:'stabilizer', domain:'web', name:'🧼 Убрать Редиректы',    desc:'Меньше хвостов и хопов.',
+    effectPower:{speed:15,simplicity:15}, adoption:6, harm:0, gold:6 },
+  { id:'unified_auth',    cardType:'stabilizer', domain:'web', name:'🔐 Единая Авторизация',  desc:'Меньше дыр и костылей.',
+    effectPower:{contract:20,simplicity:10}, adoption:7, harm:0, gold:7 },
+  { id:'edge_cdn',        cardType:'stabilizer', domain:'web', name:'🏗️ Edge/CDN-Архитектура',desc:'Устойчивость. Проект большой.',
+    effectPower:{shield:20,speed:15}, adoption:4, harm:0, gold:12 },
+
+  // ── DB STABILIZERS (4) ──
+  { id:'db_indexes',      cardType:'stabilizer', domain:'db', name:'📚 Индексы-Закладки',    desc:'Ускоряют запросы системно.',
+    effectPower:{speed:25}, adoption:6, harm:0, gold:5 },
+  { id:'schema_refactor', cardType:'stabilizer', domain:'db', name:'🧩 Рефакторинг Схемы',   desc:'Меньше боли. Но миграции.',
+    effectPower:{simplicity:20,contract:15}, adoption:5, harm:2, gold:10 },
+  { id:'sharding',        cardType:'stabilizer', domain:'db', name:'🧿 Шардирование',         desc:'Масштаб. Сложно.',
+    effectPower:{speed:20,shield:10}, adoption:3, harm:3, gold:14 },
+  { id:'archive_data',    cardType:'stabilizer', domain:'db', name:'🧺 Архивирование',        desc:'Таблицы худеют, планы улучшаются.',
+    effectPower:{speed:12,simplicity:18}, adoption:8, harm:0, gold:4 },
+
+  // ── INFRA STABILIZERS (4) ──
+  { id:'ha_cluster',        cardType:'stabilizer', domain:'infra', name:'🏗️ Кластеризация/HA',      desc:'Надёжность.',
+    effectPower:{shield:20}, adoption:5, harm:0, gold:10 },
+  { id:'orchestrator',      cardType:'stabilizer', domain:'infra', name:'🎛️ Оркестратор',             desc:'Управляемость и масштаб.',
+    effectPower:{speed:15,simplicity:20}, adoption:6, harm:0, gold:12 },
+  { id:'queue_migration',   cardType:'stabilizer', domain:'infra', name:'🚚 Переезд на Очереди',      desc:'Стабильность интеграций.',
+    effectPower:{speed:18,simplicity:15}, adoption:5, harm:0, gold:9 },
+  { id:'platform_template', cardType:'stabilizer', domain:'infra', name:'🧱 Платформенный Шаблон',   desc:'Меньше зоопарка.',
+    effectPower:{simplicity:25,contract:15}, adoption:7, harm:0, gold:8 },
+
+  // ── GLASS STABILIZERS (4) ──
+  { id:'obs_sdk',         cardType:'stabilizer', domain:'glass', name:'🧱 Unified Observability SDK',desc:'Стандартизация.',
+    effectPower:{insight:20,simplicity:15}, adoption:8, harm:0, gold:7 },
+  { id:'log_policy',      cardType:'stabilizer', domain:'glass', name:'🧾 Политика Логов',           desc:'Меньше мусора, больше пользы.',
+    effectPower:{simplicity:18,insight:10}, adoption:8, harm:0, gold:4 },
+  { id:'default_tracing', cardType:'stabilizer', domain:'glass', name:'🕸️ Трейсинг по Умолчанию',   desc:'Культура, не разовая акция.',
+    effectPower:{insight:25}, adoption:6, harm:0, gold:8 },
+  { id:'metrics_store',   cardType:'stabilizer', domain:'glass', name:'📦 Хранилище Метрик',        desc:'Не падает от метрик.',
+    effectPower:{insight:18,speed:5}, adoption:5, harm:0, gold:9 },
+
+  // ── WEB RITUALS (3) ──
+  { id:'canary',       cardType:'ritual', domain:'web', name:'🐤 Канарейка',         desc:'5% идут первыми. Нужен нефильтрованный поток.',
+    effectPower:{rollout:30}, adoption:10, harm:-2, gold:3,
+    conflicts:['rate_limit','waf'], conflictNote:'Rate Limit / WAF фильтруют трафик — канарейке нечего делать' },
+  { id:'feature_flag', cardType:'ritual', domain:'web', name:'🕯️ Фичефлаг+Откат',   desc:'Откатить одной кнопкой. Команда спокойна.',
+    effectPower:{rollout:20}, adoption:12, harm:-1, gold:2 },
+  { id:'ab_test',      cardType:'ritual', domain:'web', name:'🧪 A/Б-Ритуал',         desc:'Два потока, два результата.',
+    effectPower:{rollout:15,insight:8}, adoption:8, harm:0, gold:4,
+    conflicts:['rate_limit','waf'] },
+
+  // ── DB RITUALS (3) ──
+  { id:'migration_rollback', cardType:'ritual', domain:'db', name:'🧾 Миграция с Откатом',     desc:'Безопасные изменения схемы и индексов.',
+    effectPower:{rollout:25,contract:10}, adoption:8,  harm:0, gold:4 },
+  { id:'shadow_replica',     cardType:'ritual', domain:'db', name:'🧪 Теневая Реплика',         desc:'Проверяем без риска на продуктиве.',
+    effectPower:{rollout:20,insight:15}, adoption:6,  harm:0, gold:5 },
+  { id:'consistency_ritual', cardType:'ritual', domain:'db', name:'📋 Ритуал Консистентности', desc:'Сверки и валидаторы данных.',
+    effectPower:{contract:20,rollout:10}, adoption:5, harm:0, gold:3 },
+
+  // ── INFRA RITUALS (3) ──
+  { id:'cicd_dance',   cardType:'ritual', domain:'infra', name:'🛠️ CI/CD Хоровод',   desc:'Повторяемый, надёжный выкат.',
+    effectPower:{rollout:20}, adoption:10, harm:0,  gold:3 },
+  { id:'blue_green',   cardType:'ritual', domain:'infra', name:'🔁 Blue/Green',        desc:'Переключение без простоя.',
+    effectPower:{rollout:30}, adoption:8,  harm:0,  gold:4 },
+  { id:'oncall_drill', cardType:'ritual', domain:'infra', name:'📣 Учение On-call',    desc:'Готовность команды. Повышает принятие.',
+    effectPower:{rollout:10,simplicity:5}, adoption:20, harm:-2, gold:2 },
+
+  // ── GLASS RITUALS (3) ──
+  { id:'dashboard_ritual', cardType:'ritual', domain:'glass', name:'🗓️ Ритуал Дашбордов', desc:'"Одна панель правды" как культура.',
+    effectPower:{insight:15,rollout:8}, adoption:12, harm:0,  gold:3 },
+  { id:'silence_ritual',   cardType:'ritual', domain:'glass', name:'🔔 Ритуал Тишины',    desc:'Чистим алерты, убираем шум.',
+    effectPower:{simplicity:20}, adoption:15, harm:-3, gold:2 },
+  { id:'postmortem',       cardType:'ritual', domain:'glass', name:'📋 Постмортем',        desc:'Разбираем ошибки вместе. Снижает будущую токсичность.',
+    effectPower:{simplicity:10}, adoption:10, harm:-3, gold:1 },
 ];
 
-// ─── SCENARIOS ──────────────────────────────────────────────────
+// ─── SCENARIOS (8) ───────────────────────────────────────────────
 const SCENARIOS = [
   {
     id: 'archip',
@@ -767,171 +474,220 @@ const SCENARIOS = [
     story: 'В день большой распродажи сервер Архипа лёг. Боты скупали товары за миллисекунды — живые покупатели видели только ошибку 503.',
     need: '«Мне нужно остановить ботов. Что-нибудь недорогое.»',
     requires: { shield: 20 },
-    harmLimit: 25, collateralLimit: 999, goldBudget: 12, teamHappyMin: 45,
-    activeSlots: ['foundation', 'observation'],
-    requiredSlots: ['observation'],
-    requiredNote: 'Слот «Наблюдение» пуст — нельзя доказать, что зелье сработало',
-    hint: '💡 Загляни во вкладку 🪨 Камни — защитные ингредиенты. Слот Наблюдение ждёт 💨 Дым.',
+    harmLimit: 25, collateralLimit: 999, goldBudget: 14, teamHappyMin: 45,
+    foundationOptions: ['web_gate'],
+    activeGroups: { foundation:1, reagents:1, catalysts:0, stabilizer:0, ritual:0 },
+    requiredGroups: [],
+    targetProps: {},
+    hint: '💡 Выбери Основу WEB → добавь Реагент со щитом 🛡. Больше ничего не нужно.',
     debrief: {
-      success: '🎉 Боты отступили! Архип продал все товары живым покупателям. Он доволен и обещает скидку.',
+      success: '🎉 Боты отступили! Архип продал все товары. Говорит, что зелье "работает как надо".',
       partial: '⚠️ Боты остановлены, но зелье навредило — честные покупатели тоже пострадали.',
-      fail: '💀 Боты не заметили зелья. Архип требует возврат денег.',
+      fail:    '💀 Боты не заметили зелья. Архип требует возврат денег.',
     },
   },
   {
     id: 'miron',
     badgeText: 'Задание 2 / 8',
     requester: '🐦 Птицелов Мирон',
-    story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Тысячи ворон забивают сети — фазаны не пробиваются. Мирон боится, что резкое зелье распугает и самих фазанов.',
+    story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Тысячи ворон забивают сети. Но Мирон предупреждает: его поляна хрупкая — резкое зелье распугает и фазанов.',
     need: '«Прогони ворон. Но осторожно — фазаны не должны разбежаться.»',
     requires: { shield: 25 },
-    harmLimit: 18, collateralLimit: 8, goldBudget: 18, teamHappyMin: 50,
-    activeSlots: ['foundation', 'observation', 'rollout'],
-    requiredSlots: ['rollout'],
-    requiredNote: 'Слот «Раскатка» пуст — выкатили на всех сразу, страшно',
-    hint: '💡 Раскатка 🚀 снижает ущерб. Без неё фазаны в панике. Наблюдение покажет, прошло ли чисто.',
+    harmLimit: 12, collateralLimit: 8, goldBudget: 18, teamHappyMin: 50,
+    foundationOptions: ['web_gate'],
+    activeGroups: { foundation:1, reagents:2, catalysts:1, stabilizer:0, ritual:1 },
+    requiredGroups: ['ritual'],
+    targetProps: { fragile: true },
+    hint: '💡 Цель Хрупкая — вред Реагентов умножается ×2! Ищи безопасные варианты. Ритуал обязателен.',
     debrief: {
       success: '🎉 Вороны рассеялись. Фазаны пойманы. Мирон прислал корзину с перепёлками.',
-      partial: '⚠️ Вороны отступили, но зелье задело своих — фазаны тоже разбежались.',
-      fail: '💀 Вороны не заметили зелья. Мирон требует постмортем.',
+      partial: '⚠️ Вороны отступили, но зелье задело своих или команда недовольна.',
+      fail:    '💀 Вороны не заметили зелья. Мирон требует постмортем.',
     },
   },
   {
     id: 'ivan',
     badgeText: 'Задание 3 / 8',
     requester: '🏹 Иван-царевич',
-    story: 'Иван шлёт стрелы-письма царевне-лягушке через API-ворота. Стрелы летят... и зависают в воздухе на P99. Царевна думает — Иван молчит.',
-    need: '«Стрелы должны долетать быстро. P95 важнее P50.»',
+    story: 'Иван шлёт стрелы-письма царевне через API-ворота. Стрелы летят... и зависают на P99. Царевна думает — Иван молчит. Нужны Катализаторы — они делают реагент точнее.',
+    need: '«Стрелы должны долетать быстро. Только с катализатором — правда.»',
     requires: { speed: 25 },
-    harmLimit: 15, collateralLimit: 999, goldBudget: 15, teamHappyMin: 50,
-    activeSlots: ['foundation', 'catalyst', 'observation'],
-    requiredSlots: ['catalyst'],
-    requiredNote: 'Слот «Катализатор» пуст — скорость не улучшена изнутри, только снаружи',
-    hint: '💡 Нужно ускорение ⚡ — Катализатор берёт Эликсиры. Трейсинг покажет где стрела зависла.',
+    harmLimit: 16, collateralLimit: 999, goldBudget: 16, teamHappyMin: 50,
+    foundationOptions: ['web_gate','infra_workshop'],
+    activeGroups: { foundation:1, reagents:1, catalysts:2, stabilizer:0, ritual:1 },
+    requiredGroups: ['catalyst'],
+    targetProps: {},
+    hint: '💡 Можно взять WEB или INFRA-основу. Чужие карты обойдутся на +3 💰. Катализатор обязателен.',
     debrief: {
       success: '🎉 Стрелы долетают мгновенно. Царевна получила письмо. Свадьба назначена.',
-      partial: '⚠️ Быстрее, но зелье дало побочку — у стрел облезло оперение.',
-      fail: '💀 Стрелы всё ещё висят в воздухе. Царевна ушла в другой дата-центр.',
+      partial: '⚠️ Быстрее, но зелье дало побочку или катализатор не использован.',
+      fail:    '💀 Стрелы всё ещё висят в воздухе. Царевна ушла в другой дата-центр.',
     },
   },
   {
     id: 'prokopiy',
     badgeText: 'Задание 4 / 8',
     requester: '📮 Гонец Прокопий',
-    story: 'Прокопий доставляет письма между царствами через общий API. Иногда грамоты приходят с чужими печатями и неверными полями — адресаты отказываются их принимать. Данные теряются.',
-    need: '«Письма должны приходить в нужном формате. Схема важнее скорости.»',
+    story: 'Прокопий доставляет письма между царствами через API. Грамоты приходят с чужими печатями — адресаты отклоняют. Цель Упрямая: без Ритуала внедрение не дойдёт.',
+    need: '«Письма должны приходить в нужном формате. Без Стабилизатора не закрепить.»',
     requires: { contract: 25 },
-    harmLimit: 15, collateralLimit: 999, goldBudget: 14, teamHappyMin: 50,
-    activeSlots: ['foundation', 'filter', 'observation'],
-    requiredSlots: ['filter'],
-    requiredNote: 'Слот «Фильтр» пуст — граница между царствами не закреплена',
-    hint: '💡 Нужен контракт 📜 — Фильтр принимает Камни и Эликсиры. Кеш тут не поможет.',
+    harmLimit: 15, collateralLimit: 999, goldBudget: 16, teamHappyMin: 50,
+    foundationOptions: ['db_ledger'],
+    activeGroups: { foundation:1, reagents:1, catalysts:2, stabilizer:1, ritual:1 },
+    requiredGroups: ['stabilizer'],
+    targetProps: { stubborn: true },
+    hint: '💡 Цель Упрямая — без Ритуала максимум "частично". Стабилизатор обязателен для закрепления.',
     debrief: {
       success: '🎉 Письма приходят точно по форме. Прокопий повышен до главного гонца.',
-      partial: '⚠️ Схема работает, но зелье дало побочки — часть писем задержалась.',
-      fail: '💀 Письма всё ещё путаются. Прокопий обвиняет зельевара.',
+      partial: '⚠️ Схема работает, но стабилизатор не использован или команда недовольна.',
+      fail:    '💀 Письма всё ещё путаются. Прокопий обвиняет зельевара.',
     },
   },
   {
     id: 'agafya',
     badgeText: 'Задание 5 / 8',
     requester: '🧙‍♀️ Знахарка Агафья',
-    story: 'Агафья варит зелья в старом монолите. За 20 лет в него добавляли слои и слои — теперь никто не знает, что внутри. Каждое изменение ломает три других. Котёл задыхается.',
-    need: '«Хочу дышать. Убери лишнее. Не добавляй новое.»',
+    story: 'Котёл Агафьи — 20-летний монолит. Каждое изменение ломает три других. Котёл Хрупкий и Упрямый: реагенты опасны, а без ритуала команда не примет изменения.',
+    need: '«Убери лишнее. Не добавляй новое. Стабилизируй. Проведи ритуал.»',
     requires: { simplicity: 20 },
-    harmLimit: 12, collateralLimit: 999, goldBudget: 12, teamHappyMin: 55,
-    activeSlots: ['foundation', 'catalyst', 'stabilizer'],
-    requiredSlots: ['stabilizer'],
-    requiredNote: 'Слот «Стабилизатор» пуст — изменения не закреплены, монолит снова запутается',
-    hint: '💡 Нужна простота 🧹 — Катализатор убирает лишнее, Стабилизатор закрепляет результат.',
+    harmLimit: 12, collateralLimit: 999, goldBudget: 18, teamHappyMin: 58,
+    foundationOptions: ['infra_workshop','db_ledger'],
+    activeGroups: { foundation:1, reagents:1, catalysts:2, stabilizer:1, ritual:1 },
+    requiredGroups: ['stabilizer','ritual'],
+    targetProps: { fragile: true, stubborn: true },
+    hint: '💡 Хрупкий+Упрямый — нужны и Стабилизатор, и Ритуал. Реагенты опасны: вред ×2.',
     debrief: {
       success: '🎉 Монолит задышал! Агафья сварила первое новое зелье за три года.',
-      partial: '⚠️ Стало проще, но зелье навредило — один из старых слоёв оказался нужным.',
-      fail: '💀 Монолит ещё сложнее. Агафья уходит на пенсию.',
+      partial: '⚠️ Стало проще, но стабилизатор/ритуал пропущен или вред высок.',
+      fail:    '💀 Монолит ещё сложнее. Агафья уходит на пенсию.',
     },
   },
   {
     id: 'tit',
     badgeText: 'Задание 6 / 8',
     requester: '🔔 Дозорный Тит',
-    story: 'Колокола Тита звонят каждый час. Команда устала реагировать на шум. Тит нашёл что-то подозрительное, но не уверен — это баг или артефакт метрик. Нужно увидеть картину целиком и раскатить фикс безопасно.',
-    need: '«Хочу видеть настоящие причины. И выкатить фикс так, чтобы не упало снова.»',
-    requires: { insight: 48, rollout: 20 },
-    harmLimit: 10, collateralLimit: 999, goldBudget: 16, teamHappyMin: 62,
-    activeSlots: ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'],
-    hint: '💡 Нужны оба: видимость 🔭 (нужно несколько дымовых ингредиентов — одного мало) и раскатка 🚀.',
+    story: 'Колокола звонят каждый час. Тит нашёл что-то подозрительное, но не уверен — баг или артефакт метрик. Цель Упрямая: без ритуала фикс не выкатить.',
+    need: '«Нужна видимость И безопасная раскатка фикса. Одного зрения мало.»',
+    requires: { insight: 50, rollout: 20 },
+    harmLimit: 10, collateralLimit: 999, goldBudget: 22, teamHappyMin: 62,
+    foundationOptions: ['glass_room'],
+    activeGroups: { foundation:1, reagents:1, catalysts:2, stabilizer:1, ritual:1 },
+    requiredGroups: [],
+    targetProps: { stubborn: true },
+    hint: '💡 insight:50 — одного реагента мало (max 28). Нужны 2 катализатора. Rollout:20 → нужен ритуал не из GLASS-домена.',
     debrief: {
-      success: '🎉 Причины найдены, фикс раскатан. Тит молчит три дня подряд — команда выспалась.',
-      partial: '⚠️ Видно больше, но зелье дало побочки — либо вред высок, либо команда недовольна.',
-      fail: '💀 Колокола звонят. Тит подаёт заявление. Раскатка не состоялась.',
+      success: '🎉 Причины найдены, фикс раскатан. Тит молчит три дня подряд.',
+      partial: '⚠️ Видно больше, но зелье дало побочки или rollout не набран.',
+      fail:    '💀 Колокола звонят. Тит подаёт заявление.',
     },
   },
   {
     id: 'joint',
     badgeText: 'Задание 7 / 8',
     requester: '🏹📮 Иван и Прокопий',
-    story: 'Стрелы Ивана долетают, но приходят с кривыми печатями — Прокопий их отклоняет. Расследование показало: кеш возвращает устаревшую схему. Нужно и ускорить маршрут, и починить контракт одним зельем.',
+    story: 'Стрелы Ивана долетают, но с кривыми печатями — Прокопий их отклоняет. Расследование показало: кеш возвращает устаревшую схему. Нужно и ускорить, и починить контракт.',
     need: '«Быстро и по формату. Одно без другого — не считается.»',
-    requires: { speed: 28, contract: 25 },
-    harmLimit: 10, collateralLimit: 999, goldBudget: 17, teamHappyMin: 60,
-    activeSlots: ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'],
-    hint: '💡 Нужны скорость ⚡ и контракт 📜. Осторожно: кеш и валидатор конфликтуют — проверь совместимость.',
+    requires: { speed: 20, contract: 18 },
+    harmLimit: 15, collateralLimit: 999, goldBudget: 18, teamHappyMin: 60,
+    foundationOptions: ['web_gate','db_ledger'],
+    activeGroups: { foundation:1, reagents:2, catalysts:2, stabilizer:1, ritual:1 },
+    requiredGroups: ['stabilizer'],
+    targetProps: { stubborn: true },
+    hint: '💡 Конфликт-ловушка: hard_cache + size_limits = несовместимы. Ищи другой путь к speed+contract.',
     debrief: {
       success: '🎉 Стрелы летят точно по формату. Иван и Прокопий пожали руки.',
-      partial: '⚠️ Что-то решено, но побочки не дали полной победы.',
-      fail: '💀 Стрелы быстрые, но кривые — или медленные, но правильные. Иван и Прокопий не договорились.',
+      partial: '⚠️ Что-то решено, но побочки или пропущен стабилизатор/ритуал.',
+      fail:    '💀 Стрелы быстрые, но кривые — или медленные, но правильные.',
     },
   },
   {
     id: 'final',
     badgeText: '⚔️ Задание 8 / 8 · Финал',
     requester: '👑 Главный Советник Царя',
-    story: 'Всё случилось одновременно: вороны атакуют API, Ивановы стрелы зависли, у Тита нет видимости, и никто не знает как безопасно выкатить исправление. Бюджет на исходе. Царь ждёт.',
-    need: '«Защита, скорость, видимость и безопасная раскатка. Всё сразу. Бюджет — 22 золота.»',
+    story: 'Всё случилось одновременно: вороны атакуют, стрелы зависают, у Тита нет видимости, и никто не знает как выкатить исправление. Цель Хрупкая+Упрямая. Бюджет жёсткий.',
+    need: '«Защита, скорость, видимость и раскатка. Всё сразу. Цель хрупкая — без лишнего насилия.»',
     requires: { shield: 20, speed: 20, insight: 20, rollout: 15 },
-    harmLimit: 10, collateralLimit: 999, goldBudget: 22, teamHappyMin: 65,
-    activeSlots: ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'],
-    hint: '💡 Четыре эффекта. DDoS-экран слишком дорог при таком бюджете — ищи более экономные щиты. Конфликты штрафуют.',
+    harmLimit: 10, collateralLimit: 999, goldBudget: 28, teamHappyMin: 65,
+    foundationOptions: ['web_gate','db_ledger','infra_workshop','glass_room'],
+    activeGroups: { foundation:1, reagents:2, catalysts:3, stabilizer:1, ritual:1 },
+    requiredGroups: [],
+    targetProps: { fragile: true, stubborn: true },
+    hint: '💡 Выбор Основы определяет стоимость. 2 реагента на хрупкой цели = вред ×3. Нужно 4 эффекта — планируй.',
     debrief: {
       success: '🎉 Кризис погашен! Царь доволен. Зельевар получает звание Staff-инженера.',
       partial: '⚠️ Кризис частично разрешён, но были потери или команда недовольна.',
-      fail: '💀 Ничего не сработало. Царь вызывает другого зельевара.',
+      fail:    '💀 Ничего не сработало. Царь вызывает другого зельевара.',
     },
   },
 ];
 
-// ─── STATE ──────────────────────────────────────────────────────
+// ─── STATE ───────────────────────────────────────────────────────
 let scenarioIdx = 0;
-let slotFills = {};      // roleId → ingredient id
-let activeSlotId = null; // roleId being picked
-let currentLayer = 'stone';
+let slotFills = {
+  foundation: null,
+  reagents:   [null, null],
+  catalysts:  [null, null, null],
+  stabilizer: null,
+  ritual:     null,
+};
+let visibleSlots    = { reagents: 1, catalysts: 1 };
+let activePickGroup = null; // 'foundation'|'reagents'|'catalysts'|'stabilizer'|'ritual'
+let activePickIdx   = null; // index for array groups
+let currentCardType = 'reagent';
 
-// ─── HELPERS ────────────────────────────────────────────────────
+// ─── HELPERS ─────────────────────────────────────────────────────
 const sc  = () => SCENARIOS[scenarioIdx];
 const ing = id => INGREDIENTS.find(i => i.id === id);
-const placedIds = () => new Set(Object.values(slotFills).filter(Boolean));
 
-// ─── CALC STATS ─────────────────────────────────────────────────
+function allPlaced() {
+  const result = [];
+  const f = ing(slotFills.foundation);
+  if (f) result.push({ group:'foundation', idx:0, i:f });
+  (slotFills.reagents || []).forEach((id, idx) => { const i = ing(id); if (i) result.push({ group:'reagents',  idx, i }); });
+  (slotFills.catalysts|| []).forEach((id, idx) => { const i = ing(id); if (i) result.push({ group:'catalysts', idx, i }); });
+  const st = ing(slotFills.stabilizer);
+  if (st) result.push({ group:'stabilizer', idx:0, i:st });
+  const ri = ing(slotFills.ritual);
+  if (ri) result.push({ group:'ritual', idx:0, i:ri });
+  return result;
+}
+
+function placedIdSet() {
+  return new Set(allPlaced().map(p => p.i.id));
+}
+
+function foundationCard() { return ing(slotFills.foundation); }
+function foundationDomain() { return foundationCard()?.domain || null; }
+
+function isCrossDomain(card) {
+  const fd = foundationDomain();
+  if (!fd || !card.domain) return false;
+  if (card.cardType === 'foundation') return false;
+  return card.domain !== fd;
+}
+
+function effectiveGold(card) {
+  return (card.gold || 0) + (isCrossDomain(card) ? CROSS_PENALTY : 0);
+}
+
+// ─── CALC STATS ──────────────────────────────────────────────────
 function calcStats() {
   const s = sc();
-  const effects  = { shield:0, speed:0, insight:0, rollout:0, contract:0, simplicity:0 };
+  const effects = { shield:0, speed:0, insight:0, rollout:0, contract:0, simplicity:0 };
   let totalHarm = 0, totalAdoption = 0, totalCollateral = 0, totalGold = 0;
 
-  // Collect all placed ingredients
-  const placed = s.activeSlots
-    .map(roleId => ({ roleId, i: ing(slotFills[roleId]) }))
-    .filter(x => x.i);
+  const placed = allPlaced();
 
-  // Find conflict pairs
+  // Conflict detection
   const conflictPairs = [];
-  const conflictIds = new Set();
-  for (const { i: a } of placed) {
-    for (const { i: b } of placed) {
+  const conflictIds   = new Set();
+  for (const { i:a } of placed) {
+    for (const { i:b } of placed) {
       if (a.id === b.id) continue;
-      if ((a.conflicts || []).includes(b.id)) {
-        const key = [a.id, b.id].sort().join('|');
+      if ((a.conflicts||[]).includes(b.id)) {
+        const key = [a.id,b.id].sort().join('|');
         if (!conflictPairs.find(p => p.key === key)) {
-          conflictPairs.push({ key, a: a.id, b: b.id, note: a.conflictNote || b.conflictNote || '' });
+          conflictPairs.push({ key, a:a.id, b:b.id, note: a.conflictNote || b.conflictNote || '' });
           conflictIds.add(a.id);
           conflictIds.add(b.id);
         }
@@ -939,38 +695,49 @@ function calcStats() {
     }
   }
 
-  // Accumulate
-  for (const { i } of placed) {
-    const penalty = conflictIds.has(i.id) ? 0.7 : 1.0;
-    totalGold       += i.gold || 0;
-    totalHarm       += i.harm || 0;
-    totalAdoption   += i.adoption || 0;
+  // Reagent harm multiplier (non-linear stacking)
+  const reagentCount   = (slotFills.reagents || []).filter(Boolean).length;
+  const reagentHarmMul = reagentCount >= 2 ? (reagentCount >= 3 ? 2.5 : 1.5) : 1.0;
+  const fragileMul     = s.targetProps?.fragile ? 2.0 : 1.0;
+
+  for (const { group, i } of placed) {
+    const effPenalty = conflictIds.has(i.id) ? 0.7 : 1.0;
+    const crossGold  = effectiveGold(i);
+    totalGold     += crossGold;
+    totalAdoption += i.adoption || 0;
     totalCollateral += i.collateralBase || 0;
-    for (const [eff, val] of Object.entries(i.effectPower || {})) {
-      effects[eff] = (effects[eff] || 0) + Math.round(val * penalty);
+
+    // Harm: reagents get stacking + fragile multiplier
+    let harmAmt = i.harm || 0;
+    if (i.cardType === 'reagent') {
+      harmAmt = harmAmt * reagentHarmMul * fragileMul;
+    }
+    totalHarm += harmAmt;
+
+    if (i.cardType !== 'foundation') {
+      for (const [eff, val] of Object.entries(i.effectPower || {})) {
+        effects[eff] = (effects[eff] || 0) + Math.round(val * effPenalty);
+      }
     }
   }
 
-  totalHarm       = Math.max(0, totalHarm);
-  totalCollateral = Math.max(0, totalCollateral);
+  totalHarm   = Math.max(0, totalHarm);
   const adoptionPct = Math.min(100, Math.max(0, 60 + totalAdoption));
 
-  return { effects, totalHarm, totalAdoption, adoptionPct, totalCollateral, totalGold, conflictPairs, placed };
+  return { effects, totalHarm, totalAdoption, adoptionPct, totalCollateral, totalGold,
+           conflictPairs, placed, reagentCount, reagentHarmMul, fragileMul };
 }
 
-// ─── CALC RESULT ────────────────────────────────────────────────
+// ─── CALC RESULT ─────────────────────────────────────────────────
 function calcResult(stats) {
   const s = sc();
 
   const effectsMet = Object.entries(s.requires).every(
     ([eff, need]) => (stats.effects[eff] || 0) >= need
   );
-
   const overBudget = stats.totalGold > s.goldBudget;
   const isFinal    = s.id === 'final';
-
-  // Hard budget block on tasks 1-7; soft (hurtAllies) on final
-  const solved = effectsMet && (isFinal || !overBudget);
+  const solved     = effectsMet && (isFinal || !overBudget);
 
   const hurtAlliesBase =
     stats.totalHarm > s.harmLimit ||
@@ -978,216 +745,245 @@ function calcResult(stats) {
 
   const teamUnhappy = stats.adoptionPct < (s.teamHappyMin || 50);
 
-  // Waste: skip ritual layer and rollout slot (they improve adoption/safety, not effects)
+  // Waste: skip foundation, ritual, stabilizer
   const requiredEffects = Object.keys(s.requires);
   const wasteIds = stats.placed
-    .filter(({ roleId, i }) => {
-      if (roleId === 'rollout' || i.layer === 'ritual') return false;
-      const contribs = Object.entries(i.effectPower || {})
-        .filter(([eff, v]) => v > 0 && requiredEffects.includes(eff));
+    .filter(({ i }) => {
+      if (['foundation','ritual','stabilizer'].includes(i.cardType)) return false;
+      const contribs = Object.entries(i.effectPower||{}).filter(([e,v]) => v>0 && requiredEffects.includes(e));
       return contribs.length === 0;
-    })
-    .map(({ i }) => i.id);
+    }).map(({ i }) => i.id);
 
-  // requiredSlots soft rule: if a mandated slot is empty → force partial
-  const emptyRequired = (s.requiredSlots || []).filter(roleId => !slotFills[roleId]);
+  // requiredGroups check
+  const reqGroups = s.requiredGroups || [];
+  const emptyRequired = reqGroups.filter(group => {
+    if (group === 'reagents')  return (slotFills.reagents ||[]).every(id => !id);
+    if (group === 'catalysts') return (slotFills.catalysts||[]).every(id => !id);
+    return !slotFills[group];
+  });
+
+  // stubborn: ritual must be filled
+  if (s.targetProps?.stubborn && !slotFills.ritual && !emptyRequired.includes('ritual')) {
+    emptyRequired.push('ritual');
+  }
+
   const forcedPartial  = solved && emptyRequired.length > 0;
-
   const hurtAllies = hurtAlliesBase || (isFinal && overBudget) || forcedPartial;
 
   return { solved, hurtAllies, teamUnhappy, wasteIds, overBudget, emptyRequired };
 }
 
-// ─── RENDER QUEST ───────────────────────────────────────────────
+// ─── RENDER QUEST ────────────────────────────────────────────────
 function renderQuest() {
   const s = sc();
   const stats = calcStats();
+
   const reqChips = Object.entries(s.requires).map(([eff, need]) => {
-    const m = EFFECT_META[eff];
-    const cur = stats.effects[eff] || 0;
-    const met = cur >= need;
-    return `<span class="require-chip ${met ? 'met' : 'unmet'}">${m.icon} ${m.label} ${need}</span>`;
+    const m = EFFECT_META[eff], cur = stats.effects[eff]||0, met = cur >= need;
+    return `<span class="require-chip ${met?'met':'unmet'}">${m.icon} ${m.label} ${need}</span>`;
   }).join('');
 
-  document.getElementById('quest-card').innerHTML = `
-    <div class="quest-badge">${s.badgeText}</div>
-    <div class="quest-requester">${s.requester}</div>
-    <div class="quest-story">${s.story}</div>
-    <div class="quest-need">${s.need}</div>
-    <div class="requires-row">${reqChips}</div>
-    <div class="quest-hint">${s.hint}</div>
+  const targetBadges = [];
+  if (s.targetProps?.fragile)  targetBadges.push(`<span class="target-badge fragile">💔 Хрупкая цель — вред ×2</span>`);
+  if (s.targetProps?.stubborn) targetBadges.push(`<span class="target-badge stubborn">🤔 Упрямая цель — нужен Ритуал</span>`);
+
+  document.getElementById('col-quest').innerHTML = `
+    <div class="quest-card">
+      <div class="quest-badge">${s.badgeText}</div>
+      <div class="quest-requester">${s.requester}</div>
+      <div class="quest-story">${s.story}</div>
+      <div class="quest-need">${s.need}</div>
+      ${targetBadges.length ? `<div class="target-badges">${targetBadges.join('')}</div>` : ''}
+      <div class="requires-row">${reqChips}</div>
+      <div class="quest-hint">${s.hint}</div>
+    </div>
   `;
 }
 
-// ─── RENDER GOLD ────────────────────────────────────────────────
+// ─── RENDER GOLD ─────────────────────────────────────────────────
 function renderGold(stats) {
-  const s = sc();
-  const over = stats.totalGold > s.goldBudget;
+  const s = sc(), over = stats.totalGold > s.goldBudget;
   const el = document.getElementById('gold-badge');
   el.textContent = `💰 ${stats.totalGold} / ${s.goldBudget}`;
   el.className = 'gold-badge' + (over ? ' over' : '');
 }
 
-// ─── RENDER SLOTS ───────────────────────────────────────────────
-function renderSlots() {
+// ─── RENDER EFFECTS PREVIEW ──────────────────────────────────────
+function renderEffectsPreview(stats) {
   const s = sc();
-  const activeSet = new Set(s.activeSlots);
+  const chips = Object.entries(s.requires).map(([eff, need]) => {
+    const m = EFFECT_META[eff], cur = stats.effects[eff]||0, met = cur >= need;
+    return `<div class="eff-req-chip ${met?'met':'unmet'}">${m.icon} <strong>${m.label}</strong><span class="eff-val">${cur}/${need} ${met?'✓':'✗'}</span></div>`;
+  }).join('');
+  document.getElementById('effects-preview').innerHTML =
+    `<div class="effects-preview-title">Нужные эффекты</div>${chips}`;
+}
 
-  const html = SLOT_ORDER.map(roleId => {
-    const role   = SLOT_ROLES[roleId];
-    const locked = !activeSet.has(roleId);
-    const filledId = slotFills[roleId];
-    const filled = filledId ? ing(filledId) : null;
-    const isTarget = (activeSlotId === roleId);
-    const layerLabels = role.allowedLayers.map(l => LAYER_META[l].icon).join(' ');
+// ─── RENDER SLOT GROUPS ──────────────────────────────────────────
+function renderSlotGroups() {
+  const s = sc();
+  const GROUPS = [
+    { key:'foundation', label:'Основа',        icon:'🏰', isArray:false },
+    { key:'reagents',   label:'Реагенты',       icon:'⚗️',  isArray:true  },
+    { key:'catalysts',  label:'Катализаторы',   icon:'🔬', isArray:true  },
+    { key:'stabilizer', label:'Стабилизатор',   icon:'⚖️', isArray:false },
+    { key:'ritual',     label:'Ритуал',         icon:'🕯️', isArray:false },
+  ];
 
-    let bodyHtml;
-    if (locked) {
-      bodyHtml = `<div class="slot-body"><div class="slot-empty">—</div></div><div class="slot-lock">🔒</div>`;
-    } else if (filled) {
-      const effBadges = Object.entries(filled.effectPower || {})
-        .filter(([, v]) => v > 0)
-        .map(([eff, v]) => {
-          const m = EFFECT_META[eff];
-          return `<span class="effect-chip ${m.cls}">${m.icon} ${v}</span>`;
-        }).join('');
-      bodyHtml = `
-        <div class="slot-body">
-          <div class="slot-ing-name">${filled.name}</div>
-          <div class="slot-ing-effects">${effBadges || '<span style="font-size:.7rem;color:var(--muted)">нет эффектов</span>'}</div>
-        </div>
-        <button class="slot-ing-remove" data-role="${roleId}" title="Убрать">✕</button>
-      `;
-    } else {
-      bodyHtml = `<div class="slot-body"><div class="slot-empty">+ нажми чтобы добавить</div></div>`;
+  const html = GROUPS.map(grp => {
+    const max = s.activeGroups[grp.key] || 0;
+    if (max === 0) {
+      return `<div class="slot-group locked">
+        <div class="slot-group-header"><span class="gh-icon">${grp.icon}</span><span class="gh-label">${grp.label}</span><span class="gh-meta">🔒 заблокировано</span></div>
+      </div>`;
     }
 
-    return `
-      <div class="slot-card ${locked ? 'locked' : ''} ${isTarget ? 'active-target' : ''} ${filled && !locked ? 'filled' : ''}"
-           data-role="${roleId}" ${locked ? '' : 'onclick="onSlotClick(event, \'' + roleId + '\')"'}>
-        <div class="slot-header">
-          <span class="slot-icon">${role.icon}</span>
-          <span class="slot-label">${role.label}</span>
-          <span class="slot-layers">${layerLabels}</span>
-        </div>
-        ${bodyHtml}
-      </div>
-    `;
+    let slots = [];
+    if (grp.isArray) {
+      const vis = Math.min(visibleSlots[grp.key] || 1, max);
+      for (let i = 0; i < vis; i++) {
+        const filledId = slotFills[grp.key][i];
+        slots.push(renderOneSlot(grp.key, i, filledId));
+      }
+      const canAdd = vis < max;
+      const addBtn = canAdd ? `<button class="gh-add" data-grp="${grp.key}">+ ещё</button>` : '';
+      const header = `<div class="slot-group-header"><span class="gh-icon">${grp.icon}</span><span class="gh-label">${grp.label}</span><span class="gh-meta">до ${max}</span>${addBtn}</div>`;
+      return `<div class="slot-group"><div class="slot-group-header"><span class="gh-icon">${grp.icon}</span><span class="gh-label">${grp.label}</span><span class="gh-meta">до ${max}</span>${addBtn}</div><div class="slot-group-body">${slots.join('')}</div></div>`;
+    } else {
+      const filledId = slotFills[grp.key];
+      slots.push(renderOneSlot(grp.key, 0, filledId));
+      const isTarget = (activePickGroup === grp.key);
+      return `<div class="slot-group"><div class="slot-group-header"><span class="gh-icon">${grp.icon}</span><span class="gh-label">${grp.label}</span></div><div class="slot-group-body">${slots.join('')}</div></div>`;
+    }
   }).join('');
 
-  document.getElementById('slots-grid').innerHTML = html;
+  document.getElementById('slot-groups').innerHTML = html;
 
-  // Remove button listeners
+  // Add button listeners
+  document.querySelectorAll('.gh-add').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const grp = btn.dataset.grp;
+      visibleSlots[grp] = Math.min((visibleSlots[grp]||1)+1, sc().activeGroups[grp]||0);
+      updateUI(false);
+    });
+  });
+
+  // Slot click listeners
+  document.querySelectorAll('.slot-card').forEach(card => {
+    card.addEventListener('click', e => {
+      e.stopPropagation();
+      const grp = card.dataset.grp, idx = parseInt(card.dataset.idx||'0');
+      if (activePickGroup === grp && activePickIdx === idx) {
+        activePickGroup = null; activePickIdx = null;
+      } else {
+        activePickGroup = grp; activePickIdx = idx;
+        currentCardType = grp === 'reagents' ? 'reagent' : grp === 'catalysts' ? 'catalyst' : grp === 'stabilizer' ? 'stabilizer' : grp === 'ritual' ? 'ritual' : 'foundation';
+        // Switch tab
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const tb = document.querySelector(`.tab-btn[data-ct="${currentCardType}"]`);
+        if (tb) tb.classList.add('active');
+      }
+      updateUI(false);
+    });
+  });
+
+  // Remove buttons
   document.querySelectorAll('.slot-ing-remove').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      const roleId = btn.dataset.role;
-      slotFills[roleId] = null;
+      const grp = btn.dataset.grp, idx = parseInt(btn.dataset.idx||'0');
+      if (grp === 'reagents' || grp === 'catalysts') slotFills[grp][idx] = null;
+      else slotFills[grp] = null;
       updateUI(false);
     });
   });
 }
 
-// ─── RENDER EFFECTS PREVIEW ─────────────────────────────────────
-function renderEffectsPreview(stats) {
-  const s = sc();
-  const chips = Object.entries(s.requires).map(([eff, need]) => {
-    const m = EFFECT_META[eff];
-    const cur = stats.effects[eff] || 0;
-    const met = cur >= need;
-    return `
-      <div class="eff-req-chip ${met ? 'met' : 'unmet'}">
-        ${m.icon} <strong>${m.label}</strong>
-        <span class="eff-val">${cur} / ${need} ${met ? '✓' : '✗'}</span>
-      </div>
-    `;
-  }).join('');
+function renderOneSlot(grp, idx, filledId) {
+  const filled = ing(filledId);
+  const isTarget = (activePickGroup === grp && activePickIdx === idx);
 
-  document.getElementById('effects-preview').innerHTML = `
-    <div class="effects-preview-title">Нужные эффекты</div>
-    ${chips}
-  `;
+  let bodyHtml;
+  if (filled) {
+    const effBadges = Object.entries(filled.effectPower||{}).filter(([,v])=>v>0)
+      .map(([eff,v])=>`<span class="effect-chip ${EFFECT_META[eff].cls}">${EFFECT_META[eff].icon} ${v}</span>`).join('');
+    bodyHtml = `
+      <div class="slot-body">
+        <div class="slot-ing-name">${filled.name}</div>
+        <div class="slot-ing-effects">${effBadges||'<span style="font-size:.68rem;color:var(--muted)">нет эффектов</span>'}</div>
+      </div>
+      <button class="slot-ing-remove" data-grp="${grp}" data-idx="${idx}">✕</button>`;
+  } else {
+    bodyHtml = `<div class="slot-body"><div class="slot-empty">+ нажми для выбора</div></div>`;
+  }
+
+  return `<div class="slot-card ${isTarget?'active-target':''} ${filled?'filled':''}" data-grp="${grp}" data-idx="${idx}">
+    <div class="slot-header"><span class="sh-label">${CARDTYPE_META[grp==='reagents'?'reagent':grp==='catalysts'?'catalyst':grp].label} ${idx+1 > 1 ? idx+1 : ''}</span></div>
+    ${bodyHtml}
+  </div>`;
 }
 
-// ─── RENDER INGREDIENTS ─────────────────────────────────────────
+// ─── RENDER INGREDIENTS ──────────────────────────────────────────
 function renderIngredients() {
   const s = sc();
-  const activeSet = new Set(s.activeSlots);
-  const placed = placedIds();
-  const role = activeSlotId ? SLOT_ROLES[activeSlotId] : null;
-  const allowedLayers = role ? new Set(role.allowedLayers) : null;
+  const placed = placedIdSet();
+  const fd = foundationDomain();
+  const inPickMode = activePickGroup !== null;
 
-  const filtered = INGREDIENTS.filter(i => i.layer === currentLayer);
+  const filtered = INGREDIENTS.filter(i => {
+    if (i.cardType !== currentCardType) return false;
+    // Foundation pick: only show foundationOptions
+    if (currentCardType === 'foundation') {
+      return (s.foundationOptions || []).includes(i.id);
+    }
+    return true;
+  });
 
   const html = filtered.map(i => {
-    const isPlaced = placed.has(i.id);
-    // In pick mode, check layer compatibility
-    const incompatible = allowedLayers && !allowedLayers.has(i.layer);
-    if (incompatible) return '';
+    const isPlaced   = placed.has(i.id);
+    const cross      = isCrossDomain(i);
+    const goldCost   = effectiveGold(i);
+    const hasConflict = (i.conflicts||[]).some(cid => placed.has(cid));
+    const conflictWith = hasConflict ? (i.conflicts||[]).filter(c=>placed.has(c)).map(c=>ing(c)?.name||c).join(', ') : null;
 
-    // Check for active conflicts (with currently placed ingredients)
-    const hasConflict = (i.conflicts || []).some(cid => placed.has(cid));
-    const conflictWith = hasConflict
-      ? (i.conflicts || []).filter(cid => placed.has(cid)).map(cid => ing(cid)?.name || cid).join(', ')
-      : null;
+    const effBadges = Object.entries(i.effectPower||{}).filter(([,v])=>v>0)
+      .map(([eff,v])=>`<span class="effect-chip ${EFFECT_META[eff].cls}">${EFFECT_META[eff].icon} +${v}</span>`).join('');
 
-    const effBadges = Object.entries(i.effectPower || {})
-      .filter(([, v]) => v > 0)
-      .map(([eff, v]) => {
-        const m = EFFECT_META[eff];
-        return `<span class="effect-chip ${m.cls}">${m.icon} +${v}</span>`;
-      }).join('');
+    const goldTag  = `<span class="gold-tag">💰 ${goldCost}${cross ? ` (+${CROSS_PENALTY})` : ''}</span>`;
+    const crossTag = cross ? `<span class="cross-tag">⬡ Не родная +${CROSS_PENALTY}</span>` : '';
+    const harmTag  = (i.harm||0) > 0 ? `<span class="harm-tag">⚠️ вред ${i.harm}</span>` : '';
+    const adoptTag = (i.adoption||0) > 0 ? `<span class="adopt-tag">😊 +${i.adoption}</span>` : (i.adoption||0) < 0 ? `<span class="adopt-neg">😑 ${i.adoption}</span>` : '';
+    const isTrap   = Object.keys(i.effectPower||{}).length === 0 && i.cardType !== 'foundation';
 
-    const adoptTag = i.adoption > 0
-      ? `<span class="adopt-tag">😊 +${i.adoption}</span>`
-      : i.adoption < 0
-        ? `<span class="adopt-neg">😑 ${i.adoption}</span>`
-        : '';
-    const harmTag = (i.harm || 0) > 0 ? `<span class="harm-tag">⚠️ вред ${i.harm}</span>` : '';
-    const goldTag = `<span class="gold-tag">💰 ${i.gold}</span>`;
+    const domCls = DOMAIN_META[i.domain]?.cls || '';
+    const domTag = i.domain ? `<span class="dom-tag ${domCls}" style="background:rgba(0,0,0,.15)">${DOMAIN_META[i.domain]?.icon} ${DOMAIN_META[i.domain]?.label}</span>` : '';
 
-    const isTrap = Object.keys(i.effectPower || {}).length === 0;
-
-    return `
-      <div class="ing-card ${isPlaced ? 'placed' : ''} ${isTrap ? 'trap' : ''}"
-           data-id="${i.id}" ${isPlaced ? '' : 'onclick="onIngClick(\'' + i.id + '\')"'}>
-        ${isPlaced ? `<span class="ing-placed-label">В котле</span>` : ''}
-        <div class="ing-name">${i.name}</div>
-        <div class="ing-desc">${i.desc}</div>
-        <div class="ing-meta">
-          ${effBadges || '<span style="font-size:.7rem;color:var(--muted)">нет эффектов</span>'}
-          ${goldTag}${harmTag}${adoptTag}
-        </div>
-        ${hasConflict ? `<div class="ing-conflict-warn show">⚡ Конфликт с: ${conflictWith}</div>` : ''}
+    return `<div class="ing-card ${isPlaced?'placed':''} ${isTrap?'trap':''} ${cross?'cross':''}"
+      data-id="${i.id}" ${isPlaced ? '' : `onclick="onIngClick('${i.id}')"`}>
+      ${isPlaced ? '<span class="ing-placed-label">В котле</span>' : ''}
+      <div class="ing-name">${i.name}</div>
+      <div class="ing-desc">${i.desc}</div>
+      <div class="ing-meta">
+        ${effBadges || (i.cardType!=='foundation' ? '<span style="font-size:.68rem;color:var(--muted)">нет эффектов</span>' : '')}
+        ${goldTag}${crossTag}${harmTag}${adoptTag}${domTag}
       </div>
-    `;
+      ${hasConflict ? `<div class="ing-conflict-warn show">⚡ Конфликт с: ${conflictWith}</div>` : ''}
+    </div>`;
   }).join('');
 
-  document.getElementById('ing-list').innerHTML = html || '<div style="color:var(--muted);font-size:.8rem;padding:10px">Нет подходящих ингредиентов для этого слота</div>';
+  document.getElementById('ing-list').innerHTML = html || `<div style="color:var(--muted);font-size:.8rem;padding:10px">Нет карт этого типа</div>`;
 }
 
-// ─── PICK MODE BANNER ───────────────────────────────────────────
+// ─── PICK BANNER ─────────────────────────────────────────────────
 function renderPickBanner() {
   const banner = document.getElementById('pick-banner');
-  if (activeSlotId) {
-    const role = SLOT_ROLES[activeSlotId];
-    const layerIcons = role.allowedLayers.map(l => LAYER_META[l].icon + ' ' + LAYER_META[l].label).join(', ');
-    document.getElementById('pick-banner-text').textContent =
-      `${role.icon} Выбираешь для слота «${role.label}» · допустимо: ${layerIcons}`;
+  if (activePickGroup) {
+    const ct = activePickGroup === 'reagents' ? 'reagent' : activePickGroup === 'catalysts' ? 'catalyst' : activePickGroup === 'stabilizer' ? 'stabilizer' : activePickGroup === 'ritual' ? 'ritual' : 'foundation';
+    const meta = CARDTYPE_META[ct];
+    document.getElementById('pick-banner-text').textContent = `${meta.icon} Выбираешь «${meta.label}» (слот ${(activePickIdx||0)+1})`;
     banner.classList.add('visible');
-
-    // Highlight compatible tabs; gray out others
     document.querySelectorAll('.tab-btn').forEach(btn => {
-      const l = btn.dataset.layer;
-      const ok = role.allowedLayers.includes(l);
-      btn.classList.toggle('grayed', !ok);
-      if (!ok && btn.classList.contains('active')) {
-        // switch to first allowed tab
-        const firstAllowed = role.allowedLayers[0];
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector(`.tab-btn[data-layer="${firstAllowed}"]`).classList.add('active');
-        currentLayer = firstAllowed;
-      }
+      btn.classList.toggle('grayed', btn.dataset.ct !== ct);
     });
   } else {
     banner.classList.remove('visible');
@@ -1195,112 +991,90 @@ function renderPickBanner() {
   }
 }
 
-// ─── SHOW RESULT ────────────────────────────────────────────────
+// ─── SHOW RESULT ─────────────────────────────────────────────────
 function showResult() {
   const stats  = calcStats();
   const result = calcResult(stats);
   const s = sc();
-
   const { solved, hurtAllies, teamUnhappy, wasteIds, overBudget, emptyRequired } = result;
 
-  // Choose debrief text (teamUnhappy also counts as partial)
   let debriefText;
   if (!solved)                        debriefText = s.debrief.fail;
   else if (hurtAllies || teamUnhappy) debriefText = s.debrief.partial;
   else                                debriefText = s.debrief.success;
 
-  // Main icon (teamUnhappy also downgrades to partial)
   let mainIcon, mainTitle;
-  if (!solved)                        { mainIcon = '💀'; mainTitle = 'Задача не выполнена'; }
-  else if (hurtAllies || teamUnhappy) { mainIcon = '⚠️'; mainTitle = 'Частичный успех'; }
-  else                                { mainIcon = '🏆'; mainTitle = 'Успех!'; }
+  if (!solved)                        { mainIcon='💀'; mainTitle='Задача не выполнена'; }
+  else if (hurtAllies || teamUnhappy) { mainIcon='⚠️'; mainTitle='Частичный успех'; }
+  else                                { mainIcon='🏆'; mainTitle='Успех!'; }
 
-  // Event rows
   const solvedRow = solved
-    ? `<div class="event-row good"><span class="ev-icon">✅</span> Задача решена</div>`
+    ? `<div class="event-row good"><span>✅</span> Задача решена</div>`
     : overBudget
-      ? `<div class="event-row bad"><span class="ev-icon">❌</span> Задача не выполнена — бюджет превышен (${stats.totalGold} > ${s.goldBudget} 💰)</div>`
-      : `<div class="event-row bad"><span class="ev-icon">❌</span> Задача не решена — эффектов не хватило</div>`;
+      ? `<div class="event-row bad"><span>❌</span> Бюджет превышен (${stats.totalGold} > ${s.goldBudget} 💰) — задача не выполнена</div>`
+      : `<div class="event-row bad"><span>❌</span> Задача не решена — эффектов не хватило</div>`;
 
-  const alliesRow = hurtAllies
-    ? `<div class="event-row bad"><span class="ev-icon">💔</span> Задело своих — побочный ущерб слишком высок</div>`
-    : `<div class="event-row good"><span class="ev-icon">💚</span> Своих не задело</div>`;
+  const alliesRow = hurtAllies && !emptyRequired.length
+    ? `<div class="event-row bad"><span>💔</span> Задело своих — вред слишком высок</div>`
+    : !hurtAllies ? `<div class="event-row good"><span>💚</span> Своих не задело</div>` : '';
 
   const teamRow = teamUnhappy
-    ? `<div class="event-row warn"><span class="ev-icon">😑</span> Команда недовольна — слишком много боли при внедрении</div>`
-    : `<div class="event-row good"><span class="ev-icon">😊</span> Команда приняла зелье</div>`;
+    ? `<div class="event-row warn"><span>😑</span> Команда недовольна — тяжело внедрять</div>`
+    : `<div class="event-row good"><span>😊</span> Команда приняла зелье</div>`;
 
   const budgetRow = overBudget && solved
-    ? `<div class="event-row warn"><span class="ev-icon">💸</span> Бюджет превышен (${stats.totalGold} > ${s.goldBudget} 💰) — в финале это сошло с рук</div>`
+    ? `<div class="event-row warn"><span>💸</span> Бюджет превышен (${stats.totalGold} > ${s.goldBudget}) — в финале прошло</div>` : '';
+
+  const reqSlotsRow = emptyRequired.length
+    ? emptyRequired.map(g => {
+        const note = g === 'ritual' && s.targetProps?.stubborn
+          ? 'Цель Упрямая — без Ритуала внедрение не дойдёт'
+          : `Слот «${CARDTYPE_META[g==='reagents'?'reagent':g==='catalysts'?'catalyst':g]?.label}» пуст — максимум частичный успех`;
+        return `<div class="event-row warn"><span>🔒</span> ${note}</div>`;
+      }).join('')
     : '';
 
-  const requiredSlotRow = emptyRequired.length > 0
-    ? `<div class="event-row warn"><span class="ev-icon">🔒</span> ${s.requiredNote || 'Ключевой слот пуст — максимум частичный успех'}</div>`
-    : '';
+  const reagentWarnRow = stats.reagentCount > 1
+    ? `<div class="event-row warn"><span>⚗️</span> ${stats.reagentCount} реагента → вред каждого ×${stats.reagentHarmMul}${s.targetProps?.fragile ? ` × хрупкость ×${stats.fragileMul}` : ''}</div>` : '';
 
-  // Waste note
-  const wasteHtml = wasteIds.length > 0
-    ? `<div class="waste-note">🗑 Лишние ингредиенты (не дают нужного эффекта): ${wasteIds.map(id => ing(id)?.name || id).join(', ')}</div>`
-    : '';
+  const wasteHtml = wasteIds.length
+    ? `<div class="waste-note">🗑 Лишние (не дают нужный эффект): ${wasteIds.map(id=>ing(id)?.name||id).join(', ')}</div>` : '';
 
-  // Conflicts
-  const conflictHtml = stats.conflictPairs.length > 0
-    ? `<div class="conflict-list">
-        ${stats.conflictPairs.map(p =>
-          `<div class="conflict-item">⚡ Конфликт: ${ing(p.a)?.name} + ${ing(p.b)?.name}${p.note ? ' — ' + p.note : ''}</div>`
-        ).join('')}
-       </div>`
-    : '';
+  const conflictHtml = stats.conflictPairs.length
+    ? `<div class="conflict-list">${stats.conflictPairs.map(p=>`<div class="conflict-item">⚡ ${ing(p.a)?.name} + ${ing(p.b)?.name}${p.note?' — '+p.note:''}</div>`).join('')}</div>` : '';
 
-  // Details
   const requiredSet = new Set(Object.keys(s.requires));
-  const effDetailRows = Object.entries(stats.effects)
-    .filter(([eff, v]) => v > 0 || requiredSet.has(eff))
-    .map(([eff, v]) => {
-      const m = EFFECT_META[eff];
-      const need = s.requires[eff];
-      const ok = !need || v >= need;
-      return `<div class="detail-item"><div class="d-label">${m.icon} ${m.label}</div><div class="d-value ${ok ? 'ok' : 'bad'}">${v}${need ? ' / ' + need : ''}</div></div>`;
+  const effDetails = Object.entries(stats.effects)
+    .filter(([eff,v]) => v > 0 || requiredSet.has(eff))
+    .map(([eff,v]) => {
+      const m = EFFECT_META[eff], need = s.requires[eff], ok = !need || v >= need;
+      return `<div class="detail-item"><div class="d-label">${m.icon} ${m.label}</div><div class="d-value ${ok?'ok':'bad'}">${v}${need?' / '+need:''}</div></div>`;
     });
 
   document.getElementById('result-panel').innerHTML = `
     <div class="result-header">
       <div class="result-icon">${mainIcon}</div>
-      <div>
-        <div class="result-title">${mainTitle}</div>
-        <div class="result-subtitle">${s.requester}</div>
-      </div>
+      <div><div class="result-title">${mainTitle}</div><div class="result-subtitle">${s.requester}</div></div>
     </div>
     <div class="event-rows">
-      ${solvedRow}
-      ${alliesRow}
-      ${teamRow}
-      ${budgetRow}
-      ${requiredSlotRow}
+      ${solvedRow}${alliesRow}${teamRow}${budgetRow}${reqSlotsRow}${reagentWarnRow}
     </div>
-    ${wasteHtml}
-    ${conflictHtml}
+    ${wasteHtml}${conflictHtml}
     <div class="result-story">${debriefText}</div>
     <button class="details-toggle" onclick="toggleDetails()">▾ Показать детали (числа)</button>
     <div id="result-details">
       <div class="details-grid">
-        <div class="detail-item">
-          <div class="d-label">Вред / лимит</div>
-          <div class="d-value ${stats.totalHarm > s.harmLimit ? 'bad' : 'ok'}">${stats.totalHarm} / ${s.harmLimit}</div>
-        </div>
-        <div class="detail-item">
-          <div class="d-label">Принятие команды</div>
-          <div class="d-value ${stats.adoptionPct < s.teamHappyMin ? 'bad' : 'ok'}">${stats.adoptionPct}%</div>
-        </div>
-        ${s.collateralLimit < 999 ? `<div class="detail-item"><div class="d-label">Залп по своим / лимит</div><div class="d-value ${stats.totalCollateral > s.collateralLimit ? 'bad' : 'ok'}">${stats.totalCollateral} / ${s.collateralLimit}</div></div>` : ''}
-        <div class="detail-item">
-          <div class="d-label">Стоимость / бюджет</div>
-          <div class="d-value ${stats.totalGold > s.goldBudget ? 'bad' : 'ok'}">${stats.totalGold} / ${s.goldBudget} 💰</div>
-        </div>
-        ${effDetailRows.join('')}
+        <div class="detail-item"><div class="d-label">Вред / лимит</div>
+          <div class="d-value ${stats.totalHarm > s.harmLimit?'bad':'ok'}">${Math.round(stats.totalHarm)} / ${s.harmLimit}</div></div>
+        <div class="detail-item"><div class="d-label">Принятие</div>
+          <div class="d-value ${stats.adoptionPct < (s.teamHappyMin||50)?'bad':'ok'}">${stats.adoptionPct}%</div></div>
+        <div class="detail-item"><div class="d-label">Стоимость / бюджет</div>
+          <div class="d-value ${stats.totalGold > s.goldBudget?'bad':'ok'}">${stats.totalGold} / ${s.goldBudget} 💰</div></div>
+        <div class="detail-item"><div class="d-label">Реагенты × вред</div>
+          <div class="d-value">${stats.reagentCount} × ${stats.reagentHarmMul}${s.targetProps?.fragile?` × ${stats.fragileMul}`:''}</div></div>
+        ${effDetails.join('')}
       </div>
-    </div>
-  `;
+    </div>`;
 
   document.getElementById('result-panel').style.display = 'block';
 }
@@ -1308,9 +1082,9 @@ function showResult() {
 function toggleDetails() {
   const el = document.getElementById('result-details');
   const btn = document.querySelector('.details-toggle');
-  const visible = el.style.display !== 'none' && el.style.display !== '';
-  el.style.display = visible ? 'none' : 'block';
-  btn.textContent = visible ? '▾ Показать детали (числа)' : '▴ Скрыть детали';
+  const vis = el.style.display !== 'none' && el.style.display !== '';
+  el.style.display = vis ? 'none' : 'block';
+  btn.textContent = vis ? '▾ Показать детали (числа)' : '▴ Скрыть детали';
 }
 
 function hideResult() {
@@ -1319,108 +1093,85 @@ function hideResult() {
   el.innerHTML = '';
 }
 
-// ─── EVENT HANDLERS ─────────────────────────────────────────────
-function onSlotClick(e, roleId) {
-  e.stopPropagation();
-  if (activeSlotId === roleId) {
-    // cancel pick mode
-    activeSlotId = null;
-  } else {
-    activeSlotId = roleId;
-    const role = SLOT_ROLES[roleId];
-    // auto-switch tab to first allowed layer
-    if (!role.allowedLayers.includes(currentLayer)) {
-      currentLayer = role.allowedLayers[0];
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector(`.tab-btn[data-layer="${currentLayer}"]`).classList.add('active');
-    }
-  }
-  updateUI(false);
-}
-
+// ─── EVENTS ──────────────────────────────────────────────────────
 function onIngClick(id) {
-  if (!activeSlotId) return;
+  if (!activePickGroup) return;
+  const card = ing(id);
+  if (!card) return;
 
-  const role = SLOT_ROLES[activeSlotId];
-  const i = ing(id);
-  if (!role.allowedLayers.includes(i.layer)) return;
+  if (activePickGroup === 'foundation') {
+    slotFills.foundation = id;
+  } else if (activePickGroup === 'reagents' || activePickGroup === 'catalysts') {
+    slotFills[activePickGroup][activePickIdx] = id;
+  } else {
+    slotFills[activePickGroup] = id;
+  }
 
-  slotFills[activeSlotId] = id;
-  activeSlotId = null;
-
+  activePickGroup = null;
+  activePickIdx   = null;
   updateUI(false);
 }
 
-// ─── UPDATE UI ──────────────────────────────────────────────────
 function updateUI(showBrew) {
   const stats = calcStats();
   renderQuest();
   renderGold(stats);
-  renderSlots();
+  renderSlotGroups();
   renderEffectsPreview(stats);
   renderPickBanner();
   renderIngredients();
   if (!showBrew) hideResult();
 }
 
-// ─── INIT SCENARIO ──────────────────────────────────────────────
 function initScenario() {
-  slotFills = {};
-  activeSlotId = null;
-  currentLayer = 'stone';
+  slotFills = { foundation:null, reagents:[null,null], catalysts:[null,null,null], stabilizer:null, ritual:null };
+  visibleSlots = { reagents:1, catalysts:1 };
+  activePickGroup = null;
+  activePickIdx   = null;
+  currentCardType = 'reagent';
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.tab-btn[data-layer="stone"]').classList.add('active');
-  const total = SCENARIOS.length;
-  document.getElementById('scenario-idx').textContent = `${scenarioIdx + 1} / ${total}`;
+  const reagentTab = document.querySelector('.tab-btn[data-ct="reagent"]');
+  if (reagentTab) reagentTab.classList.add('active');
+  document.getElementById('scenario-idx').textContent = `${scenarioIdx+1} / ${SCENARIOS.length}`;
   updateUI(false);
 }
 
-// ─── BOOT ───────────────────────────────────────────────────────
+// ─── BOOT ────────────────────────────────────────────────────────
 document.getElementById('btn-brew').addEventListener('click', () => {
-  activeSlotId = null;
+  activePickGroup = null; activePickIdx = null;
   showResult();
-  renderSlots();
-  renderPickBanner();
-  renderIngredients();
+  renderSlotGroups(); renderPickBanner(); renderIngredients();
 });
-
 document.getElementById('btn-reset').addEventListener('click', () => {
-  slotFills = {};
-  activeSlotId = null;
+  slotFills = { foundation:null, reagents:[null,null], catalysts:[null,null,null], stabilizer:null, ritual:null };
+  visibleSlots = { reagents:1, catalysts:1 };
+  activePickGroup = null; activePickIdx = null;
   updateUI(false);
 });
-
 document.getElementById('btn-next').addEventListener('click', () => {
-  if (scenarioIdx < SCENARIOS.length - 1) { scenarioIdx++; initScenario(); }
+  if (scenarioIdx < SCENARIOS.length-1) { scenarioIdx++; initScenario(); }
 });
-
 document.getElementById('btn-prev').addEventListener('click', () => {
   if (scenarioIdx > 0) { scenarioIdx--; initScenario(); }
 });
-
 document.getElementById('pick-cancel').addEventListener('click', () => {
-  activeSlotId = null;
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('grayed'));
+  activePickGroup = null; activePickIdx = null;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('grayed'));
   updateUI(false);
 });
-
 document.getElementById('tab-bar').addEventListener('click', e => {
   const btn = e.target.closest('.tab-btn');
   if (!btn || btn.classList.contains('grayed')) return;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  currentLayer = btn.dataset.layer;
+  currentCardType = btn.dataset.ct;
   renderIngredients();
 });
-
-// Close pick mode when clicking outside
 document.addEventListener('click', e => {
-  if (!activeSlotId) return;
-  const inCauldron = e.target.closest('#col-cauldron');
-  const inIngList  = e.target.closest('#col-ingredients');
-  if (!inCauldron && !inIngList) {
-    activeSlotId = null;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('grayed'));
+  if (!activePickGroup) return;
+  if (!e.target.closest('#col-cauldron') && !e.target.closest('#col-ingredients')) {
+    activePickGroup = null; activePickIdx = null;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('grayed'));
     updateUI(false);
   }
 });
