@@ -1,1157 +1,1402 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Зельевар Staff-инженера</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --surface2: #21262d;
-      --border: #30363d;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --accent: #58a6ff;
-      --success: #3fb950;
-      --warn: #d29922;
-      --danger: #f85149;
-      --orange: #ff961e;
-      --purple: #a371f7;
-      --radius: 10px;
-      --font: 'Manrope', system-ui, sans-serif;
-      /* connector palette */
-      --hot-bg: rgba(255,150,30,0.12); --hot-fg: #ff961e;
-      --cool-bg: rgba(88,166,255,0.12); --cool-fg: #58a6ff;
-      --any-bg:  rgba(139,148,158,0.08); --any-fg: #8b949e;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Зельевар Staff-инженера</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #22263a;
+  --border: #2e3247;
+  --text: #e4e6f0;
+  --muted: #7b82a0;
+  --accent: #7c6af7;
+  --success: #3fb950;
+  --danger: #f85149;
+  --warn: #d29922;
+  --gold-color: #f0a030;
+  --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+header h1 { font-size: 1.1rem; font-weight: 700; }
+header .sub { font-size: .8rem; color: var(--muted); }
+.scenario-switcher {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .82rem;
+  transition: background .15s, border-color .15s;
+}
+.btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.btn.primary:hover { opacity: .85; }
+.btn.danger { border-color: var(--danger); color: var(--danger); }
+.btn.danger:hover { background: var(--danger); color: #fff; }
+.scenario-idx { font-size: .8rem; color: var(--muted); }
 
-    header { padding: 20px 24px 0; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-    header h1 { font-size: 1.3rem; font-weight: 700; }
-    header p  { font-size: 0.85rem; color: var(--muted); }
+main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+  gap: 0;
+  overflow: hidden;
+}
+.col {
+  padding: 16px;
+  overflow-y: auto;
+  height: calc(100vh - 54px);
+}
+.col-left { border-right: 1px solid var(--border); }
+.col-right { border-left: 1px solid var(--border); }
 
-    .game-layout { display: grid; grid-template-columns: 280px 1fr 320px; gap: 16px; padding: 16px 24px 40px; align-items: start; }
-    @media (max-width: 900px) { .game-layout { grid-template-columns: 1fr; } }
+/* Quest card */
+.quest-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.quest-badge {
+  display: inline-block;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: .72rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.quest-requester { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.quest-story { font-size: .82rem; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+.quest-need {
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: .82rem;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+.quest-hint {
+  background: rgba(124,106,247,.1);
+  border: 1px solid rgba(124,106,247,.3);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: .78rem;
+  color: #a99ef7;
+  line-height: 1.4;
+}
+.requires-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.require-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 700;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.require-chip.met { border-color: var(--success); color: var(--success); }
+.require-chip.unmet { border-color: var(--danger); color: var(--danger); }
 
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
-    .col-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+/* Cauldron */
+.cauldron-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cauldron-title { font-weight: 700; font-size: .95rem; }
+.gold-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(240,160,48,.12);
+  border: 1px solid rgba(240,160,48,.4);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--gold-color);
+}
+.gold-badge.over { border-color: var(--danger); color: var(--danger); background: rgba(248,81,73,.12); }
 
-    /* Quest */
-    .quest-card { position: sticky; top: 16px; }
-    .quest-badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
-    .quest-badge.ddos    { background: rgba(248,81,73,.15); color: var(--danger); border: 1px solid rgba(248,81,73,.4); }
-    .quest-badge.latency { background: rgba(88,166,255,.15); color: var(--accent); border: 1px solid rgba(88,166,255,.4); }
-    .quest-requester { font-size: 1rem; font-weight: 600; margin-bottom: 10px; }
-    .quest-story     { font-size: .9rem; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
-    .quest-needs     { background: var(--surface2); border-radius: 8px; padding: 12px; font-size: .85rem; }
-    .quest-needs strong { display: block; color: var(--text); margin-bottom: 6px; }
-    .quest-need-row  { display: flex; justify-content: space-between; color: var(--muted); padding: 2px 0; }
-    .quest-need-row span:last-child { color: var(--text); font-weight: 500; }
-    .quest-hint { margin-top: 12px; padding: 10px 12px; background: rgba(88,166,255,.08); border: 1px solid rgba(88,166,255,.25); border-radius: 8px; font-size: .82rem; color: var(--accent); display: none; }
-    .quest-hint.visible { display: block; }
-    .btn-next { margin-top: 16px; width: 100%; padding: 10px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: var(--font); font-size: .9rem; cursor: pointer; transition: border-color .2s, color .2s; }
-    .btn-next:hover { border-color: var(--accent); color: var(--accent); }
+.slots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
 
-    /* Cauldron */
-    .cauldron-col { display: flex; flex-direction: column; gap: 14px; }
+.slot-card {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .18s, opacity .18s;
+  min-height: 80px;
+  position: relative;
+}
+.slot-card:hover:not(.locked):not(.active-target) { border-color: var(--accent); }
+.slot-card.locked {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.slot-card.active-target {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(124,106,247,.25);
+}
+.slot-card.filled { border-color: var(--border); }
+.slot-card.filled:hover:not(.locked) { border-color: #5a9ef8; }
 
-    /* Gold */
-    .gold-display { margin-bottom: 14px; }
-    .gold-bar-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
-    .gold-val { font-weight: 700; }
-    .gold-val.over { color: var(--danger); }
-    .gold-val.warn { color: var(--warn); }
+.slot-header {
+  background: var(--surface2);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .72rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.slot-header .slot-icon { font-size: .9rem; }
+.slot-header .slot-label { font-weight: 600; flex: 1; }
+.slot-header .slot-layers { font-size: .66rem; opacity: .7; }
+.slot-lock { font-size: 1rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: .5; }
 
-    /* Ritual wrapper zone */
-    .ritual-zone {
-      border: 1.5px dashed rgba(210,153,34,.5);
-      border-radius: var(--radius);
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      background: rgba(210,153,34,.04);
-    }
-    .ritual-zone-header {
-      font-size: .68rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .08em; color: var(--warn);
-      margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
-    }
-    .ritual-zone-slots { display: flex; gap: 8px; flex-wrap: wrap; }
-    .ritual-slot-card {
-      flex: 1; min-width: 120px;
-      border: 1.5px solid rgba(210,153,34,.35);
-      border-radius: 8px; padding: 8px 10px;
-      cursor: pointer; background: var(--surface2);
-      transition: border-color .18s;
-    }
-    .ritual-slot-card:hover  { border-color: var(--warn); }
-    .ritual-slot-card.active { border-color: var(--warn); box-shadow: 0 0 0 2px rgba(210,153,34,.2); }
-    .ritual-slot-card.filled { border-color: var(--success); }
-    .ritual-slot-label    { font-size: .68rem; font-weight: 700; color: var(--warn); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
-    .ritual-slot-ing      { font-size: .8rem; font-weight: 600; color: var(--text); }
-    .ritual-slot-effect   { font-size: .72rem; color: var(--muted); margin-top: 2px; }
-    .ritual-slot-empty    { font-size: .78rem; color: var(--muted); font-style: italic; }
-    .ritual-slot-clear { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: .9rem; line-height: 1; margin-left: 4px; }
-    .ritual-slot-clear:hover { color: var(--danger); }
+.slot-body {
+  padding: 7px 8px;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slot-empty {
+  font-size: .76rem;
+  color: var(--muted);
+  text-align: center;
+}
+.slot-ing-name {
+  font-size: .8rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.slot-ing-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.slot-ing-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: .8rem;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.slot-ing-remove:hover { color: var(--danger); background: rgba(248,81,73,.12); }
 
-    /* Connector bars */
-    .conn-bar {
-      height: 22px; display: flex; align-items: center; padding: 0 10px;
-      font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; flex-shrink: 0;
-    }
-    .conn-bar .cbl { margin-left: auto; opacity: .8; }
-    .conn-bar.hot  { background: var(--hot-bg);  color: var(--hot-fg); }
-    .conn-bar.cool { background: var(--cool-bg); color: var(--cool-fg); }
-    .conn-bar.any  { background: var(--any-bg);  color: var(--any-fg); }
-    .conn-bar.empty { background: rgba(48,54,61,.4); color: var(--border); }
-    .conn-bar.top    { border-radius: var(--radius) var(--radius) 0 0; }
-    .conn-bar.bottom { border-radius: 0 0 var(--radius) var(--radius); }
+/* Effect chips */
+.effect-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 6px;
+  border-radius: 12px;
+  font-size: .7rem;
+  font-weight: 700;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.effect-chip.shield    { border-color: #5a9ef8; color: #5a9ef8; }
+.effect-chip.speed     { border-color: #f0c040; color: #f0c040; }
+.effect-chip.insight   { border-color: #b08af7; color: #b08af7; }
+.effect-chip.rollout   { border-color: #3fb950; color: #3fb950; }
+.effect-chip.contract  { border-color: #f09050; color: #f09050; }
+.effect-chip.simplicity{ border-color: #50d0d0; color: #50d0d0; }
 
-    /* Chain source */
-    .chain-source { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px dashed var(--border); border-radius: 8px; font-size: .8rem; color: var(--muted); margin-bottom: 0; }
-    .chain-source .src-pill { margin-left: auto; padding: 2px 8px; border-radius: 20px; font-size: .65rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; background: var(--hot-bg); color: var(--hot-fg); }
+/* Effects preview */
+.effects-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 10px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.effects-preview-title {
+  width: 100%;
+  font-size: .72rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.eff-req-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: .8rem;
+  font-weight: 700;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+}
+.eff-req-chip.met    { border-color: var(--success); color: var(--success); }
+.eff-req-chip.unmet  { border-color: var(--danger);  color: var(--danger);  }
+.eff-req-chip .eff-val { font-size: .7rem; opacity: .8; }
 
-    /* Pipeline slots */
-    .slots-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 14px; }
-    .slot-card { border: 1.5px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: border-color .18s; overflow: hidden; display: flex; flex-direction: column; }
-    .slot-card:hover     { border-color: var(--accent); }
-    .slot-card.active    { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(88,166,255,.2); }
-    .slot-card.filled    { border-color: var(--success); }
-    .slot-card.conflict  { border-color: var(--danger); }
-    .slot-card.waste     { border-color: var(--warn); }
-    .slot-inner { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface2); }
-    .slot-card.active .slot-inner { background: rgba(88,166,255,.05); }
-    .slot-body  { flex: 1; min-width: 0; }
-    .slot-label-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
-    .slot-label      { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-    .slot-layer-hint { font-size: .68rem; color: var(--border); }
-    .slot-ingredient { font-size: .88rem; font-weight: 600; color: var(--text); }
-    .slot-empty-text { font-size: .82rem; color: var(--muted); font-style: italic; }
-    .slot-conflict-warn { font-size: .72rem; color: var(--danger); margin-top: 3px; }
-    .slot-waste-warn    { font-size: .72rem; color: var(--warn); margin-top: 3px; }
-    .slot-clear { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s; }
-    .slot-clear:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+/* Cauldron actions */
+.cauldron-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.cauldron-actions .btn { flex: 1; text-align: center; }
 
-    /* Bridge */
-    .slot-bridge { display: flex; align-items: center; justify-content: center; height: 20px; position: relative; }
-    .slot-bridge::before { content: ''; position: absolute; left: 50%; top: 0; width: 2px; height: 100%; transform: translateX(-50%); background: var(--border); }
-    .slot-bridge .bi { background: var(--surface); padding: 0 8px; position: relative; z-index: 1; font-size: .7rem; font-weight: 700; }
-    .slot-bridge.ok  .bi { color: var(--success); }
-    .slot-bridge.bad .bi { color: var(--danger);  }
-    .slot-bridge.ok::before  { background: rgba(63,185,80,.4); }
-    .slot-bridge.bad::before { background: rgba(248,81,73,.5); }
+/* Result panel */
+#result-panel {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 10px;
+}
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.result-icon { font-size: 2rem; }
+.result-title { font-size: 1rem; font-weight: 700; }
+.result-subtitle { font-size: .8rem; color: var(--muted); }
+.event-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.event-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 7px;
+  font-size: .85rem;
+  font-weight: 600;
+}
+.event-row.good { background: rgba(63,185,80,.1);  color: #3fb950; }
+.event-row.bad  { background: rgba(248,81,73,.1);   color: #f85149; }
+.event-row.warn { background: rgba(240,160,48,.1);  color: #f0a030; }
+.event-row .ev-icon { font-size: 1rem; }
+.result-story {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: var(--surface2);
+  border-radius: 6px;
+}
+.waste-note {
+  font-size: .78rem;
+  color: var(--warn);
+  padding: 6px 10px;
+  background: rgba(210,153,34,.1);
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.details-toggle {
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: .8rem;
+  width: 100%;
+  transition: border-color .15s, color .15s;
+}
+.details-toggle:hover { border-color: var(--accent); color: var(--accent); }
+#result-details {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.detail-item {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: .78rem;
+}
+.detail-item .d-label { color: var(--muted); font-size: .7rem; margin-bottom: 2px; }
+.detail-item .d-value { font-weight: 700; }
+.detail-item .d-value.ok { color: var(--success); }
+.detail-item .d-value.bad { color: var(--danger); }
+.conflict-list { margin-top: 6px; }
+.conflict-item {
+  font-size: .76rem;
+  color: var(--warn);
+  padding: 4px 8px;
+  background: rgba(210,153,34,.08);
+  border-radius: 4px;
+  margin-bottom: 3px;
+}
 
-    /* Meters */
-    .meter-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-    .meter-label { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); }
-    .meter-label span:last-child { color: var(--text); font-weight: 600; }
-    .meter-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; position: relative; }
-    .meter-fill  { height: 100%; border-radius: 4px; transition: width .3s ease; }
-    .meter-fill.gold       { background: var(--warn); }
-    .meter-fill.harm       { background: var(--danger); }
-    .meter-fill.smooth     { background: var(--success); }
-    .meter-fill.force      { background: var(--purple); }
-    .meter-fill.precision  { background: var(--accent); }
-    .meter-fill.collateral { background: var(--orange); }
-    .meter-limit-line { position: absolute; top: 0; height: 100%; width: 2px; background: rgba(255,255,255,.5); }
+/* Right col — ingredients */
+.pick-mode-banner {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: rgba(124,106,247,.15);
+  border: 1px solid rgba(124,106,247,.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: .82rem;
+}
+.pick-mode-banner.visible { display: flex; }
+.pick-cancel { margin-left: auto; background: none; border: none; color: var(--accent); cursor: pointer; font-size: .8rem; }
 
-    .cauldron-actions { display: flex; gap: 10px; margin-top: 4px; }
-    .btn-brew  { flex: 1; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: var(--font); font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .2s, transform .1s; }
-    .btn-brew:hover  { background: #79b8ff; }
-    .btn-brew:active { transform: scale(.97); }
-    .btn-reset { padding: 12px 18px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: var(--font); font-size: .9rem; cursor: pointer; transition: border-color .2s, color .2s; }
-    .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: .78rem;
+  color: var(--muted);
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tab-btn:hover { color: var(--text); border-color: var(--accent); }
+.tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tab-btn.grayed { opacity: .4; pointer-events: none; }
 
-    /* Result */
-    .result-panel { display: none; border-radius: var(--radius); padding: 18px; animation: fadeIn .3s ease; }
-    .result-panel.show    { display: block; }
-    .result-panel.success { background: rgba(63,185,80,.1);  border: 1px solid rgba(63,185,80,.4); }
-    .result-panel.partial { background: rgba(210,153,34,.1); border: 1px solid rgba(210,153,34,.4); }
-    .result-panel.fail    { background: rgba(248,81,73,.1);  border: 1px solid rgba(248,81,73,.4); }
-    .result-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
-    .result-panel.success .result-title { color: var(--success); }
-    .result-panel.partial .result-title { color: var(--warn); }
-    .result-panel.fail    .result-title { color: var(--danger); }
-    .result-text   { font-size: .9rem; color: var(--muted); margin-bottom: 10px; }
-    .result-extras { font-size: .8rem; color: var(--muted); }
-    .result-extras > div { margin-bottom: 4px; }
-    .result-extras strong { color: var(--warn); }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.ing-list { display: flex; flex-direction: column; gap: 7px; }
+.ing-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color .18s;
+  position: relative;
+}
+.ing-card:hover { border-color: var(--accent); }
+.ing-card.placed { border-color: #5a9ef8; opacity: .7; pointer-events: none; }
+.ing-card.trap { border-color: rgba(248,81,73,.3); }
+.ing-card .ing-name { font-size: .85rem; font-weight: 700; margin-bottom: 4px; }
+.ing-card .ing-desc { font-size: .75rem; color: var(--muted); margin-bottom: 6px; line-height: 1.4; }
+.ing-card .ing-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.ing-card .ing-meta .gold-tag {
+  background: rgba(240,160,48,.12);
+  border: 1px solid rgba(240,160,48,.4);
+  color: var(--gold-color);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: .7rem;
+  font-weight: 700;
+}
+.ing-card .ing-meta .harm-tag {
+  background: rgba(248,81,73,.1);
+  border: 1px solid rgba(248,81,73,.3);
+  color: #f85149;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: .7rem;
+  font-weight: 700;
+}
+.ing-card .ing-meta .adopt-tag {
+  background: rgba(63,185,80,.1);
+  border: 1px solid rgba(63,185,80,.3);
+  color: #3fb950;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: .7rem;
+}
+.ing-card .ing-meta .adopt-neg {
+  background: rgba(210,153,34,.1);
+  border: 1px solid rgba(210,153,34,.3);
+  color: #d29922;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: .7rem;
+}
+.ing-placed-label {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: .68rem;
+  color: #5a9ef8;
+  background: rgba(90,158,248,.1);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
 
-    /* Ingredients column */
-    .selection-banner { display: none; background: rgba(88,166,255,.1); border: 1px solid rgba(88,166,255,.35); border-radius: 8px; padding: 8px 12px; font-size: .82rem; color: var(--accent); margin-bottom: 8px; }
-    .selection-banner.visible { display: block; }
-    .ritual-pick-banner { display: none; background: rgba(210,153,34,.1); border: 1px solid rgba(210,153,34,.35); border-radius: 8px; padding: 8px 12px; font-size: .82rem; color: var(--warn); margin-bottom: 8px; }
-    .ritual-pick-banner.visible { display: block; }
-    .browse-hint { font-size: .75rem; color: var(--muted); text-align: center; padding: 6px 0 10px; font-style: italic; }
+/* Conflict warning on ingredient */
+.ing-conflict-warn {
+  font-size: .7rem;
+  color: var(--warn);
+  margin-top: 4px;
+  display: none;
+}
+.ing-conflict-warn.show { display: block; }
 
-    .tab-bar { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
-    .tab-btn { flex: 1; padding: 7px 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: var(--font); font-size: .78rem; cursor: pointer; transition: all .15s; white-space: nowrap; text-align: center; }
-    .tab-btn:hover  { border-color: var(--accent); color: var(--text); }
-    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-    .tab-btn.tab-dimmed { opacity: .35; cursor: default; pointer-events: none; }
-    .tab-badge { display: none; background: var(--success); color: #fff; border-radius: 10px; padding: 0 5px; font-size: .65rem; font-weight: 700; margin-left: 4px; }
-    .tab-badge.visible { display: inline; }
-
-    .ingredients-col { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: calc(100vh - 140px); }
-
-    /* Ingredient card */
-    .ingredient-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s; }
-    .ingredient-card.in-use    { border-color: var(--success); }
-    .ingredient-card.waste     { border-color: var(--warn); }
-    .ingredient-card.selectable { cursor: pointer; }
-    .ingredient-card.selectable:hover { border-color: var(--accent); }
-    .ingredient-card.disabled  { opacity: .42; }
-    .ing-content { padding: 12px 14px; }
-    .ing-header  { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
-    .ing-name    { font-size: .9rem; font-weight: 600; flex: 1; }
-    .btn-pick    { flex-shrink: 0; padding: 4px 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-family: var(--font); font-size: .78rem; font-weight: 600; cursor: pointer; transition: background .15s; }
-    .btn-pick:hover { background: #79b8ff; }
-    .btn-pick.ritual { background: var(--warn); }
-    .btn-pick.ritual:hover { background: #e6b333; }
-    .disabled-reason { flex-shrink: 0; font-size: .75rem; color: var(--danger); }
-    .in-use-badge    { flex-shrink: 0; font-size: .75rem; color: var(--success); }
-    .ing-desc   { font-size: .78rem; color: var(--muted); margin-bottom: 8px; }
-    .ing-params { display: flex; flex-wrap: wrap; gap: 5px; }
-    .param-tag           { font-size: .7rem; padding: 2px 8px; border-radius: 20px; background: var(--surface2); color: var(--muted); }
-    .param-tag.force     { background: rgba(163,113,247,.15); color: var(--purple); }
-    .param-tag.precision { background: rgba(88,166,255,.15);  color: var(--accent); }
-    .param-tag.harm      { background: rgba(248,81,73,.15);   color: var(--danger); }
-    .param-tag.smooth    { background: rgba(63,185,80,.15);   color: var(--success); }
-    .param-tag.smoothbad { background: rgba(210,153,34,.15);  color: var(--warn); }
-    .param-tag.gold      { background: rgba(210,153,34,.1);   color: var(--warn); }
-    .param-tag.collateral{ background: rgba(255,150,30,.15);  color: var(--orange); }
-    .param-tag.global    { background: rgba(210,153,34,.12);  color: var(--warn); }
-    /* Ritual top banner instead of conn bar */
-    .ritual-ing-top { height: 22px; display: flex; align-items: center; padding: 0 10px; font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(210,153,34,.1); color: var(--warn); border-radius: var(--radius) var(--radius) 0 0; }
-    .waste-badge { display: none; font-size: .7rem; color: var(--warn); margin-top: 4px; }
-    .ingredient-card.waste .waste-badge { display: block; }
-  </style>
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
 </head>
 <body>
 
 <header>
-  <h1>&#x1F9EA; Зельевар Staff-инженера</h1>
-  <p>Заполни слоты котла. Следи за типом вмешательства. Не убей пациента.</p>
+  <span style="font-size:1.4rem">🧪</span>
+  <div>
+    <h1>Зельевар Staff-инженера</h1>
+    <div class="sub">Выбери ингредиенты — свари зелье — реши задачу</div>
+  </div>
+  <div class="scenario-switcher">
+    <span class="scenario-idx" id="scenario-idx">1 / 8</span>
+    <button class="btn" id="btn-prev">◀ Назад</button>
+    <button class="btn" id="btn-next">Вперёд ▶</button>
+  </div>
 </header>
 
-<div class="game-layout">
-
-  <!-- LEFT: Quest -->
-  <div>
-    <div class="col-label">Просьба</div>
-    <div class="card quest-card">
-      <span class="quest-badge" id="quest-badge"></span>
-      <div class="quest-requester" id="quest-requester"></div>
-      <div class="quest-story"    id="quest-story"></div>
-      <div class="quest-needs">
-        <strong>Что нужно зелью:</strong>
-        <div id="quest-needs-list"></div>
-      </div>
-      <div class="quest-hint" id="quest-hint"></div>
-      <button class="btn-next" id="btn-next">Следующая просьба &rarr;</button>
-    </div>
+<main>
+  <!-- LEFT: Quest card -->
+  <div class="col col-left" id="col-quest">
+    <div class="quest-card" id="quest-card"><!-- rendered by JS --></div>
   </div>
 
   <!-- CENTER: Cauldron -->
-  <div class="cauldron-col">
-    <div class="col-label">Котёл</div>
-    <div class="card">
-      <div id="gold-display"></div>
-      <div id="ritual-zone"></div>
-      <div class="slots-list" id="cauldron-slots"></div>
-      <div id="meters"></div>
-      <div class="cauldron-actions">
-        <button class="btn-brew"  id="btn-brew">&#x2697; Сварить зелье</button>
-        <button class="btn-reset" id="btn-reset">Сброс</button>
-      </div>
+  <div class="col col-center" id="col-cauldron">
+    <div class="cauldron-header">
+      <span class="cauldron-title">🫕 Котёл</span>
+      <div class="gold-badge" id="gold-badge">💰 0 / 0</div>
     </div>
-    <div class="result-panel" id="result-panel">
-      <div class="result-title" id="result-title"></div>
-      <div class="result-text"  id="result-text"></div>
-      <div class="result-extras" id="result-extras"></div>
+
+    <div class="slots-grid" id="slots-grid"><!-- rendered by JS --></div>
+
+    <div class="effects-preview" id="effects-preview"><!-- rendered by JS --></div>
+
+    <div class="cauldron-actions">
+      <button class="btn primary" id="btn-brew">⚗️ Сварить зелье</button>
+      <button class="btn danger" id="btn-reset">🗑 Сбросить</button>
     </div>
+
+    <div id="result-panel"><!-- rendered by JS --></div>
   </div>
 
   <!-- RIGHT: Ingredients -->
-  <div>
-    <div class="selection-banner" id="selection-banner"></div>
-    <div class="ritual-pick-banner" id="ritual-pick-banner"></div>
-    <div class="tab-bar" id="tab-bar">
-      <button class="tab-btn active" data-layer="stone"> &#x1FAA8; Камни    <span class="tab-badge" id="badge-stone"></span></button>
-      <button class="tab-btn"        data-layer="elixir">&#x1F9EA; Эликсиры <span class="tab-badge" id="badge-elixir"></span></button>
-      <button class="tab-btn"        data-layer="smoke"> &#x1F4A8; Дым      <span class="tab-badge" id="badge-smoke"></span></button>
-      <button class="tab-btn"        data-layer="ritual">&#x1F56F; Ритуалы  <span class="tab-badge" id="badge-ritual"></span></button>
+  <div class="col col-right" id="col-ingredients">
+    <div class="pick-mode-banner" id="pick-banner">
+      <span id="pick-banner-text">Выбери ингредиент</span>
+      <button class="pick-cancel" id="pick-cancel">✕ Отмена</button>
     </div>
-    <div class="ingredients-col" id="ingredients-col"></div>
+    <div class="tab-bar" id="tab-bar">
+      <button class="tab-btn active" data-layer="stone">🪨 Камни</button>
+      <button class="tab-btn" data-layer="elixir">⚗️ Эликсиры</button>
+      <button class="tab-btn" data-layer="smoke">💨 Дым</button>
+      <button class="tab-btn" data-layer="ritual">🕯️ Ритуалы</button>
+    </div>
+    <div class="ing-list" id="ing-list"><!-- rendered by JS --></div>
   </div>
-
-</div>
+</main>
 
 <script>
-// ======================================================================
-// DATA
-// ======================================================================
-//
-// inputType / outputType:  hot | cool | any
-//   hot  = агрессивное вмешательство (меняет поведение немедленно)
-//   cool = мягкое/постепенное действие (наблюдение, тонкая настройка)
-//   any  = работает в любом контексте
-//
-// CONFLICT rule: cool -> hot  (мягкое перед агрессивным = неправильный порядок)
-//   hot -> hot  = OK (два агрессивных изменения подряд — нормально)
-//   hot -> cool = OK (сначала изменение, потом мониторинг — правильный порядок)
-//   cool-> cool = OK (всё мягкое — нет конфликта)
-//
-// Ритуалы не участвуют в цепочке. Они обёртки команды.
-// Их effect применяется глобально ко всему котлу через globalEffect.
+// ─── EFFECTS META ───────────────────────────────────────────────
+const EFFECT_META = {
+  shield:     { icon: '🛡', label: 'Защита',    cls: 'shield' },
+  speed:      { icon: '⚡', label: 'Скорость',  cls: 'speed' },
+  insight:    { icon: '🔭', label: 'Видимость', cls: 'insight' },
+  rollout:    { icon: '🚀', label: 'Раскатка',  cls: 'rollout' },
+  contract:   { icon: '📜', label: 'Контракт',  cls: 'contract' },
+  simplicity: { icon: '🧹', label: 'Простота',  cls: 'simplicity' },
+};
 
+const LAYER_META = {
+  stone:  { icon: '🪨', label: 'Камень' },
+  elixir: { icon: '⚗️', label: 'Эликсир' },
+  smoke:  { icon: '💨', label: 'Дым' },
+  ritual: { icon: '🕯️', label: 'Ритуал' },
+};
+
+// ─── SLOT ROLES ─────────────────────────────────────────────────
+const SLOT_ROLES = {
+  foundation:  { label: 'Основа',       icon: '🏗️', allowedLayers: ['stone'] },
+  catalyst:    { label: 'Катализатор',  icon: '⚗️', allowedLayers: ['elixir'] },
+  stabilizer:  { label: 'Стабилизатор', icon: '⚖️', allowedLayers: ['elixir', 'smoke'] },
+  filter:      { label: 'Фильтр',       icon: '🧹', allowedLayers: ['stone', 'elixir'] },
+  observation: { label: 'Наблюдение',   icon: '🔭', allowedLayers: ['smoke'] },
+  rollout:     { label: 'Раскатка',     icon: '🚀', allowedLayers: ['ritual'] },
+};
+const SLOT_ORDER = ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'];
+
+// ─── INGREDIENTS ────────────────────────────────────────────────
 const INGREDIENTS = [
-  // ---- Камни (stone) — агрессивная защита периметра ----
+  // ── STONE ──
   {
     id: 'rate_limit', layer: 'stone',
-    name: '&#x1F4A7; Капли Rate Limit',
+    name: '💧 Капли Rate Limit',
     desc: 'Ставим лимиты на запросы. Грубо, но надёжно. Птицы и фазаны не разбираются.',
-    gold: 2, harm: 8, smooth: -5, force: 25, precision: 0,
-    inputType: 'hot', outputType: 'hot',
-    collateralBase: 6
+    effectPower: { shield: 25 },
+    adoption: -5, harm: 8, gold: 2, collateralBase: 6,
+    conflicts: ['canary_dust'],
+    conflictNote: 'Rate Limit фильтрует весь поток — Канарейке нечего делать на уже отсеянном трафике',
   },
   {
     id: 'ddos_screen', layer: 'stone',
-    name: '&#x1F6E1;&#xFE0F; Дорогой DDoS-экран',
-    desc: 'Большой экран, большой счёт. Прайс-лист толще птичьей стаи.',
-    gold: 12, harm: 3, smooth: -2, force: 40, precision: 0,
-    inputType: 'hot', outputType: 'hot'
+    name: '🛡️ Дорогой DDoS-экран',
+    desc: 'Большой экран, большой счёт. Зато надёжно и без вопросов.',
+    effectPower: { shield: 40 },
+    adoption: -2, harm: 3, gold: 12,
+    conflicts: [],
   },
   {
-    id: 'waf_rune', layer: 'stone',
-    name: '&#x1F52E; Руны WAF',
-    desc: 'Магические правила фильтрации. Иногда задерживают нужные письма, зато красиво.',
-    gold: 8, harm: 7, smooth: -4, force: 20, precision: 5,
-    inputType: 'hot', outputType: 'hot',
-    collateralBase: 5
+    id: 'waf', layer: 'stone',
+    name: '🔮 Руны WAF',
+    desc: 'Магические правила фильтрации запросов. Немного токсично для честных пользователей.',
+    effectPower: { shield: 20, contract: 10 },
+    adoption: -4, harm: 7, gold: 8, collateralBase: 5,
+    conflicts: ['canary_dust'],
+    conflictNote: 'WAF переписывает заголовки — Канарейка не получит честную случайную выборку',
   },
-  // ---- Эликсиры (elixir) — изменения внутри сервиса ----
+  {
+    id: 'cdn_shield', layer: 'stone',
+    name: '🌐 Щит CDN',
+    desc: 'Раздаём контент с края сети. Боты отсекаются на подлёте, живые ускоряются.',
+    effectPower: { shield: 15, speed: 12 },
+    adoption: 2, harm: 2, gold: 7,
+    conflicts: [],
+  },
+  // ── ELIXIR ──
+  {
+    id: 'schema_validator', layer: 'elixir',
+    name: '📜 Свиток Валидации',
+    desc: 'Проверяем формат данных на входе. Кривые схемы не проходят дальше.',
+    effectPower: { contract: 30 },
+    adoption: 3, harm: 1, gold: 5,
+    conflicts: ['cache_powder'],
+    conflictNote: 'Кеш возвращает данные без проверки схемы — контракт может нарушиться тихо',
+  },
   {
     id: 'cache_powder', layer: 'elixir',
-    name: '&#x1FAD9; Порошок Кеширования',
-    desc: 'Кешируем всё. Агрессивная оптимизация — может сломать. Зато быстро.',
-    gold: 5, harm: 5, smooth: 0, force: 10, precision: 18,
-    inputType: 'hot', outputType: 'hot'
+    name: '🫙 Порошок Кеширования',
+    desc: 'Кешируем ответы. Быстро, но может протухнуть. Схему не проверяет.',
+    effectPower: { speed: 18 },
+    adoption: 0, harm: 5, gold: 5,
+    conflicts: ['schema_validator'],
+    conflictNote: 'Кеш может вернуть данные старой схемы — нарушает контракт незаметно',
   },
   {
     id: 'queue_tuner', layer: 'elixir',
-    name: '&#x1F9F5; Перо Настройки Очередей',
-    desc: 'Тонкая настройка тайм-аутов и пулов потоков. Нудно, постепенно, но помогает.',
-    gold: 5, harm: 2, smooth: 3, force: 0, precision: 24,
-    inputType: 'cool', outputType: 'cool'
+    name: '🧵 Перо Настройки Очередей',
+    desc: 'Тонкая настройка таймаутов и размеров очередей. Скучно, но работает.',
+    effectPower: { speed: 24 },
+    adoption: 3, harm: 2, gold: 5,
+    conflicts: [],
   },
-  // ---- Дым (smoke) — мягкое наблюдение ----
+  {
+    id: 'dead_code_remover', layer: 'elixir',
+    name: '🧹 Метла Мёртвого Кода',
+    desc: 'Выметаем то, что никто не трогал три года. Сразу дышать легче.',
+    effectPower: { simplicity: 25 },
+    adoption: 8, harm: 0, gold: 3,
+    conflicts: [],
+  },
+  {
+    id: 'circuit_breaker', layer: 'elixir',
+    name: '⚡ Предохранитель',
+    desc: 'Отключает нестабильный сервис до восстановления. Не даёт каскаду упасть.',
+    effectPower: { shield: 15, rollout: 5 },
+    adoption: 5, harm: 0, gold: 6,
+    conflicts: [],
+  },
+  // ── SMOKE ──
   {
     id: 'observability', layer: 'smoke',
-    name: '&#x1F52D; Свиток Наблюдения',
-    desc: 'Метрики, дашборд, алерты. Не чинит, но мы хотя бы знаем что сломалось.',
-    gold: 6, harm: 1, smooth: 8, force: 0, precision: 20,
-    inputType: 'cool', outputType: 'cool'
+    name: '🔭 Свиток Наблюдения',
+    desc: 'Метрики, дашборды, алерты. Видно что происходит.',
+    effectPower: { insight: 20 },
+    adoption: 8, harm: 1, gold: 6,
+    conflicts: [],
   },
   {
     id: 'tracing', layer: 'smoke',
-    name: '&#x1F537; Кристалл Трейсинга',
-    desc: 'Каждый запрос оставляет след. Узкое место найдём точно.',
-    gold: 7, harm: 1, smooth: 2, force: 2, precision: 28,
-    inputType: 'cool', outputType: 'cool'
+    name: '🔷 Кристалл Трейсинга',
+    desc: 'Каждый запрос оставляет цветной след. P99 становится понятен.',
+    effectPower: { insight: 28, speed: 5 },
+    adoption: 2, harm: 1, gold: 7,
+    conflicts: [],
   },
   {
     id: 'metrics', layer: 'smoke',
-    name: '&#x26A1; Громоотвод Метрик',
-    desc: 'Гистограммы латентности. P99 теперь виден невооружённым глазом.',
-    gold: 4, harm: 0, smooth: 6, force: 0, precision: 16,
-    inputType: 'cool', outputType: 'cool'
+    name: '📊 Громоотвод Метрик',
+    desc: 'Гистограммы и счётчики. Просто и понятно, без лишних подробностей.',
+    effectPower: { insight: 16 },
+    adoption: 6, harm: 0, gold: 4,
+    conflicts: [],
   },
-  // ---- Ритуалы (ritual) — обёртки команды, глобальный эффект ----
+  // ── RITUAL ──
   {
     id: 'feature_flag', layer: 'ritual',
-    name: '&#x1F56F;&#xFE0F; Свеча Фиче-Флага',
-    desc: 'Можно откатить одной рукой. Команда спокойна. Мощь ~ 0.',
-    gold: 2,
-    globalEffect: { smoothBonus: 12, harmReduction: 1 }
+    name: '🕯️ Свеча Фиче-Флага',
+    desc: 'Откатить одной кнопкой. Команда выдыхает.',
+    effectPower: { rollout: 20 },
+    adoption: 12, harm: -1, gold: 2,
+    conflicts: [],
   },
   {
     id: 'canary_dust', layer: 'ritual',
-    name: '&#x1F424; Канареечная Пыль',
-    desc: '5% пользователей идут первыми. Постепенный выкат снижает залп по своим.',
-    gold: 3,
-    globalEffect: { smoothBonus: 10, collateralReduction: 5 }
+    name: '🐤 Канареечная Пыль',
+    desc: '5% пользователей идут первыми на новую версию. Нужен нефильтрованный поток.',
+    effectPower: { rollout: 30 },
+    adoption: 10, harm: -2, gold: 3,
+    conflicts: ['rate_limit', 'waf'],
+    conflictNote: 'Rate Limit / WAF уже отфильтровали трафик — канарейке не на чём делать выборку',
   },
   {
     id: 'ab_test', layer: 'ritual',
-    name: '&#x1F52C; Свиток А/Б-теста',
-    desc: 'Делим пользователей на две группы. Данных больше, решений больше.',
-    gold: 4,
-    globalEffect: { smoothBonus: 8, precisionBonus: 3 }
+    name: '🔬 Свиток А/Б-теста',
+    desc: 'Два потока, два результата. Данных становится больше, решения — обоснованнее.',
+    effectPower: { rollout: 15, insight: 8 },
+    adoption: 8, harm: 0, gold: 4,
+    conflicts: [],
   },
   {
     id: 'postmortem', layer: 'ritual',
-    name: '&#x1F4CB; Постмортем-хроники',
-    desc: 'Разбираем что пошло не так. Не чинит сейчас, зато снижает риск в будущем.',
-    gold: 1,
-    globalEffect: { smoothBonus: 6, harmReduction: 3 }
+    name: '📋 Постмортем-хроники',
+    desc: 'Разбираем ошибки вместе. Меньше повторяем. Вред снижается.',
+    effectPower: { simplicity: 10 },
+    adoption: 6, harm: -3, gold: 1,
+    conflicts: [],
   },
   {
     id: 'reactor_dust', layer: 'ritual',
-    name: '&#x1F4A8; Пыль Бессмысленного Реактора',
-    desc: 'Переписать на Rust? Команда отвлеклась. Эффект — деморализация.',
-    gold: 15,
-    globalEffect: { smoothPenalty: 8, harmPenalty: 10 }
+    name: '💨 Пыль Реактивного Переписывания',
+    desc: 'Переписать всё с нуля на новом языке? Команда отвлеклась. Дедлайн сорван.',
+    effectPower: {},
+    adoption: -8, harm: 10, gold: 15,
+    conflicts: [],
   },
   {
     id: 'blockchain', layer: 'ritual',
-    name: '&#x26D3;&#xFE0F; Кристалл Блокчейна',
+    name: '⛓️ Кристалл Блокчейна',
     desc: 'Добавляет серьёзности и непредсказуемости в равных пропорциях.',
-    gold: 18,
-    globalEffect: { smoothPenalty: 10, harmPenalty: 12 }
-  }
+    effectPower: {},
+    adoption: -10, harm: 12, gold: 18,
+    conflicts: [],
+  },
 ];
 
+// ─── SCENARIOS ──────────────────────────────────────────────────
 const SCENARIOS = [
   {
-    id: 'onboarding',
-    axis: 'force', axisLabel: '&#x1F6E1;&#xFE0F; Сила (защита от DDoS)',
-    badge: 'ddos', badgeText: '&#x1F393; Обучение',
-    requester: '&#x1F6D2; Купец Архип',
-    story: 'Архип запустил большую распродажу. Через час сервер лёг — боты скупали товары за миллисекунды. Живые покупатели видят только ошибку 503.',
-    need: '&#xAB;Мне нужно остановить ботов. Что-нибудь недорогое.&#xBB;',
-    needForce: 18, needPrecision: 0, harmLimit: 25, collateralLimit: 999, goldBudget: 12,
-    hint: '&#x1F4A1; С чего начать: загляни во вкладку &#x1FAA8; Камни. Оранжевая полоса = агрессивное вмешательство.',
-    slots: [
-      { id: 's1', label: 'Защита 1', allowedLayers: ['stone'] },
-      { id: 's2', label: 'Защита 2', allowedLayers: ['stone'] }
-    ],
-    ritualSlots: [],
+    id: 'archip',
+    badgeText: '🎓 Задание 1 / 8 · Обучение',
+    requester: '🛒 Купец Архип',
+    story: 'В день большой распродажи сервер Архипа лёг. Боты скупали товары за миллисекунды — живые покупатели видели только ошибку 503.',
+    need: '«Мне нужно остановить ботов. Что-нибудь недорогое.»',
+    requires: { shield: 20 },
+    harmLimit: 25, collateralLimit: 999, goldBudget: 12, teamHappyMin: 45,
+    activeSlots: ['foundation'],
+    hint: '💡 Загляни во вкладку 🪨 Камни — там найдёшь защитные ингредиенты. Нажми на слот Основа, чтобы вложить ингредиент.',
     debrief: {
-      success: '&#x1F389; Боты отступили! Архип продал все товары живым покупателям. Он доволен.',
-      partial: '&#x26A0;&#xFE0F; Боты почти остановлены, но зелье навредило: честные покупатели заблокированы.',
-      fail:    '&#x1F480; Боты проигнорировали зелье. Архип требует возврат денег.'
-    }
+      success: '🎉 Боты отступили! Архип продал все товары живым покупателям. Он доволен и обещает скидку.',
+      partial: '⚠️ Боты остановлены, но зелье навредило — честные покупатели тоже пострадали.',
+      fail: '💀 Боты не заметили зелья. Архип требует возврат денег.',
+    },
   },
   {
-    id: 'ddos',
-    axis: 'force', axisLabel: '&#x1F6E1;&#xFE0F; Сила (защита от DDoS)',
-    badge: 'ddos', badgeText: 'DDoS-атака',
-    requester: '&#x1F426; Птицелов Мирон',
-    story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Но тут прилетают вороны — тысячи ворон — и мешают сетям летать.',
-    need: '&#xAB;Нужно прогнать ворон. Сеть должна дышать. Бюджет не резиновый.&#xBB;',
-    needForce: 25, needPrecision: 0, harmLimit: 18, collateralLimit: 8, goldBudget: 18,
-    slots: [
-      { id: 's1', label: 'Периметр',   allowedLayers: ['stone'] },
-      { id: 's2', label: 'Наблюдение', allowedLayers: ['smoke'] }
-    ],
-    ritualSlots: [
-      { id: 'r1', label: 'Раскатка', allowedLayers: ['ritual'] }
-    ],
+    id: 'miron',
+    badgeText: 'Задание 2 / 8',
+    requester: '🐦 Птицелов Мирон',
+    story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Тысячи ворон забивают сети — фазаны не пробиваются. Мирон боится, что резкое зелье распугает и самих фазанов.',
+    need: '«Прогони ворон. Но осторожно — фазаны не должны разбежаться.»',
+    requires: { shield: 25 },
+    harmLimit: 18, collateralLimit: 8, goldBudget: 18, teamHappyMin: 50,
+    activeSlots: ['foundation', 'observation', 'rollout'],
+    hint: '💡 Раскатка помогает снизить ущерб от агрессивных ингредиентов. Наблюдение покажет, всё ли прошло чисто.',
     debrief: {
-      success:            '&#x1F389; Вороны рассеялись. Фазаны пойманы. Мирон прислал корзину с перепёлками.',
-      partial:            '&#x26A0;&#xFE0F; Вороны отступили, но зелье токсично: два фазана сбежали.',
-      partial_collateral: '&#x26A0;&#xFE0F; Вороны прогнаны, но Rate Limit задел и фазанов.',
-      fail:               '&#x1F480; Вороны не заметили зелья. Мирон требует постмортем.'
-    }
+      success: '🎉 Вороны рассеялись. Фазаны пойманы. Мирон прислал корзину с перепёлками.',
+      partial: '⚠️ Вороны отступили, но зелье задело своих — фазаны тоже разбежались.',
+      fail: '💀 Вороны не заметили зелья. Мирон требует постмортем.',
+    },
   },
   {
-    id: 'latency',
-    axis: 'precision', axisLabel: '&#x26A1; Точность (снижение латентности)',
-    badge: 'latency', badgeText: 'Высокая латентность',
-    requester: '&#x1F3F9; Иван-царевич',
-    story: 'Иван шлёт стрелы-письма царевне-лягушке. Стрелы летят... и зависают в воздухе на p99. Царевна думает, Иван молчит.',
-    need: '&#xAB;Стрелы должны долетать быстро. P95 важнее P50.&#xBB;',
-    needForce: 0, needPrecision: 25, harmLimit: 15, collateralLimit: 8, goldBudget: 20,
-    slots: [
-      { id: 's1', label: 'Ускорение',  allowedLayers: ['elixir'] },
-      { id: 's2', label: 'Наблюдение', allowedLayers: ['smoke'] },
-      { id: 's3', label: 'Доп. слой',  allowedLayers: ['stone', 'elixir'] }
-    ],
-    ritualSlots: [
-      { id: 'r1', label: 'Раскатка 1', allowedLayers: ['ritual'] },
-      { id: 'r2', label: 'Раскатка 2', allowedLayers: ['ritual'] }
-    ],
+    id: 'ivan',
+    badgeText: 'Задание 3 / 8',
+    requester: '🏹 Иван-царевич',
+    story: 'Иван шлёт стрелы-письма царевне-лягушке через API-ворота. Стрелы летят... и зависают в воздухе на P99. Царевна думает — Иван молчит.',
+    need: '«Стрелы должны долетать быстро. P95 важнее P50.»',
+    requires: { speed: 25 },
+    harmLimit: 15, collateralLimit: 999, goldBudget: 15, teamHappyMin: 50,
+    activeSlots: ['catalyst', 'observation'],
+    hint: '💡 Нужно ускорение ⚡ — ищи в Эликсирах и Дыму. Трейсинг поможет увидеть, где стрела зависла.',
     debrief: {
-      success:            '&#x1F389; Стрелы долетают моментально. Царевна получила письмо. Свадьба назначена.',
-      partial:            '&#x26A0;&#xFE0F; Стрелы долетели, но зелье дало побочку: у стрел облезло оперение.',
-      partial_collateral: '&#x26A0;&#xFE0F; Зелье сработало, но Rate Limit задержал каждую вторую стрелу.',
-      fail:               '&#x1F480; Стрелы всё ещё висят в воздухе. Царевна ушла в другой дата-центр.',
-      force_debrief:      'Стрелы застряли не в очереди — их перехватывали вороны. Ты налил Силы в задачу на Точность.',
-      precision_debrief:  'Стрелы стояли в очереди у ворот тайм-аута. Правильное зелье, правильная причина.'
-    }
-  }
+      success: '🎉 Стрелы долетают мгновенно. Царевна получила письмо. Свадьба назначена.',
+      partial: '⚠️ Быстрее, но зелье дало побочку — у стрел облезло оперение.',
+      fail: '💀 Стрелы всё ещё висят в воздухе. Царевна ушла в другой дата-центр.',
+    },
+  },
+  {
+    id: 'prokopiy',
+    badgeText: 'Задание 4 / 8',
+    requester: '📮 Гонец Прокопий',
+    story: 'Прокопий доставляет письма между царствами через общий API. Иногда грамоты приходят с чужими печатями и неверными полями — адресаты отказываются их принимать. Данные теряются.',
+    need: '«Письма должны приходить в нужном формате. Схема важнее скорости.»',
+    requires: { contract: 25 },
+    harmLimit: 15, collateralLimit: 999, goldBudget: 14, teamHappyMin: 50,
+    activeSlots: ['filter', 'observation'],
+    hint: '💡 Нужен контракт 📜 — валидация схемы, а не скорость. Кеш и скорость тут не помогут.',
+    debrief: {
+      success: '🎉 Письма приходят точно по форме. Прокопий повышен до главного гонца.',
+      partial: '⚠️ Схема работает, но зелье дало побочки — часть писем задержалась.',
+      fail: '💀 Письма всё ещё путаются. Прокопий обвиняет зельевара.',
+    },
+  },
+  {
+    id: 'agafya',
+    badgeText: 'Задание 5 / 8',
+    requester: '🧙‍♀️ Знахарка Агафья',
+    story: 'Агафья варит зелья в старом монолите. За 20 лет в него добавляли слои и слои — теперь никто не знает, что внутри. Каждое изменение ломает три других. Котёл задыхается.',
+    need: '«Хочу дышать. Убери лишнее. Не добавляй новое.»',
+    requires: { simplicity: 20 },
+    harmLimit: 12, collateralLimit: 999, goldBudget: 12, teamHappyMin: 55,
+    activeSlots: ['catalyst', 'stabilizer'],
+    hint: '💡 Нужна простота 🧹 — убирай, а не добавляй. Постмортем поможет не повторить ошибку.',
+    debrief: {
+      success: '🎉 Монолит задышал! Агафья сварила первое новое зелье за три года.',
+      partial: '⚠️ Стало проще, но зелье навредило — один из старых слоёв оказался нужным.',
+      fail: '💀 Монолит ещё сложнее. Агафья уходит на пенсию.',
+    },
+  },
+  {
+    id: 'tit',
+    badgeText: 'Задание 6 / 8',
+    requester: '🔔 Дозорный Тит',
+    story: 'Колокола Тита звонят каждый час. Тревоги без причины — команда устала реагировать. Алерт-усталость нарастает. Что-то сломано, но где именно — никто не знает.',
+    need: '«Хочу видеть что происходит. Настоящие причины, а не шум.»',
+    requires: { insight: 30 },
+    harmLimit: 15, collateralLimit: 999, goldBudget: 16, teamHappyMin: 55,
+    activeSlots: ['observation', 'stabilizer', 'rollout'],
+    hint: '💡 Нужна видимость 🔭 — смотри в Дым. Несколько дымовых ингредиентов дают разные грани картины.',
+    debrief: {
+      success: '🎉 Причины найдены! Тит молчит три дня подряд — команда выспалась.',
+      partial: '⚠️ Видимость улучшилась, но зелье дало побочки — слишком много данных, не легче.',
+      fail: '💀 Колокола продолжают звонить. Тит подаёт заявление.',
+    },
+  },
+  {
+    id: 'joint',
+    badgeText: 'Задание 7 / 8',
+    requester: '🏹🔔 Иван и Тит вместе',
+    story: 'Стрелы зависли И колокола звонят одновременно. Иван не знает есть ли проблема в маршруте. Тит не знает куда смотреть. Нужно сначала понять причину, потом ускорить.',
+    need: '«Сначала найдите причину — потом ускорьте стрелы.»',
+    requires: { speed: 20, insight: 20 },
+    harmLimit: 18, collateralLimit: 999, goldBudget: 20, teamHappyMin: 55,
+    activeSlots: ['catalyst', 'observation', 'stabilizer'],
+    hint: '💡 Нужны оба эффекта: скорость ⚡ и видимость 🔭. Стабилизатор принимает и эликсиры, и дым.',
+    debrief: {
+      success: '🎉 Причина найдена, стрелы летят, колокола молчат. Иван и Тит обнялись.',
+      partial: '⚠️ Что-то решено, но побочки не дали всё доделать.',
+      fail: '💀 Ни скорости, ни видимости. Иван и Тит подали в отставку.',
+    },
+  },
+  {
+    id: 'final',
+    badgeText: '⚔️ Задание 8 / 8 · Финал',
+    requester: '👑 Главный Советник Царя',
+    story: 'Всё случилось одновременно: вороны атакуют API, стрелы зависают, и никто не знает как раскатить исправление без простоя. Царь смотрит на дашборд и не доволен.',
+    need: '«Защита, скорость и безопасная раскатка. Всё сразу. Прямо сейчас.»',
+    requires: { shield: 15, speed: 15, rollout: 15 },
+    harmLimit: 20, collateralLimit: 10, goldBudget: 25, teamHappyMin: 60,
+    activeSlots: ['foundation', 'catalyst', 'stabilizer', 'filter', 'observation', 'rollout'],
+    hint: '💡 Все слоты разблокированы. Нужны три разных эффекта — распредели ингредиенты мудро.',
+    debrief: {
+      success: '🎉 Кризис погашен! Царь доволен. Зельевар получает звание Staff-инженера.',
+      partial: '⚠️ Кризис частично разрешён, но потери были. Царь хмурится.',
+      fail: '💀 Ничего не сработало. Царь вызывает другого зельевара.',
+    },
+  },
 ];
 
-// ======================================================================
-// STATE
-// ======================================================================
-
-let currentScenarioIdx = 0;
-let slotFills    = {};   // { slotId: ingredientId | null }
-let activeSlotId = null;
-let isRitualPick = false; // are we picking for a ritual slot?
+// ─── STATE ──────────────────────────────────────────────────────
+let scenarioIdx = 0;
+let slotFills = {};      // roleId → ingredient id
+let activeSlotId = null; // roleId being picked
 let currentLayer = 'stone';
-let wasteIds     = new Set();
 
-function sc()       { return SCENARIOS[currentScenarioIdx]; }
-function ingById(id){ return id ? INGREDIENTS.find(i => i.id === id) || null : null; }
-function allSlots() { return [...sc().slots, ...(sc().ritualSlots || [])]; }
+// ─── HELPERS ────────────────────────────────────────────────────
+const sc  = () => SCENARIOS[scenarioIdx];
+const ing = id => INGREDIENTS.find(i => i.id === id);
+const placedIds = () => new Set(Object.values(slotFills).filter(Boolean));
 
-// ======================================================================
-// MECHANICS
-// ======================================================================
-
-// CONFLICT: cool output going into hot input = wrong order (observe before intervene)
-function isCompatible(outType, inType) {
-  if (!outType || !inType) return true;
-  if (outType === 'any' || inType === 'any') return true;
-  if (outType === 'cool' && inType === 'hot') return false;
-  return true;
-}
-
+// ─── CALC STATS ─────────────────────────────────────────────────
 function calcStats() {
   const s = sc();
-  let totalGold = 0, totalHarm = 0, totalSmooth = 0,
-      rawForce = 0, rawPrecision = 0, totalCollateral = 0;
+  const effects  = { shield:0, speed:0, insight:0, rollout:0, contract:0, simplicity:0 };
+  let totalHarm = 0, totalAdoption = 0, totalCollateral = 0, totalGold = 0;
 
-  // Pipeline chain
-  const filled = s.slots.map(slot => ({ slot, ing: ingById(slotFills[slot.id]) }));
+  // Collect all placed ingredients
+  const placed = s.activeSlots
+    .map(roleId => ({ roleId, i: ing(slotFills[roleId]) }))
+    .filter(x => x.i);
 
-  const penaltySlotIds = new Set();
-  for (let i = 0; i < filled.length - 1; i++) {
-    const a = filled[i].ing, b = filled[i + 1].ing;
-    if (a && b && !isCompatible(a.outputType, b.inputType)) {
-      penaltySlotIds.add(filled[i].slot.id);
-      penaltySlotIds.add(filled[i + 1].slot.id);
+  // Find conflict pairs
+  const conflictPairs = [];
+  const conflictIds = new Set();
+  for (const { i: a } of placed) {
+    for (const { i: b } of placed) {
+      if (a.id === b.id) continue;
+      if ((a.conflicts || []).includes(b.id)) {
+        const key = [a.id, b.id].sort().join('|');
+        if (!conflictPairs.find(p => p.key === key)) {
+          conflictPairs.push({ key, a: a.id, b: b.id, note: a.conflictNote || b.conflictNote || '' });
+          conflictIds.add(a.id);
+          conflictIds.add(b.id);
+        }
+      }
     }
   }
 
-  filled.forEach(({ slot, ing }) => {
-    if (!ing) return;
-    totalGold       += ing.gold;
-    totalHarm       += ing.harm;
-    totalSmooth     += ing.smooth;
-    if (ing.collateralBase) totalCollateral += ing.collateralBase;
-    const p = penaltySlotIds.has(slot.id) ? 0.7 : 1.0;
-    rawForce     += ing.force     * p;
-    rawPrecision += ing.precision * p;
-  });
-
-  // Ritual wrappers — global effects
-  const ritualFilled = (s.ritualSlots || []).map(slot => ({ slot, ing: ingById(slotFills[slot.id]) }));
-  ritualFilled.forEach(({ ing }) => {
-    if (!ing || !ing.globalEffect) return;
-    const ge = ing.globalEffect;
-    totalGold       += ing.gold;
-    totalHarm       -= (ge.harmReduction   || 0);
-    totalHarm       += (ge.harmPenalty     || 0);
-    totalSmooth     += (ge.smoothBonus     || 0);
-    totalSmooth     -= (ge.smoothPenalty   || 0);
-    rawForce        += (ge.forceBonus      || 0);
-    rawPrecision    += (ge.precisionBonus  || 0);
-    totalCollateral -= (ge.collateralReduction || 0);
-  });
+  // Accumulate
+  for (const { i } of placed) {
+    const penalty = conflictIds.has(i.id) ? 0.7 : 1.0;
+    totalGold       += i.gold || 0;
+    totalHarm       += i.harm || 0;
+    totalAdoption   += i.adoption || 0;
+    totalCollateral += i.collateralBase || 0;
+    for (const [eff, val] of Object.entries(i.effectPower || {})) {
+      effects[eff] = (effects[eff] || 0) + Math.round(val * penalty);
+    }
+  }
 
   totalHarm       = Math.max(0, totalHarm);
   totalCollateral = Math.max(0, totalCollateral);
+  const adoptionPct = Math.min(100, Math.max(0, 60 + totalAdoption));
 
-  const adoption = Math.min(100, Math.max(0, 60 + totalSmooth));
-  const factor   = 0.3 + 0.7 * adoption / 100;
-
-  return {
-    totalGold, totalHarm, totalSmooth, adoption,
-    rawForce, rawPrecision,
-    effectiveForce:     rawForce     * factor,
-    effectivePrecision: rawPrecision * factor,
-    totalCollateral, penaltySlotIds, filled, ritualFilled
-  };
+  return { effects, totalHarm, totalAdoption, adoptionPct, totalCollateral, totalGold, conflictPairs, placed };
 }
 
+// ─── CALC RESULT ────────────────────────────────────────────────
 function calcResult(stats) {
-  const s    = sc();
-  const need  = s.axis === 'force' ? s.needForce : s.needPrecision;
-  const power = s.axis === 'force' ? stats.effectiveForce : stats.effectivePrecision;
-  if (power < need)                               return 'fail';
-  if (stats.totalCollateral > s.collateralLimit)  return 'partial_collateral';
-  if (stats.totalHarm > s.harmLimit)              return 'partial';
-  return 'success';
-}
-
-function calcWaste(stats) {
   const s = sc();
-  const need = s.axis === 'force' ? s.needForce : s.needPrecision;
-  const threshold = need * 0.1;
-  const ids = new Set();
-  stats.filled.forEach(({ ing }) => {
-    if (!ing) return;
-    const contrib = s.axis === 'force' ? ing.force : ing.precision;
-    if (contrib < threshold) ids.add(ing.id);
-  });
-  return ids;
+
+  const solved = Object.entries(s.requires).every(
+    ([eff, need]) => (stats.effects[eff] || 0) >= need
+  );
+
+  const hurtAllies =
+    stats.totalHarm > s.harmLimit ||
+    (s.collateralLimit < 999 && stats.totalCollateral > s.collateralLimit);
+
+  const teamUnhappy = stats.adoptionPct < (s.teamHappyMin || 50);
+
+  // Waste: active slots with ingredients that give zero contribution to required effects
+  const requiredEffects = Object.keys(s.requires);
+  const wasteIds = stats.placed
+    .filter(({ i }) => {
+      const contribs = Object.entries(i.effectPower || {})
+        .filter(([eff, v]) => v > 0 && requiredEffects.includes(eff));
+      return contribs.length === 0;
+    })
+    .map(({ i }) => i.id);
+
+  return { solved, hurtAllies, teamUnhappy, wasteIds };
 }
 
-// ======================================================================
-// RENDER HELPERS
-// ======================================================================
-
-const CONN_LABEL = { hot: 'агрессивное', cool: 'мягкое', any: 'любое', empty: '' };
-
-function connBarHtml(type, side) {
-  const t = type || 'empty';
-  const lbl = CONN_LABEL[t] || '';
-  return `<div class="conn-bar ${t} ${side}"><span class="cbl">${lbl}</span></div>`;
-}
-
-function ritualEffectText(ing) {
-  if (!ing || !ing.globalEffect) return '';
-  const ge = ing.globalEffect;
-  const parts = [];
-  if (ge.smoothBonus)         parts.push('+' + ge.smoothBonus + ' принятие');
-  if (ge.harmReduction)       parts.push('\u2212' + ge.harmReduction + ' вред');
-  if (ge.collateralReduction) parts.push('\u2212' + ge.collateralReduction + ' залп');
-  if (ge.precisionBonus)      parts.push('+' + ge.precisionBonus + ' точность');
-  if (ge.forceBonus)          parts.push('+' + ge.forceBonus + ' сила');
-  if (ge.smoothPenalty)       parts.push('\u2212' + ge.smoothPenalty + ' принятие');
-  if (ge.harmPenalty)         parts.push('+' + ge.harmPenalty + ' вред');
-  return parts.join(', ');
-}
-
-// ======================================================================
-// RENDER: Quest
-// ======================================================================
-
+// ─── RENDER QUEST ───────────────────────────────────────────────
 function renderQuest() {
-  const s    = sc();
-  const need = s.axis === 'force' ? s.needForce : s.needPrecision;
+  const s = sc();
+  const stats = calcStats();
+  const reqChips = Object.entries(s.requires).map(([eff, need]) => {
+    const m = EFFECT_META[eff];
+    const cur = stats.effects[eff] || 0;
+    const met = cur >= need;
+    return `<span class="require-chip ${met ? 'met' : 'unmet'}">${m.icon} ${m.label} ${need}</span>`;
+  }).join('');
 
-  document.getElementById('quest-badge').innerHTML = s.badgeText;
-  document.getElementById('quest-badge').className = 'quest-badge ' + s.badge;
-  document.getElementById('quest-requester').innerHTML = s.requester;
-  document.getElementById('quest-story').innerHTML     = s.story;
-
-  const collRow = s.collateralLimit < 999
-    ? '<div class="quest-need-row"><span>Залп по своим</span><span>&le; ' + s.collateralLimit + '</span></div>' : '';
-
-  document.getElementById('quest-needs-list').innerHTML =
-    '<div class="quest-need-row"><span>Нужная ось</span><span>' + s.axisLabel + '</span></div>' +
-    '<div class="quest-need-row"><span>Нужна мощь</span><span>&ge; ' + need + '</span></div>' +
-    '<div class="quest-need-row"><span>Лимит вреда</span><span>&le; ' + s.harmLimit + '</span></div>' +
-    collRow +
-    '<div class="quest-need-row"><span>Бюджет золота</span><span>&le; ' + s.goldBudget + ' &#x1F4B0;</span></div>' +
-    '<div style="margin-top:8px;font-size:.82rem;color:var(--muted);font-style:italic;">' + s.need + '</div>';
-
-  const hintEl = document.getElementById('quest-hint');
-  hintEl.innerHTML = s.hint || '';
-  hintEl.classList.toggle('visible', !!s.hint);
+  document.getElementById('quest-card').innerHTML = `
+    <div class="quest-badge">${s.badgeText}</div>
+    <div class="quest-requester">${s.requester}</div>
+    <div class="quest-story">${s.story}</div>
+    <div class="quest-need">${s.need}</div>
+    <div class="requires-row">${reqChips}</div>
+    <div class="quest-hint">${s.hint}</div>
+  `;
 }
 
-// ======================================================================
-// RENDER: Gold
-// ======================================================================
-
+// ─── RENDER GOLD ────────────────────────────────────────────────
 function renderGold(stats) {
-  const s   = sc();
-  const pct = Math.min(100, stats.totalGold / s.goldBudget * 100);
-  const cls = stats.totalGold > s.goldBudget ? 'over' : stats.totalGold >= s.goldBudget * 0.85 ? 'warn' : '';
-  document.getElementById('gold-display').innerHTML =
-    '<div class="gold-bar-label">' +
-      '<span>&#x1F4B0; Золото</span>' +
-      '<span class="gold-val ' + cls + '">' + stats.totalGold + ' / ' + s.goldBudget + '</span>' +
-    '</div>' +
-    '<div class="meter-track" style="margin-bottom:14px">' +
-      '<div class="meter-fill gold" style="width:' + pct + '%"></div>' +
-      '<div class="meter-limit-line" style="left:100%"></div>' +
-    '</div>';
+  const s = sc();
+  const over = stats.totalGold > s.goldBudget;
+  const el = document.getElementById('gold-badge');
+  el.textContent = `💰 ${stats.totalGold} / ${s.goldBudget}`;
+  el.className = 'gold-badge' + (over ? ' over' : '');
 }
 
-// ======================================================================
-// RENDER: Ritual zone (wrapper)
-// ======================================================================
-
-function renderRitualZone(stats) {
+// ─── RENDER SLOTS ───────────────────────────────────────────────
+function renderSlots() {
   const s = sc();
-  const rSlots = s.ritualSlots || [];
-  const zone = document.getElementById('ritual-zone');
+  const activeSet = new Set(s.activeSlots);
 
-  if (rSlots.length === 0) { zone.innerHTML = ''; return; }
+  const html = SLOT_ORDER.map(roleId => {
+    const role   = SLOT_ROLES[roleId];
+    const locked = !activeSet.has(roleId);
+    const filledId = slotFills[roleId];
+    const filled = filledId ? ing(filledId) : null;
+    const isTarget = (activeSlotId === roleId);
+    const layerLabels = role.allowedLayers.map(l => LAYER_META[l].icon).join(' ');
 
-  const inUseIds = new Set(Object.values(slotFills).filter(Boolean));
-
-  let slotsHtml = '';
-  rSlots.forEach(slot => {
-    const ing      = ingById(slotFills[slot.id]);
-    const isActive = activeSlotId === slot.id && isRitualPick;
-    let cls = 'ritual-slot-card';
-    if (isActive) cls += ' active';
-    else if (ing) cls += ' filled';
-
-    const clearBtn = ing ? '<button class="ritual-slot-clear" data-slot="' + slot.id + '" title="Убрать">&times;</button>' : '';
-
-    slotsHtml +=
-      '<div class="' + cls + '" data-slot="' + slot.id + '">' +
-        '<div class="ritual-slot-label">' + slot.label + clearBtn + '</div>' +
-        (ing
-          ? '<div class="ritual-slot-ing">' + ing.name + '</div>' +
-            '<div class="ritual-slot-effect">' + ritualEffectText(ing) + '</div>'
-          : '<div class="ritual-slot-empty">' + (isActive ? '&larr; выбери ритуал' : '+ добавить ритуал') + '</div>'
-        ) +
-      '</div>';
-  });
-
-  zone.innerHTML =
-    '<div class="ritual-zone">' +
-      '<div class="ritual-zone-header">&#x1F503; Обёртка команды <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">— влияет на всё зелье</span></div>' +
-      '<div class="ritual-zone-slots">' + slotsHtml + '</div>' +
-    '</div>';
-
-  zone.querySelectorAll('.ritual-slot-card').forEach(card => {
-    card.addEventListener('click', e => {
-      if (e.target.closest('.ritual-slot-clear')) return;
-      const slotId = card.dataset.slot;
-      if (activeSlotId === slotId && isRitualPick) {
-        activeSlotId = null; isRitualPick = false;
-      } else {
-        activeSlotId = slotId; isRitualPick = true;
-        currentLayer = 'ritual';
-        syncTabBar();
-      }
-      updateUI(true);
-    });
-  });
-
-  zone.querySelectorAll('.ritual-slot-clear').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      slotFills[btn.dataset.slot] = null;
-      if (activeSlotId === btn.dataset.slot) { activeSlotId = null; isRitualPick = false; }
-      updateUI(true);
-    });
-  });
-}
-
-// ======================================================================
-// RENDER: Pipeline slots
-// ======================================================================
-
-function renderSlots(stats) {
-  const s = sc();
-  const container = document.getElementById('cauldron-slots');
-  const LAYER_ICON = { stone: '&#x1FAA8;', elixir: '&#x1F9EA;', smoke: '&#x1F4A8;', ritual: '&#x1F56F;' };
-
-  let html =
-    '<div class="chain-source">&#x1F310; <strong>Интернет</strong>' +
-      '<span class="src-pill">агрессивное</span>' +
-    '</div>' +
-    '<div class="slot-bridge"><span class="bi" style="color:var(--hot-fg)">&darr; hot</span></div>';
-
-  s.slots.forEach((slot, idx) => {
-    const ing        = ingById(slotFills[slot.id]);
-    const isActive   = activeSlotId === slot.id && !isRitualPick;
-    const isConflict = stats.penaltySlotIds.has(slot.id);
-    const isWaste    = ing && wasteIds.has(ing.id);
-    const layerHint  = slot.allowedLayers.map(l => LAYER_ICON[l]).join('/');
-
-    let cardCls = 'slot-card';
-    if (isActive)    cardCls += ' active';
-    else if (isConflict) cardCls += ' conflict';
-    else if (isWaste)    cardCls += ' waste';
-    else if (ing)        cardCls += ' filled';
-
-    const topType    = ing ? ing.inputType  : 'empty';
-    const bottomType = ing ? ing.outputType : 'empty';
-    const clearBtn   = ing ? '<button class="slot-clear" data-slot="' + slot.id + '" title="Убрать">&times;</button>' : '';
-
-    const conflictWarn = isConflict ? '<div class="slot-conflict-warn">&#x26A1; Конфликт: мягкое перед агрессивным &minus;30% мощи</div>' : '';
-    const wasteWarn    = isWaste    ? '<div class="slot-waste-warn">&#x26A0;&#xFE0F; Лишний &mdash; не влияет на нужную ось</div>' : '';
-
-    html +=
-      '<div class="' + cardCls + '" data-slot="' + slot.id + '">' +
-        connBarHtml(topType, 'top') +
-        '<div class="slot-inner">' +
-          '<div class="slot-body">' +
-            '<div class="slot-label-row">' +
-              '<span class="slot-label">' + slot.label + '</span>' +
-              '<span class="slot-layer-hint">' + layerHint + '</span>' +
-            '</div>' +
-            (ing
-              ? '<div class="slot-ingredient">' + ing.name + '</div>'
-              : '<div class="slot-empty-text">' + (isActive ? '&larr; выбери ингредиент' : 'нажми чтобы выбрать') + '</div>'
-            ) +
-            conflictWarn + wasteWarn +
-          '</div>' +
-          clearBtn +
-        '</div>' +
-        connBarHtml(bottomType, 'bottom') +
-      '</div>';
-
-    if (idx < s.slots.length - 1) {
-      const nextIng = ingById(slotFills[s.slots[idx + 1].id]);
-      let bCls = 'slot-bridge', bContent = '<span class="bi">&darr;</span>';
-      if (ing && nextIng) {
-        const ok = isCompatible(ing.outputType, nextIng.inputType);
-        bCls    += ok ? ' ok' : ' bad';
-        bContent = ok ? '<span class="bi">&#x2713;</span>' : '<span class="bi">&#x2717; конфликт</span>';
-      }
-      html += '<div class="' + bCls + '">' + bContent + '</div>';
+    let bodyHtml;
+    if (locked) {
+      bodyHtml = `<div class="slot-body"><div class="slot-empty">—</div></div><div class="slot-lock">🔒</div>`;
+    } else if (filled) {
+      const effBadges = Object.entries(filled.effectPower || {})
+        .filter(([, v]) => v > 0)
+        .map(([eff, v]) => {
+          const m = EFFECT_META[eff];
+          return `<span class="effect-chip ${m.cls}">${m.icon} ${v}</span>`;
+        }).join('');
+      bodyHtml = `
+        <div class="slot-body">
+          <div class="slot-ing-name">${filled.name}</div>
+          <div class="slot-ing-effects">${effBadges || '<span style="font-size:.7rem;color:var(--muted)">нет эффектов</span>'}</div>
+        </div>
+        <button class="slot-ing-remove" data-role="${roleId}" title="Убрать">✕</button>
+      `;
+    } else {
+      bodyHtml = `<div class="slot-body"><div class="slot-empty">+ нажми чтобы добавить</div></div>`;
     }
-  });
 
-  container.innerHTML = html;
+    return `
+      <div class="slot-card ${locked ? 'locked' : ''} ${isTarget ? 'active-target' : ''} ${filled && !locked ? 'filled' : ''}"
+           data-role="${roleId}" ${locked ? '' : 'onclick="onSlotClick(event, \'' + roleId + '\')"'}>
+        <div class="slot-header">
+          <span class="slot-icon">${role.icon}</span>
+          <span class="slot-label">${role.label}</span>
+          <span class="slot-layers">${layerLabels}</span>
+        </div>
+        ${bodyHtml}
+      </div>
+    `;
+  }).join('');
 
-  container.querySelectorAll('.slot-card').forEach(card => {
-    card.addEventListener('click', e => {
-      if (e.target.closest('.slot-clear')) return;
-      const slotId = card.dataset.slot;
-      if (activeSlotId === slotId && !isRitualPick) {
-        activeSlotId = null;
-      } else {
-        activeSlotId = slotId; isRitualPick = false;
-        const slot = sc().slots.find(sl => sl.id === slotId);
-        if (slot && !slot.allowedLayers.includes(currentLayer)) {
-          currentLayer = slot.allowedLayers[0];
-          syncTabBar();
-        }
-      }
-      updateUI(true);
-    });
-  });
+  document.getElementById('slots-grid').innerHTML = html;
 
-  container.querySelectorAll('.slot-clear').forEach(btn => {
+  // Remove button listeners
+  document.querySelectorAll('.slot-ing-remove').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      slotFills[btn.dataset.slot] = null;
-      if (activeSlotId === btn.dataset.slot) activeSlotId = null;
-      updateUI(true);
+      const roleId = btn.dataset.role;
+      slotFills[roleId] = null;
+      updateUI(false);
     });
   });
 }
 
-// ======================================================================
-// RENDER: Meters
-// ======================================================================
-
-function renderMeters(stats) {
+// ─── RENDER EFFECTS PREVIEW ─────────────────────────────────────
+function renderEffectsPreview(stats) {
   const s = sc();
-  const maxHarm = 40, maxPower = 120, maxColl = 30;
-  const harmPct  = Math.min(100, Math.max(0, stats.totalHarm / maxHarm * 100));
-  const harmLim  = s.harmLimit / maxHarm * 100;
-  const adoptPct = stats.adoption;
-  const forcePct = Math.min(100, stats.effectiveForce / maxPower * 100);
-  const precPct  = Math.min(100, stats.effectivePrecision / maxPower * 100);
-  const collPct  = Math.min(100, stats.totalCollateral / maxColl * 100);
-  const collLim  = s.collateralLimit < 999 ? s.collateralLimit / maxColl * 100 : 100;
-  const harmColor = stats.totalHarm > s.harmLimit ? 'var(--danger)' : 'var(--text)';
-  const collColor = stats.totalCollateral > s.collateralLimit ? 'var(--danger)' : 'var(--text)';
+  const chips = Object.entries(s.requires).map(([eff, need]) => {
+    const m = EFFECT_META[eff];
+    const cur = stats.effects[eff] || 0;
+    const met = cur >= need;
+    return `
+      <div class="eff-req-chip ${met ? 'met' : 'unmet'}">
+        ${m.icon} <strong>${m.label}</strong>
+        <span class="eff-val">${cur} / ${need} ${met ? '✓' : '✗'}</span>
+      </div>
+    `;
+  }).join('');
 
-  let html =
-    '<div class="meter-row">' +
-      '<div class="meter-label"><span>&#x2620;&#xFE0F; Вред</span>' +
-        '<span style="color:' + harmColor + '">' + stats.totalHarm.toFixed(0) + ' / лимит ' + s.harmLimit + '</span></div>' +
-      '<div class="meter-track"><div class="meter-fill harm" style="width:' + harmPct + '%"></div>' +
-        '<div class="meter-limit-line" style="left:' + harmLim + '%"></div></div>' +
-    '</div>' +
-    '<div class="meter-row">' +
-      '<div class="meter-label"><span>&#x1F49A; Принятие</span><span>' + stats.adoption.toFixed(0) + '%</span></div>' +
-      '<div class="meter-track"><div class="meter-fill smooth" style="width:' + adoptPct + '%"></div></div>' +
-    '</div>' +
-    '<div class="meter-row">' +
-      '<div class="meter-label"><span>&#x1F6E1;&#xFE0F; Сила</span><span>' + stats.effectiveForce.toFixed(1) + '</span></div>' +
-      '<div class="meter-track"><div class="meter-fill force" style="width:' + forcePct + '%"></div></div>' +
-    '</div>' +
-    '<div class="meter-row">' +
-      '<div class="meter-label"><span>&#x26A1; Точность</span><span>' + stats.effectivePrecision.toFixed(1) + '</span></div>' +
-      '<div class="meter-track"><div class="meter-fill precision" style="width:' + precPct + '%"></div></div>' +
-    '</div>';
-
-  if (stats.totalCollateral > 0 || s.collateralLimit < 999) {
-    html +=
-      '<div class="meter-row">' +
-        '<div class="meter-label"><span>&#x1F3AF; Залп по своим</span>' +
-          '<span style="color:' + collColor + '">' + stats.totalCollateral.toFixed(0) + ' / ' + (s.collateralLimit < 999 ? s.collateralLimit : '&#x221E;') + '</span></div>' +
-        '<div class="meter-track"><div class="meter-fill collateral" style="width:' + collPct + '%"></div>' +
-          (s.collateralLimit < 999 ? '<div class="meter-limit-line" style="left:' + collLim + '%"></div>' : '') +
-        '</div>' +
-      '</div>';
-  }
-
-  document.getElementById('meters').innerHTML = html;
+  document.getElementById('effects-preview').innerHTML = `
+    <div class="effects-preview-title">Нужные эффекты</div>
+    ${chips}
+  `;
 }
 
-// ======================================================================
-// RENDER: Ingredients
-// ======================================================================
-
-function renderIngredients(stats) {
+// ─── RENDER INGREDIENTS ─────────────────────────────────────────
+function renderIngredients() {
   const s = sc();
-  const col = document.getElementById('ingredients-col');
+  const activeSet = new Set(s.activeSlots);
+  const placed = placedIds();
+  const role = activeSlotId ? SLOT_ROLES[activeSlotId] : null;
+  const allowedLayers = role ? new Set(role.allowedLayers) : null;
 
-  // Determine picking context
-  const pickingPipeline = activeSlotId && !isRitualPick
-    ? s.slots.find(sl => sl.id === activeSlotId) : null;
-  const pickingRitual   = activeSlotId && isRitualPick
-    ? (s.ritualSlots || []).find(sl => sl.id === activeSlotId) : null;
+  const filtered = INGREDIENTS.filter(i => i.layer === currentLayer);
 
-  const allowedLayers = pickingPipeline ? pickingPipeline.allowedLayers
-                      : pickingRitual   ? ['ritual']
-                      : null;
+  const html = filtered.map(i => {
+    const isPlaced = placed.has(i.id);
+    // In pick mode, check layer compatibility
+    const incompatible = allowedLayers && !allowedLayers.has(i.layer);
+    if (incompatible) return '';
 
-  const inUseIds = new Set(Object.values(slotFills).filter(Boolean));
+    // Check for active conflicts (with currently placed ingredients)
+    const hasConflict = (i.conflicts || []).some(cid => placed.has(cid));
+    const conflictWith = hasConflict
+      ? (i.conflicts || []).filter(cid => placed.has(cid)).map(cid => ing(cid)?.name || cid).join(', ')
+      : null;
 
-  // Banners
-  const banner = document.getElementById('selection-banner');
-  const rbanner = document.getElementById('ritual-pick-banner');
-  const LN = { stone: '&#x1FAA8; Камни', elixir: '&#x1F9EA; Эликсиры', smoke: '&#x1F4A8; Дым', ritual: '&#x1F56F; Ритуалы' };
+    const effBadges = Object.entries(i.effectPower || {})
+      .filter(([, v]) => v > 0)
+      .map(([eff, v]) => {
+        const m = EFFECT_META[eff];
+        return `<span class="effect-chip ${m.cls}">${m.icon} +${v}</span>`;
+      }).join('');
 
-  if (pickingPipeline) {
-    banner.innerHTML = '&#x1F3AF; Выбираешь для: <strong>&#xAB;' + pickingPipeline.label + '&#xBB;</strong> &mdash; ' + pickingPipeline.allowedLayers.map(l => LN[l]).join(' или ');
+    const adoptTag = i.adoption > 0
+      ? `<span class="adopt-tag">😊 +${i.adoption}</span>`
+      : i.adoption < 0
+        ? `<span class="adopt-neg">😑 ${i.adoption}</span>`
+        : '';
+    const harmTag = (i.harm || 0) > 0 ? `<span class="harm-tag">⚠️ вред ${i.harm}</span>` : '';
+    const goldTag = `<span class="gold-tag">💰 ${i.gold}</span>`;
+
+    const isTrap = Object.keys(i.effectPower || {}).length === 0;
+
+    return `
+      <div class="ing-card ${isPlaced ? 'placed' : ''} ${isTrap ? 'trap' : ''}"
+           data-id="${i.id}" ${isPlaced ? '' : 'onclick="onIngClick(\'' + i.id + '\')"'}>
+        ${isPlaced ? `<span class="ing-placed-label">В котле</span>` : ''}
+        <div class="ing-name">${i.name}</div>
+        <div class="ing-desc">${i.desc}</div>
+        <div class="ing-meta">
+          ${effBadges || '<span style="font-size:.7rem;color:var(--muted)">нет эффектов</span>'}
+          ${goldTag}${harmTag}${adoptTag}
+        </div>
+        ${hasConflict ? `<div class="ing-conflict-warn show">⚡ Конфликт с: ${conflictWith}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('ing-list').innerHTML = html || '<div style="color:var(--muted);font-size:.8rem;padding:10px">Нет подходящих ингредиентов для этого слота</div>';
+}
+
+// ─── PICK MODE BANNER ───────────────────────────────────────────
+function renderPickBanner() {
+  const banner = document.getElementById('pick-banner');
+  if (activeSlotId) {
+    const role = SLOT_ROLES[activeSlotId];
+    const layerIcons = role.allowedLayers.map(l => LAYER_META[l].icon + ' ' + LAYER_META[l].label).join(', ');
+    document.getElementById('pick-banner-text').textContent =
+      `${role.icon} Выбираешь для слота «${role.label}» · допустимо: ${layerIcons}`;
     banner.classList.add('visible');
-    rbanner.classList.remove('visible');
-  } else if (pickingRitual) {
-    rbanner.innerHTML = '&#x1F503; Выбираешь обёртку: <strong>&#xAB;' + pickingRitual.label + '&#xBB;</strong>';
-    rbanner.classList.add('visible');
-    banner.classList.remove('visible');
+
+    // Highlight compatible tabs; gray out others
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      const l = btn.dataset.layer;
+      const ok = role.allowedLayers.includes(l);
+      btn.classList.toggle('grayed', !ok);
+      if (!ok && btn.classList.contains('active')) {
+        // switch to first allowed tab
+        const firstAllowed = role.allowedLayers[0];
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.tab-btn[data-layer="${firstAllowed}"]`).classList.add('active');
+        currentLayer = firstAllowed;
+      }
+    });
   } else {
     banner.classList.remove('visible');
-    rbanner.classList.remove('visible');
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('grayed'));
   }
+}
 
-  // Tab dimming
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    const layer = btn.dataset.layer;
-    btn.classList.toggle('tab-dimmed', !!(allowedLayers && !allowedLayers.includes(layer)));
-  });
+// ─── SHOW RESULT ────────────────────────────────────────────────
+function showResult() {
+  const stats  = calcStats();
+  const result = calcResult(stats);
+  const s = sc();
 
-  col.innerHTML = '';
+  const { solved, hurtAllies, teamUnhappy, wasteIds } = result;
 
-  if (!pickingPipeline && !pickingRitual) {
-    const hint = document.createElement('div');
-    hint.className = 'browse-hint';
-    hint.textContent = '\u2190 Нажми на ячейку котла чтобы выбрать ингредиент';
-    col.appendChild(hint);
-  }
+  // Choose debrief text
+  let debriefText;
+  if (!solved)           debriefText = s.debrief.fail;
+  else if (hurtAllies)   debriefText = s.debrief.partial;
+  else                   debriefText = s.debrief.success;
 
-  INGREDIENTS
-    .filter(ing => ing.layer === currentLayer)
-    .filter(ing => !allowedLayers || allowedLayers.includes(ing.layer))
-    .forEach(ing => {
-      const isInUseElsewhere = inUseIds.has(ing.id) && slotFills[activeSlotId] !== ing.id;
-      const curCost    = ingById(slotFills[activeSlotId])?.gold || 0;
-      const canAfford  = !activeSlotId || (stats.totalGold - curCost + ing.gold <= s.goldBudget);
-      const isDisabled = !!(activeSlotId && (isInUseElsewhere || !canAfford));
-      const isInSlot   = inUseIds.has(ing.id);
-      const isWaste    = wasteIds.has(ing.id);
-      const isRitual   = ing.layer === 'ritual';
+  const overBudget = stats.totalGold > s.goldBudget;
 
-      let cardCls = 'ingredient-card';
-      if (isInSlot && !activeSlotId) cardCls += ' in-use';
-      if (isWaste && isInSlot)       cardCls += ' waste';
-      if (isDisabled)    cardCls += ' disabled';
-      else if (activeSlotId) cardCls += ' selectable';
+  // Main icon
+  let mainIcon, mainTitle;
+  if (!solved)         { mainIcon = '💀'; mainTitle = 'Задача не выполнена'; }
+  else if (hurtAllies) { mainIcon = '⚠️'; mainTitle = 'Частичный успех'; }
+  else                 { mainIcon = '🏆'; mainTitle = 'Успех!'; }
 
-      // Tags
-      const tags = [];
-      if (!isRitual) {
-        if (ing.force > 0)      tags.push('<span class="param-tag force">&#x1F6E1;&#xFE0F; +' + ing.force + '</span>');
-        if (ing.precision > 0)  tags.push('<span class="param-tag precision">&#x26A1; +' + ing.precision + '</span>');
-        if (ing.harm > 0)       tags.push('<span class="param-tag harm">&#x2620;&#xFE0F; вред +' + ing.harm + '</span>');
-        if (ing.harm < 0)       tags.push('<span class="param-tag smooth">&#x1F33F; вред ' + ing.harm + '</span>');
-        if (ing.smooth > 0)     tags.push('<span class="param-tag smooth">&#x1F49A; +' + ing.smooth + '</span>');
-        if (ing.smooth < 0)     tags.push('<span class="param-tag smoothbad">&#x1F49A; ' + ing.smooth + '</span>');
-        if (ing.collateralBase) tags.push('<span class="param-tag collateral">&#x1F3AF; залп +' + ing.collateralBase + '</span>');
-      } else {
-        // Ritual global effects
-        if (ing.globalEffect) {
-          const ge = ing.globalEffect;
-          if (ge.smoothBonus)         tags.push('<span class="param-tag global">&#x1F49A; принятие +' + ge.smoothBonus + '</span>');
-          if (ge.harmReduction)       tags.push('<span class="param-tag smooth">&#x1F33F; вред &minus;' + ge.harmReduction + '</span>');
-          if (ge.collateralReduction) tags.push('<span class="param-tag smooth">&#x1F3AF; залп &minus;' + ge.collateralReduction + '</span>');
-          if (ge.precisionBonus)      tags.push('<span class="param-tag precision">&#x26A1; +' + ge.precisionBonus + '</span>');
-          if (ge.forceBonus)          tags.push('<span class="param-tag force">&#x1F6E1;&#xFE0F; +' + ge.forceBonus + '</span>');
-          if (ge.smoothPenalty)       tags.push('<span class="param-tag smoothbad">&#x1F49A; &minus;' + ge.smoothPenalty + '</span>');
-          if (ge.harmPenalty)         tags.push('<span class="param-tag harm">&#x2620;&#xFE0F; вред +' + ge.harmPenalty + '</span>');
-        }
-      }
-      tags.push('<span class="param-tag gold">&#x1F4B0; ' + ing.gold + '</span>');
+  // Event rows
+  const solvedRow = solved
+    ? `<div class="event-row good"><span class="ev-icon">✅</span> Задача решена</div>`
+    : `<div class="event-row bad"><span class="ev-icon">❌</span> Задача не решена — эффектов не хватило</div>`;
 
-      // Action button
-      let actionHtml = '';
-      if (activeSlotId && !isDisabled) {
-        const btnCls = isRitual ? 'btn-pick ritual' : 'btn-pick';
-        actionHtml = '<button class="' + btnCls + '" data-ing="' + ing.id + '">Взять</button>';
-      } else if (isDisabled && !canAfford) {
-        actionHtml = '<span class="disabled-reason">Дорого</span>';
-      } else if (isDisabled) {
-        actionHtml = '<span class="disabled-reason">Уже в котле</span>';
-      } else if (isInSlot && !activeSlotId) {
-        actionHtml = '<span class="in-use-badge">&#x2713; В котле</span>';
-      }
+  const alliesRow = hurtAllies
+    ? `<div class="event-row bad"><span class="ev-icon">💔</span> Задело своих — побочный ущерб слишком высок</div>`
+    : `<div class="event-row good"><span class="ev-icon">💚</span> Своих не задело</div>`;
 
-      const div = document.createElement('div');
-      div.className  = cardCls;
-      div.dataset.id = ing.id;
+  const teamRow = teamUnhappy
+    ? `<div class="event-row warn"><span class="ev-icon">😑</span> Команда недовольна — слишком много боли при внедрении</div>`
+    : `<div class="event-row good"><span class="ev-icon">😊</span> Команда приняла зелье</div>`;
 
-      if (isRitual) {
-        div.innerHTML =
-          '<div class="ritual-ing-top">&#x1F503; обёртка команды</div>' +
-          '<div class="ing-content">' +
-            '<div class="ing-header"><span class="ing-name">' + ing.name + '</span>' + actionHtml + '</div>' +
-            '<div class="ing-desc">' + ing.desc + '</div>' +
-            '<div class="ing-params">' + tags.join('') + '</div>' +
-            '<div class="waste-badge">&#x26A0;&#xFE0F; Лишний &mdash; вклад меньше 10% от нужной оси</div>' +
-          '</div>';
-      } else {
-        div.innerHTML =
-          connBarHtml(ing.inputType, 'top') +
-          '<div class="ing-content">' +
-            '<div class="ing-header"><span class="ing-name">' + ing.name + '</span>' + actionHtml + '</div>' +
-            '<div class="ing-desc">' + ing.desc + '</div>' +
-            '<div class="ing-params">' + tags.join('') + '</div>' +
-            '<div class="waste-badge">&#x26A0;&#xFE0F; Лишний &mdash; вклад меньше 10% от нужной оси</div>' +
-          '</div>' +
-          connBarHtml(ing.outputType, 'bottom');
-      }
+  const budgetRow = overBudget
+    ? `<div class="event-row warn"><span class="ev-icon">💸</span> Бюджет превышен (${stats.totalGold} > ${s.goldBudget} 💰)</div>`
+    : '';
 
-      col.appendChild(div);
+  // Waste note
+  const wasteHtml = wasteIds.length > 0
+    ? `<div class="waste-note">🗑 Лишние ингредиенты (не дают нужного эффекта): ${wasteIds.map(id => ing(id)?.name || id).join(', ')}</div>`
+    : '';
+
+  // Conflicts
+  const conflictHtml = stats.conflictPairs.length > 0
+    ? `<div class="conflict-list">
+        ${stats.conflictPairs.map(p =>
+          `<div class="conflict-item">⚡ Конфликт: ${ing(p.a)?.name} + ${ing(p.b)?.name}${p.note ? ' — ' + p.note : ''}</div>`
+        ).join('')}
+       </div>`
+    : '';
+
+  // Details
+  const effDetailRows = Object.entries(stats.effects)
+    .filter(([, v]) => v > 0 || Object.keys(s.requires).includes)
+    .map(([eff, v]) => {
+      const m = EFFECT_META[eff];
+      const need = s.requires[eff];
+      const ok = !need || v >= need;
+      return `<div class="detail-item"><div class="d-label">${m.icon} ${m.label}</div><div class="d-value ${ok ? 'ok' : 'bad'}">${v}${need ? ' / ' + need : ''}</div></div>`;
     });
 
-  col.querySelectorAll('.btn-pick').forEach(btn => {
-    btn.addEventListener('click', () => {
-      slotFills[activeSlotId] = btn.dataset.ing;
-      activeSlotId = null; isRitualPick = false;
-      updateUI(true);
-    });
-  });
+  document.getElementById('result-panel').innerHTML = `
+    <div class="result-header">
+      <div class="result-icon">${mainIcon}</div>
+      <div>
+        <div class="result-title">${mainTitle}</div>
+        <div class="result-subtitle">${s.requester}</div>
+      </div>
+    </div>
+    <div class="event-rows">
+      ${solvedRow}
+      ${alliesRow}
+      ${teamRow}
+      ${budgetRow}
+    </div>
+    ${wasteHtml}
+    ${conflictHtml}
+    <div class="result-story">${debriefText}</div>
+    <button class="details-toggle" onclick="toggleDetails()">▾ Показать детали (числа)</button>
+    <div id="result-details">
+      <div class="details-grid">
+        <div class="detail-item">
+          <div class="d-label">Вред / лимит</div>
+          <div class="d-value ${stats.totalHarm > s.harmLimit ? 'bad' : 'ok'}">${stats.totalHarm} / ${s.harmLimit}</div>
+        </div>
+        <div class="detail-item">
+          <div class="d-label">Принятие команды</div>
+          <div class="d-value ${stats.adoptionPct < s.teamHappyMin ? 'bad' : 'ok'}">${stats.adoptionPct}%</div>
+        </div>
+        ${s.collateralLimit < 999 ? `<div class="detail-item"><div class="d-label">Залп по своим / лимит</div><div class="d-value ${stats.totalCollateral > s.collateralLimit ? 'bad' : 'ok'}">${stats.totalCollateral} / ${s.collateralLimit}</div></div>` : ''}
+        <div class="detail-item">
+          <div class="d-label">Стоимость / бюджет</div>
+          <div class="d-value ${stats.totalGold > s.goldBudget ? 'bad' : 'ok'}">${stats.totalGold} / ${s.goldBudget} 💰</div>
+        </div>
+        ${effDetailRows.join('')}
+      </div>
+    </div>
+  `;
 
-  col.querySelectorAll('.ingredient-card.selectable').forEach(card => {
-    card.addEventListener('click', e => {
-      if (e.target.closest('.btn-pick')) return;
-      slotFills[activeSlotId] = card.dataset.id;
-      activeSlotId = null; isRitualPick = false;
-      updateUI(true);
-    });
-  });
-
-  updateTabBadges();
+  document.getElementById('result-panel').style.display = 'block';
 }
 
-// ======================================================================
-// HELPERS
-// ======================================================================
-
-function updateTabBadges() {
-  const inUseIds = new Set(Object.values(slotFills).filter(Boolean));
-  ['stone', 'elixir', 'smoke', 'ritual'].forEach(layer => {
-    const badge = document.getElementById('badge-' + layer);
-    if (!badge) return;
-    const count = INGREDIENTS.filter(i => i.layer === layer && inUseIds.has(i.id)).length;
-    badge.textContent = count || '';
-    badge.classList.toggle('visible', count > 0);
-  });
+function toggleDetails() {
+  const el = document.getElementById('result-details');
+  const btn = document.querySelector('.details-toggle');
+  const visible = el.style.display !== 'none' && el.style.display !== '';
+  el.style.display = visible ? 'none' : 'block';
+  btn.textContent = visible ? '▾ Показать детали (числа)' : '▴ Скрыть детали';
 }
 
-function syncTabBar() {
-  document.querySelectorAll('.tab-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.layer === currentLayer);
-  });
+function hideResult() {
+  const el = document.getElementById('result-panel');
+  el.style.display = 'none';
+  el.innerHTML = '';
 }
 
-function hideResult() { document.getElementById('result-panel').className = 'result-panel'; }
-
-function showResult(stats) {
-  const result   = calcResult(stats);
-  const s        = sc();
-  const panel    = document.getElementById('result-panel');
-  panel.className = 'result-panel show ' + (result.startsWith('partial') ? 'partial' : result);
-
-  const titles = {
-    success: '&#x2705; Зелье сварено удачно!', fail: '&#x1F480; Зелье не помогло',
-    partial: '&#x26A0;&#xFE0F; Сработало, но с побочками',
-    partial_collateral: '&#x26A0;&#xFE0F; Сработало, но задело своих'
-  };
-  document.getElementById('result-title').innerHTML = titles[result];
-
-  let text = s.debrief[result] || s.debrief.partial || '';
-  if (s.id === 'latency' && result !== 'fail') {
-    const fSum = stats.filled.filter(({ing}) => ing && ing.force > 5).reduce((a, {ing}) => a + ing.force, 0);
-    const pSum = stats.filled.filter(({ing}) => ing && ing.precision > 5).reduce((a, {ing}) => a + ing.precision, 0);
-    const extra = fSum > pSum ? s.debrief.force_debrief : s.debrief.precision_debrief;
-    if (extra) text += ' ' + extra;
+// ─── EVENT HANDLERS ─────────────────────────────────────────────
+function onSlotClick(e, roleId) {
+  e.stopPropagation();
+  if (activeSlotId === roleId) {
+    // cancel pick mode
+    activeSlotId = null;
+  } else {
+    activeSlotId = roleId;
+    const role = SLOT_ROLES[roleId];
+    // auto-switch tab to first allowed layer
+    if (!role.allowedLayers.includes(currentLayer)) {
+      currentLayer = role.allowedLayers[0];
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.tab-btn[data-layer="${currentLayer}"]`).classList.add('active');
+    }
   }
-  document.getElementById('result-text').innerHTML = text;
-
-  let ext = '';
-  if (stats.penaltySlotIds.size > 0) ext += '<div><strong>&#x26A1; Конфликт порядка:</strong> мягкое вмешательство стоит перед агрессивным &mdash; &minus;30% мощи.</div>';
-  const wastes = stats.filled.filter(({ing}) => ing && wasteIds.has(ing.id)).map(({ing}) => ing.name);
-  if (wastes.length) ext += '<div><strong>&#x1F5D1;&#xFE0F; Лишнее:</strong> ' + wastes.join(', ') + ' &mdash; вклад в нужную ось меньше 10%.</div>';
-  document.getElementById('result-extras').innerHTML = ext;
+  updateUI(false);
 }
 
-// ======================================================================
-// MAIN LOOP
-// ======================================================================
+function onIngClick(id) {
+  if (!activeSlotId) return;
 
-function updateUI(rerender) {
+  const role = SLOT_ROLES[activeSlotId];
+  const i = ing(id);
+  if (!role.allowedLayers.includes(i.layer)) return;
+
+  slotFills[activeSlotId] = id;
+  activeSlotId = null;
+
+  updateUI(false);
+}
+
+// ─── UPDATE UI ──────────────────────────────────────────────────
+function updateUI(showBrew) {
   const stats = calcStats();
-  wasteIds    = calcWaste(stats);
+  renderQuest();
   renderGold(stats);
-  renderRitualZone(stats);
-  renderSlots(stats);
-  renderMeters(stats);
-  if (rerender) renderIngredients(stats);
-  else updateTabBadges();
+  renderSlots();
+  renderEffectsPreview(stats);
+  renderPickBanner();
+  renderIngredients();
+  if (!showBrew) hideResult();
 }
 
-function resetCauldron() {
-  slotFills = {}; activeSlotId = null; isRitualPick = false; wasteIds = new Set();
-  hideResult();
-  updateUI(true);
+// ─── INIT SCENARIO ──────────────────────────────────────────────
+function initScenario() {
+  slotFills = {};
+  activeSlotId = null;
+  currentLayer = 'stone';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.tab-btn[data-layer="stone"]').classList.add('active');
+  const total = SCENARIOS.length;
+  document.getElementById('scenario-idx').textContent = `${scenarioIdx + 1} / ${total}`;
+  updateUI(false);
 }
 
-// ======================================================================
-// EVENTS
-// ======================================================================
-
+// ─── BOOT ───────────────────────────────────────────────────────
 document.getElementById('btn-brew').addEventListener('click', () => {
-  const stats = calcStats();
-  const btn = document.getElementById('btn-brew');
-  btn.textContent = '&#x1F300; Варится...';
-  btn.disabled = true;
-  setTimeout(() => {
-    btn.innerHTML = '&#x2697; Сварить зелье';
-    btn.disabled = false;
-    showResult(stats);
-    updateUI(true);
-  }, 600);
+  activeSlotId = null;
+  showResult();
+  renderSlots();
+  renderPickBanner();
+  renderIngredients();
 });
 
-document.getElementById('btn-reset').addEventListener('click', resetCauldron);
+document.getElementById('btn-reset').addEventListener('click', () => {
+  slotFills = {};
+  activeSlotId = null;
+  updateUI(false);
+});
 
 document.getElementById('btn-next').addEventListener('click', () => {
-  currentScenarioIdx = (currentScenarioIdx + 1) % SCENARIOS.length;
-  resetCauldron();
-  renderQuest();
+  if (scenarioIdx < SCENARIOS.length - 1) { scenarioIdx++; initScenario(); }
+});
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (scenarioIdx > 0) { scenarioIdx--; initScenario(); }
+});
+
+document.getElementById('pick-cancel').addEventListener('click', () => {
+  activeSlotId = null;
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('grayed'));
+  updateUI(false);
 });
 
 document.getElementById('tab-bar').addEventListener('click', e => {
   const btn = e.target.closest('.tab-btn');
-  if (!btn || btn.classList.contains('tab-dimmed')) return;
+  if (!btn || btn.classList.contains('grayed')) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
   currentLayer = btn.dataset.layer;
-  syncTabBar();
-  updateUI(true);
+  renderIngredients();
 });
 
-// ======================================================================
-// INIT
-// ======================================================================
+// Close pick mode when clicking outside
+document.addEventListener('click', e => {
+  if (!activeSlotId) return;
+  const inCauldron = e.target.closest('#col-cauldron');
+  const inIngList  = e.target.closest('#col-ingredients');
+  if (!inCauldron && !inIngList) {
+    activeSlotId = null;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('grayed'));
+    updateUI(false);
+  }
+});
 
-renderQuest();
-updateUI(true);
+initScenario();
 </script>
 </body>
 </html>
