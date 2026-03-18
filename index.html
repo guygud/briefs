@@ -20,6 +20,7 @@
       --warn: #d29922;
       --danger: #f85149;
       --orange: #ff961e;
+      --purple: #a371f7;
       --radius: 10px;
       --font: 'Manrope', system-ui, sans-serif;
     }
@@ -41,7 +42,6 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-
     header h1 { font-size: 1.3rem; font-weight: 700; }
     header p  { font-size: 0.85rem; color: var(--muted); }
 
@@ -51,13 +51,13 @@
       gap: 16px;
       padding: 16px 24px 40px;
       min-height: calc(100vh - 60px);
+      align-items: start;
     }
 
     @media (max-width: 900px) {
       .game-layout { grid-template-columns: 1fr; }
     }
 
-    /* ---- Generic card ---- */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -79,13 +79,10 @@
 
     .quest-badge {
       display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-bottom: 12px;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px; margin-bottom: 12px;
     }
-    .quest-badge.ddos    { background: rgba(248,81,73,0.15); color: var(--danger); border: 1px solid rgba(248,81,73,0.4); }
+    .quest-badge.ddos    { background: rgba(248,81,73,0.15);  color: var(--danger); border: 1px solid rgba(248,81,73,0.4); }
     .quest-badge.latency { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid rgba(88,166,255,0.4); }
 
     .quest-requester { font-size: 1rem; font-weight: 600; margin-bottom: 10px; }
@@ -93,19 +90,25 @@
 
     .quest-needs {
       background: var(--surface2);
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.85rem;
+      border-radius: 8px; padding: 12px; font-size: 0.85rem;
     }
     .quest-needs strong { display: block; color: var(--text); margin-bottom: 6px; }
 
     .quest-need-row {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      padding: 2px 0;
+      display: flex; justify-content: space-between;
+      color: var(--muted); padding: 2px 0;
     }
     .quest-need-row span:last-child { color: var(--text); font-weight: 500; }
+
+    .quest-hint {
+      margin-top: 12px; padding: 10px 12px;
+      background: rgba(88,166,255,0.08);
+      border: 1px solid rgba(88,166,255,0.25);
+      border-radius: 8px;
+      font-size: 0.82rem; color: var(--accent);
+      display: none;
+    }
+    .quest-hint.visible { display: block; }
 
     .btn-next {
       margin-top: 16px; width: 100%; padding: 10px;
@@ -119,34 +122,111 @@
     /* ---- Cauldron column ---- */
     .cauldron-col { display: flex; flex-direction: column; gap: 14px; }
 
-    .cauldron-visual {
-      text-align: center; font-size: 4rem;
-      padding: 16px 0 8px; transition: transform 0.3s;
+    /* Gold budget */
+    .gold-display { margin-bottom: 14px; }
+    .gold-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem; color: var(--muted); margin-bottom: 4px;
     }
-    .cauldron-visual.brewing { animation: brew 0.5s ease-in-out; }
+    .gold-bar-label .gold-val { font-weight: 700; }
+    .gold-bar-label .gold-val.over { color: var(--danger); }
+    .gold-bar-label .gold-val.warn { color: var(--warn); }
 
-    @keyframes brew {
-      0%   { transform: scale(1) rotate(0deg); }
-      25%  { transform: scale(1.1) rotate(-5deg); }
-      50%  { transform: scale(1.15) rotate(5deg); }
-      75%  { transform: scale(1.05) rotate(-3deg); }
-      100% { transform: scale(1) rotate(0deg); }
+    /* Slots */
+    .slots-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 14px; }
+
+    .slot-card {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      position: relative;
     }
+    .slot-card:hover { border-color: var(--accent); }
+    .slot-card.active {
+      border-color: var(--accent);
+      background: rgba(88,166,255,0.07);
+      box-shadow: 0 0 0 2px rgba(88,166,255,0.2);
+    }
+    .slot-card.filled  { border-color: var(--success); }
+    .slot-card.conflict { border-color: var(--danger); }
+    .slot-card.waste   { border-color: var(--warn); }
 
+    .slot-inner {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .slot-connectors {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      flex-shrink: 0;
+    }
+    .slot-connectors.right { margin-left: auto; }
+    .conn-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+    .conn-dot.raw   { background: var(--danger);  border-color: var(--danger); }
+    .conn-dot.clean { background: var(--success); border-color: var(--success); }
+    .conn-dot.any   { background: var(--muted);   border-color: var(--muted); }
+    .conn-dot.empty { background: transparent;    border-color: var(--border); }
+    .conn-label { font-size: 0.6rem; color: var(--muted); line-height: 1; }
+
+    .slot-body { flex: 1; min-width: 0; }
+    .slot-label-row {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 2px;
+    }
+    .slot-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .slot-layer-hint { font-size: 0.68rem; color: var(--border); }
+    .slot-ingredient { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+    .slot-empty-text { font-size: 0.82rem; color: var(--muted); font-style: italic; }
+    .slot-conflict-warn { font-size: 0.72rem; color: var(--danger); margin-top: 3px; }
+    .slot-waste-warn    { font-size: 0.72rem; color: var(--warn); margin-top: 3px; }
+
+    .slot-clear {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%; border: 1px solid var(--border);
+      background: var(--surface); color: var(--muted);
+      font-size: 0.9rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .slot-clear:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+    .slot-bridge {
+      display: flex; align-items: center; justify-content: center;
+      height: 20px; font-size: 0.8rem; color: var(--border);
+      position: relative;
+    }
+    .slot-bridge::before {
+      content: '';
+      position: absolute; left: 50%; top: 0;
+      width: 2px; height: 100%;
+      transform: translateX(-50%);
+      background: var(--border);
+    }
+    .slot-bridge .bridge-icon {
+      background: var(--surface); padding: 0 6px;
+      position: relative; z-index: 1; font-size: 0.72rem;
+    }
+    .slot-bridge.ok .bridge-icon { color: var(--success); }
+    .slot-bridge.bad .bridge-icon { color: var(--danger); }
+    .slot-bridge.ok::before  { background: var(--success); opacity: 0.4; }
+    .slot-bridge.bad::before { background: var(--danger);  opacity: 0.5; }
+
+    /* Meters */
     .meter-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
     .meter-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); }
     .meter-label span:last-child { color: var(--text); font-weight: 600; }
-
     .meter-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; position: relative; }
     .meter-fill  { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
-
     .meter-fill.gold       { background: var(--warn); }
     .meter-fill.harm       { background: var(--danger); }
     .meter-fill.smooth     { background: var(--success); }
-    .meter-fill.force      { background: #a371f7; }
+    .meter-fill.force      { background: var(--purple); }
     .meter-fill.precision  { background: var(--accent); }
     .meter-fill.collateral { background: var(--orange); }
-
     .meter-limit-line {
       position: absolute; top: 0; height: 100%; width: 2px;
       background: rgba(255,255,255,0.5);
@@ -172,9 +252,9 @@
     }
     .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
 
-    /* ---- Result panel ---- */
+    /* Result panel */
     .result-panel { display: none; border-radius: var(--radius); padding: 18px; animation: fadeIn 0.3s ease; }
-    .result-panel.show { display: block; }
+    .result-panel.show    { display: block; }
     .result-panel.success { background: rgba(63,185,80,0.1);  border: 1px solid rgba(63,185,80,0.4); }
     .result-panel.partial { background: rgba(210,153,34,0.1); border: 1px solid rgba(210,153,34,0.4); }
     .result-panel.fail    { background: rgba(248,81,73,0.1);  border: 1px solid rgba(248,81,73,0.4); }
@@ -183,7 +263,6 @@
     .result-panel.success .result-title { color: var(--success); }
     .result-panel.partial .result-title { color: var(--warn); }
     .result-panel.fail    .result-title { color: var(--danger); }
-
     .result-text   { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; }
     .result-extras { font-size: 0.8rem; color: var(--muted); }
     .result-extras strong { color: var(--warn); }
@@ -194,81 +273,74 @@
     }
 
     /* ---- Ingredients column ---- */
-
-    .tab-bar {
-      display: flex;
-      gap: 4px;
+    .selection-banner {
+      display: none;
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.35);
+      border-radius: 8px; padding: 8px 12px;
+      font-size: 0.82rem; color: var(--accent);
       margin-bottom: 8px;
-      flex-wrap: wrap;
     }
+    .selection-banner.visible { display: block; }
+    .browse-hint {
+      font-size: 0.75rem; color: var(--muted);
+      text-align: center; padding: 6px 0 10px;
+      font-style: italic;
+    }
+
+    .tab-bar { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
 
     .tab-btn {
-      flex: 1;
-      padding: 7px 6px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      font-family: var(--font);
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-      text-align: center;
+      flex: 1; padding: 7px 6px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--muted);
+      font-family: var(--font); font-size: 0.78rem;
+      cursor: pointer; transition: all 0.15s;
+      white-space: nowrap; text-align: center;
     }
-    .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+    .tab-btn:hover  { border-color: var(--accent); color: var(--text); }
     .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+    .tab-btn.tab-dimmed { opacity: 0.35; cursor: default; }
+    .tab-btn.tab-dimmed:hover { border-color: var(--border); color: var(--muted); }
 
     .tab-badge {
-      display: none;
-      background: var(--success);
-      color: #fff;
-      border-radius: 10px;
-      padding: 0 5px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      margin-left: 4px;
+      display: none; background: var(--success); color: #fff;
+      border-radius: 10px; padding: 0 5px; font-size: 0.65rem; font-weight: 700; margin-left: 4px;
     }
     .tab-badge.visible { display: inline; }
 
     .ingredients-col {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      max-height: calc(100vh - 130px);
+      display: flex; flex-direction: column; gap: 10px;
+      overflow-y: auto; max-height: calc(100vh - 140px);
     }
 
     .ingredient-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px 14px;
+      border-radius: var(--radius); padding: 12px 14px;
       transition: border-color 0.2s;
     }
-    .ingredient-card.active     { border-color: var(--accent); }
-    .ingredient-card.waste      { border-color: var(--warn); opacity: 0.8; }
-    .ingredient-card.overdosing { border-color: var(--orange); }
+    .ingredient-card.in-use { border-color: var(--success); }
+    .ingredient-card.waste  { border-color: var(--warn); opacity: 0.8; }
+    .ingredient-card.selectable { cursor: pointer; }
+    .ingredient-card.selectable:hover { border-color: var(--accent); background: rgba(88,166,255,0.05); }
+    .ingredient-card.disabled { opacity: 0.45; cursor: default; }
+    .ingredient-card.disabled:hover { border-color: var(--border); background: var(--surface); }
 
-    .ing-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .ing-name { font-size: 0.9rem; font-weight: 600; }
+    .ing-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+    .ing-name { font-size: 0.9rem; font-weight: 600; flex: 1; }
 
-    .drops-control { display: flex; align-items: center; gap: 8px; }
-    .drops-btn {
-      width: 26px; height: 26px;
-      border-radius: 6px; border: 1px solid var(--border);
-      background: var(--surface2); color: var(--text);
-      font-size: 1rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
+    .btn-pick {
+      flex-shrink: 0; padding: 4px 12px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 6px;
+      font-family: var(--font); font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
     }
-    .drops-btn:hover { background: var(--surface); border-color: var(--accent); }
-    .drops-val { font-size: 1rem; font-weight: 700; min-width: 18px; text-align: center; color: var(--accent); }
+    .btn-pick:hover { background: #79b8ff; }
+
+    .disabled-reason { flex-shrink: 0; font-size: 0.75rem; color: var(--danger); }
+    .in-use-badge    { flex-shrink: 0; font-size: 0.75rem; color: var(--success); }
 
     .ing-desc   { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
     .ing-params { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -277,25 +349,24 @@
       font-size: 0.7rem; padding: 2px 8px;
       border-radius: 20px; background: var(--surface2); color: var(--muted);
     }
-    .param-tag.force      { background: rgba(163,113,247,0.15); color: #a371f7; }
+    .param-tag.force      { background: rgba(163,113,247,0.15); color: var(--purple); }
     .param-tag.precision  { background: rgba(88,166,255,0.15);  color: var(--accent); }
     .param-tag.harm       { background: rgba(248,81,73,0.15);   color: var(--danger); }
     .param-tag.smooth     { background: rgba(63,185,80,0.15);   color: var(--success); }
     .param-tag.smoothbad  { background: rgba(210,153,34,0.15);  color: var(--warn); }
     .param-tag.gold       { background: rgba(210,153,34,0.1);   color: var(--warn); }
-    .param-tag.overdose   { background: rgba(255,150,30,0.15);  color: var(--orange); }
+    .param-tag.collateral { background: rgba(255,150,30,0.15);  color: var(--orange); }
+    .param-tag.connector  { background: var(--surface2); color: var(--muted); font-family: monospace; }
 
-    .waste-badge    { display: none; font-size: 0.7rem; color: var(--warn); margin-top: 4px; }
-    .overdose-warn  { display: none; font-size: 0.7rem; color: var(--orange); margin-top: 4px; }
-    .ingredient-card.waste      .waste-badge   { display: block; }
-    .ingredient-card.overdosing .overdose-warn { display: block; }
+    .waste-badge { display: none; font-size: 0.7rem; color: var(--warn); margin-top: 4px; }
+    .ingredient-card.waste .waste-badge { display: block; }
   </style>
 </head>
 <body>
 
 <header>
   <h1>🧪 Зельевар Staff-инженера</h1>
-  <p>Составь зелье. Не убей пациента. Сдай задачу.</p>
+  <p>Заполни слоты котла. Не убей пациента. Сдай задачу.</p>
 </header>
 
 <div class="game-layout">
@@ -311,6 +382,7 @@
         <strong>Что нужно зелью:</strong>
         <div id="quest-needs-list"></div>
       </div>
+      <div class="quest-hint" id="quest-hint"></div>
       <button class="btn-next" id="btn-next">Следующая просьба →</button>
     </div>
   </div>
@@ -319,10 +391,11 @@
   <div class="cauldron-col">
     <div class="col-label">Котёл</div>
     <div class="card">
-      <div class="cauldron-visual" id="cauldron-visual">🫧</div>
+      <div id="gold-display"></div>
+      <div class="slots-list" id="cauldron-slots"></div>
       <div id="meters"></div>
       <div class="cauldron-actions">
-        <button class="btn-brew" id="btn-brew">Сварить зелье</button>
+        <button class="btn-brew" id="btn-brew">⚗️ Сварить зелье</button>
         <button class="btn-reset" id="btn-reset">Сброс</button>
       </div>
     </div>
@@ -335,6 +408,7 @@
 
   <!-- Правая колонка: Ингредиенты -->
   <div>
+    <div class="selection-banner" id="selection-banner"></div>
     <div class="tab-bar" id="tab-bar">
       <button class="tab-btn active" data-layer="stone">🪨 Камни <span class="tab-badge" id="badge-stone"></span></button>
       <button class="tab-btn" data-layer="elixir">🧪 Эликсиры <span class="tab-badge" id="badge-elixir"></span></button>
@@ -347,15 +421,19 @@
 </div>
 
 <script>
-  // ===== ДАННЫЕ =====
-
-  // layer: stone (периметр/инфраструктура) | elixir (внутри сервиса) |
-  //        smoke (наблюдение) | ritual (процессы команды)
+  // =====================================================================
+  // ДАННЫЕ
+  // =====================================================================
   //
-  // Параметры: gold (стоимость), harm (вред, растёт квадратично), smooth (гладкость/принятие),
-  //            force (мощь против DDoS), precision (мощь против латентности)
+  // Слои: stone (периметр), elixir (внутри сервиса),
+  //       smoke (наблюдение), ritual (процессы команды)
   //
-  // overdose: если drops > threshold — начинает расти collateral ("залп по своим")
+  // inputType / outputType: raw | clean | any
+  //   raw   = необработанный трафик
+  //   clean = после периметровой фильтрации
+  //   any   = совместим с любым
+  //
+  // collateralBase: фиксированный "залп по своим" при установке в слот
 
   const INGREDIENTS = [
     {
@@ -363,78 +441,113 @@
       name: '💧 Капли Rate Limit',
       desc: 'Ставим лимиты на запросы. Работает грубо, но надёжно. Птицы и фазаны не разбираются.',
       gold: 2, harm: 8, smooth: -5, force: 25, precision: 0,
-      overdose: { threshold: 1, collateral: 12 }
+      inputType: 'raw', outputType: 'clean',
+      collateralBase: 6
     },
     {
       id: 'ddos_screen', layer: 'stone',
       name: '🛡️ Дорогой DDoS-экран',
       desc: 'Большой экран, большой счёт. Прайс-лист толще птичьей стаи.',
-      gold: 20, harm: 3, smooth: -2, force: 40, precision: 0
+      gold: 12, harm: 3, smooth: -2, force: 40, precision: 0,
+      inputType: 'raw', outputType: 'clean'
     },
     {
       id: 'waf_rune', layer: 'stone',
       name: '🔮 Руны WAF',
       desc: 'Магические правила фильтрации. Иногда задерживают нужные письма, зато красиво.',
       gold: 8, harm: 7, smooth: -4, force: 20, precision: 5,
-      overdose: { threshold: 1, collateral: 8 }
+      inputType: 'raw', outputType: 'clean',
+      collateralBase: 5
     },
     {
       id: 'cache_powder', layer: 'elixir',
       name: '🫙 Порошок Кеширования',
       desc: 'Кешируем всё. Может протухнуть — зато быстро. Иногда.',
-      gold: 5, harm: 6, smooth: 0, force: 15, precision: 18
+      gold: 5, harm: 5, smooth: 0, force: 10, precision: 18,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'queue_tuner', layer: 'elixir',
       name: '🧵 Перо Настройки Очередей',
       desc: 'Тонкая настройка тайм-аутов и пулов потоков. Нудно, но помогает.',
-      gold: 5, harm: 2, smooth: 3, force: 0, precision: 24
+      gold: 5, harm: 2, smooth: 3, force: 0, precision: 24,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'observability', layer: 'smoke',
       name: '🔭 Свиток Наблюдения',
       desc: 'Метрики, дашборд, алерты. Не чинит, но мы хотя бы знаем что сломалось.',
-      gold: 6, harm: 1, smooth: 8, force: 0, precision: 22
+      gold: 6, harm: 1, smooth: 8, force: 0, precision: 20,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'tracing', layer: 'smoke',
       name: '🔷 Кристалл Трейсинга',
       desc: 'Каждый запрос оставляет след. Узкое место найдём точно.',
-      gold: 7, harm: 1, smooth: 2, force: 2, precision: 28
+      gold: 7, harm: 1, smooth: 2, force: 2, precision: 28,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'metrics', layer: 'smoke',
       name: '⚡ Громоотвод Метрик',
       desc: 'Гистограммы латентности. P99 теперь виден невооружённым глазом.',
-      gold: 4, harm: 0, smooth: 6, force: 0, precision: 18
+      gold: 4, harm: 0, smooth: 6, force: 0, precision: 16,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'feature_flag', layer: 'ritual',
       name: '🕯️ Свеча Фиче-Флага',
       desc: 'Можно всё откатить одной рукой. Команда счастлива. Мощь ~ 0.',
-      gold: 2, harm: -1, smooth: 12, force: 1, precision: 2
+      gold: 2, harm: -1, smooth: 12, force: 1, precision: 2,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'canary_dust', layer: 'ritual',
       name: '🐤 Канареечная Пыль',
-      desc: '5% пользователей идут первыми. Если упало — откатили, канарейку не заметили.',
-      gold: 3, harm: -2, smooth: 10, force: 0, precision: 3
+      desc: '5% пользователей идут первыми. Нужен необработанный поток для разделения.',
+      gold: 3, harm: -2, smooth: 10, force: 0, precision: 3,
+      inputType: 'raw', outputType: 'any'
     },
     {
       id: 'reactor_dust', layer: 'ritual',
       name: '💨 Пыль Бессмысленного Реактора',
       desc: 'Переписать на Rust? Звучит круто. Эффекта ноль, дедлайн сорван.',
-      gold: 15, harm: 10, smooth: -8, force: 2, precision: 1
+      gold: 15, harm: 10, smooth: -8, force: 2, precision: 1,
+      inputType: 'any', outputType: 'any'
     },
     {
       id: 'blockchain', layer: 'ritual',
       name: '⛓️ Кристалл Блокчейна',
       desc: 'Добавляет серьёзности и непредсказуемости в равных пропорциях.',
-      gold: 18, harm: 12, smooth: -10, force: 0, precision: 0
+      gold: 18, harm: 12, smooth: -10, force: 0, precision: 0,
+      inputType: 'any', outputType: 'any'
     }
   ];
 
   const SCENARIOS = [
+    {
+      id: 'onboarding',
+      axis: 'force',
+      axisLabel: '🛡️ Сила (защита от DDoS)',
+      badge: 'ddos',
+      badgeText: '🎓 Обучение',
+      requester: '🛒 Купец Архип',
+      story: 'Архип запустил большую распродажу. Через час сервер лёг — боты скупали товары за миллисекунды. Живые покупатели видят только ошибку 503.',
+      need: '«Мне нужно остановить ботов. Что-нибудь недорогое.»',
+      needForce: 18, needPrecision: 0,
+      harmLimit: 25, collateralLimit: 999,
+      goldBudget: 12,
+      hint: '💡 С чего начать: загляни во вкладку 🪨 Камни — там инструменты для защиты периметра.',
+      slots: [
+        { id: 's1', label: 'Защита №1', allowedLayers: ['stone'] },
+        { id: 's2', label: 'Защита №2', allowedLayers: ['stone'] }
+      ],
+      debrief: {
+        success:  '🎉 Боты отступили! Архип продал все товары живым покупателям. Он доволен и оставил щедрый отзыв.',
+        partial:  '⚠️ Боты почти остановлены, но зелье навредило: несколько честных покупателей тоже заблокированы. Попробуй снизить вред.',
+        fail:     '💀 Боты проигнорировали зелье. Архип требует возврат денег.'
+      }
+    },
     {
       id: 'ddos',
       axis: 'force',
@@ -444,14 +557,19 @@
       requester: '🐦 Птицелов Мирон',
       story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Но тут прилетают вороны — тысячи ворон — и мешают сетям летать. Жертв нет, но фазаны недоступны.',
       need: '«Нужно прогнать ворон. Сеть должна дышать. Бюджет не резиновый.»',
-      needForce: 60, needPrecision: 0,
-      harmLimit: 18, collateralLimit: 10,
-      costHint: 25,
+      needForce: 25, needPrecision: 0,
+      harmLimit: 18, collateralLimit: 8,
+      goldBudget: 18,
+      slots: [
+        { id: 's1', label: 'Периметр',   allowedLayers: ['stone'] },
+        { id: 's2', label: 'Раскатка',   allowedLayers: ['ritual'] },
+        { id: 's3', label: 'Наблюдение', allowedLayers: ['smoke'] }
+      ],
       debrief: {
-        success:             '🎉 Вороны рассеялись. Фазаны пойманы. Мирон доволен и прислал корзину с перепёлками.',
-        partial:             '⚠️ Вороны отступили, но зелье токсично: два фазана сбежали, команда жалуется на побочки.',
-        partial_collateral:  '⚠️ Вороны прогнаны, но вместе с ними разбежались и фазаны: Rate Limit не разбирает своих от чужих.',
-        fail:                '💀 Вороны не заметили зелья. Фазаны в панике. Мирон требует постмортем.'
+        success:            '🎉 Вороны рассеялись. Фазаны пойманы. Мирон прислал корзину с перепёлками.',
+        partial:            '⚠️ Вороны отступили, но зелье токсично: два фазана сбежали, команда жалуется.',
+        partial_collateral: '⚠️ Вороны прогнаны, но вместе с ними разбежались и фазаны: Rate Limit бьёт по своим.',
+        fail:               '💀 Вороны не заметили зелья. Фазаны в панике. Мирон требует постмортем.'
       }
     },
     {
@@ -461,85 +579,128 @@
       badge: 'latency',
       badgeText: 'Высокая латентность',
       requester: '🏹 Иван-царевич',
-      story: 'Иван шлёт стрелы-письма царевне-лягушке на болото. Стрелы летят... и зависают в воздухе на p99. Царевна думает, Иван молчит. Отношения под угрозой.',
+      story: 'Иван шлёт стрелы-письма царевне-лягушке. Стрелы летят... и зависают в воздухе на p99. Царевна думает, Иван молчит. Отношения под угрозой.',
       need: '«Стрелы должны долетать быстро. P95 важнее P50. Зелье не должно навредить стреле.»',
-      needForce: 0, needPrecision: 60,
-      harmLimit: 15, collateralLimit: 10,
-      costHint: 20,
+      needForce: 0, needPrecision: 25,
+      harmLimit: 15, collateralLimit: 8,
+      goldBudget: 20,
+      slots: [
+        { id: 's1', label: 'Ускорение',  allowedLayers: ['elixir'] },
+        { id: 's2', label: 'Наблюдение', allowedLayers: ['smoke'] },
+        { id: 's3', label: 'Раскатка',   allowedLayers: ['ritual'] },
+        { id: 's4', label: 'Доп. слой',  allowedLayers: ['stone', 'elixir'] }
+      ],
       debrief: {
-        success:             '🎉 Стрелы долетают моментально. Царевна получила письмо. Свадьба назначена.',
-        partial:             '⚠️ Стрелы долетели, но зелье дало побочку: у стрел облезло оперение. Тёщ недовольна.',
-        partial_collateral:  '⚠️ Зелье сработало, но WAF задержал каждое второе письмо царевны. Она уже сомневается.',
-        fail:                '💀 Стрелы всё ещё висят в воздухе. Царевна решила не ждать и ушла в другой дата-центр.',
-        force_debrief:       'Стрелы застряли не в очереди — их перехватывали вороны. Ты налил Силы в задачу на Точность.',
-        precision_debrief:   'Стрелы стояли в очереди у ворот тайм-аута. Правильное зелье, правильная причина.'
+        success:            '🎉 Стрелы долетают моментально. Царевна получила письмо. Свадьба назначена.',
+        partial:            '⚠️ Стрелы долетели, но зелье дало побочку: у стрел облезло оперение. Тёща недовольна.',
+        partial_collateral: '⚠️ Зелье сработало, но Rate Limit задержал каждую вторую стрелу. Царевна сомневается.',
+        fail:               '💀 Стрелы всё ещё висят в воздухе. Царевна ушла в другой дата-центр.',
+        force_debrief:      'Стрелы застряли не в очереди — их перехватывали вороны. Ты налил Силы в задачу на Точность.',
+        precision_debrief:  'Стрелы стояли в очереди у ворот тайм-аута. Правильное зелье, правильная причина.'
       }
     }
   ];
 
-  // ===== СОСТОЯНИЕ =====
+  // =====================================================================
+  // СОСТОЯНИЕ
+  // =====================================================================
 
   let currentScenarioIdx = 0;
-  let dropsById   = {};
+  let slotFills   = {};   // { slotId: ingredientId | null }
+  let activeSlotId = null; // слот в режиме выбора ингредиента
   let currentLayer = 'stone';
+  let wasteIds = new Set();
 
   function currentScenario() { return SCENARIOS[currentScenarioIdx]; }
-  function getDrops(id)       { return dropsById[id] || 0; }
+  function ingById(id)        { return INGREDIENTS.find(i => i.id === id) || null; }
 
-  // ===== ВЫЧИСЛЕНИЯ =====
+  // =====================================================================
+  // МЕХАНИКА: совместимость разъёмов
+  // =====================================================================
+
+  function isCompatible(outType, inType) {
+    if (!outType || !inType) return true;
+    if (outType === 'any' || inType === 'any') return true;
+    return outType === inType;
+  }
+
+  // =====================================================================
+  // ВЫЧИСЛЕНИЯ
+  // =====================================================================
 
   function calcStats() {
+    const sc = currentScenario();
     let totalGold = 0, totalHarm = 0, totalSmooth = 0,
         rawForce = 0, rawPrecision = 0, totalCollateral = 0;
 
-    INGREDIENTS.forEach(ing => {
-      const d = getDrops(ing.id);
-      totalGold      += ing.gold * d;
-      totalHarm      += ing.harm * d * d;
-      totalSmooth    += ing.smooth * d;
-      rawForce       += ing.force * d;
-      rawPrecision   += ing.precision * d;
-      if (ing.overdose && d > ing.overdose.threshold) {
-        const excess = d - ing.overdose.threshold;
-        totalCollateral += ing.overdose.collateral * excess * excess;
+    // Строим массив (slot, ing | null) в порядке слотов
+    const filled = sc.slots.map(slot => ({
+      slot,
+      ing: ingById(slotFills[slot.id])
+    }));
+
+    // Определяем слоты с конфликтом разъёмов (соседние)
+    const penaltySlotIds = new Set();
+    for (let i = 0; i < filled.length - 1; i++) {
+      const a = filled[i].ing;
+      const b = filled[i + 1].ing;
+      if (a && b && !isCompatible(a.outputType, b.inputType)) {
+        penaltySlotIds.add(filled[i].slot.id);
+        penaltySlotIds.add(filled[i + 1].slot.id);
       }
+    }
+
+    filled.forEach(({ slot, ing }) => {
+      if (!ing) return;
+      totalGold   += ing.gold;
+      totalHarm   += ing.harm;
+      totalSmooth += ing.smooth;
+      if (ing.collateralBase) totalCollateral += ing.collateralBase;
+      const penalty = penaltySlotIds.has(slot.id) ? 0.7 : 1.0;
+      rawForce     += ing.force     * penalty;
+      rawPrecision += ing.precision * penalty;
     });
 
     const adoption = Math.min(100, Math.max(0, 60 + totalSmooth));
     const factor   = 0.3 + 0.7 * adoption / 100;
+
     return {
       totalGold, totalHarm, totalSmooth, adoption,
       rawForce, rawPrecision,
       effectiveForce:     rawForce     * factor,
       effectivePrecision: rawPrecision * factor,
-      totalCollateral
+      totalCollateral,
+      penaltySlotIds,
+      filled
     };
   }
 
-  // Возвращает: 'success' | 'partial' | 'partial_collateral' | 'fail'
   function calcResult(stats) {
     const sc    = currentScenario();
     const need  = sc.axis === 'force' ? sc.needForce : sc.needPrecision;
     const power = sc.axis === 'force' ? stats.effectiveForce : stats.effectivePrecision;
-    if (power < need)                              return 'fail';
+    if (power < need)                               return 'fail';
     if (stats.totalCollateral > sc.collateralLimit) return 'partial_collateral';
-    if (stats.totalHarm > sc.harmLimit)            return 'partial';
+    if (stats.totalHarm > sc.harmLimit)             return 'partial';
     return 'success';
   }
 
-  function wasteIngredients(stats) {
+  function calcWaste(stats) {
     const sc        = currentScenario();
     const need      = sc.axis === 'force' ? sc.needForce : sc.needPrecision;
     const threshold = need * 0.10;
-    return INGREDIENTS.filter(ing => {
-      const d = getDrops(ing.id);
-      if (d === 0) return false;
-      const contrib = sc.axis === 'force' ? ing.force * d : ing.precision * d;
-      return contrib < threshold;
+    const ids = new Set();
+    stats.filled.forEach(({ ing }) => {
+      if (!ing) return;
+      const contrib = sc.axis === 'force' ? ing.force : ing.precision;
+      if (contrib < threshold) ids.add(ing.id);
     });
+    return ids;
   }
 
-  // ===== РЕНДЕР =====
+  // =====================================================================
+  // РЕНДЕР: карточка просьбы
+  // =====================================================================
 
   function renderQuest() {
     const sc   = currentScenario();
@@ -550,183 +711,369 @@
     document.getElementById('quest-requester').textContent = sc.requester;
     document.getElementById('quest-story').textContent     = sc.story;
 
+    const collRow = sc.collateralLimit < 999
+      ? `<div class="quest-need-row"><span>Залп по своим</span><span>≤ ${sc.collateralLimit}</span></div>`
+      : '';
+
     document.getElementById('quest-needs-list').innerHTML = `
       <div class="quest-need-row"><span>Нужная ось</span><span>${sc.axisLabel}</span></div>
       <div class="quest-need-row"><span>Нужна мощь</span><span>≥ ${need}</span></div>
       <div class="quest-need-row"><span>Лимит вреда</span><span>≤ ${sc.harmLimit}</span></div>
-      <div class="quest-need-row"><span>Залп по своим</span><span>≤ ${sc.collateralLimit}</span></div>
-      <div class="quest-need-row"><span>Ориентир по золоту</span><span>~${sc.costHint}</span></div>
+      ${collRow}
+      <div class="quest-need-row"><span>Бюджет золота</span><span>≤ ${sc.goldBudget} 💰</span></div>
       <div style="margin-top:8px;font-size:0.82rem;color:var(--muted);font-style:italic;">${sc.need}</div>
+    `;
+
+    const hintEl = document.getElementById('quest-hint');
+    if (sc.hint) {
+      hintEl.textContent = sc.hint;
+      hintEl.classList.add('visible');
+    } else {
+      hintEl.classList.remove('visible');
+    }
+  }
+
+  // =====================================================================
+  // РЕНДЕР: золото
+  // =====================================================================
+
+  function renderGold(stats) {
+    const sc  = currentScenario();
+    const pct = Math.min(100, stats.totalGold / sc.goldBudget * 100);
+    const cls = stats.totalGold > sc.goldBudget ? 'over'
+              : stats.totalGold >= sc.goldBudget * 0.85 ? 'warn' : '';
+
+    document.getElementById('gold-display').innerHTML = `
+      <div class="gold-bar-label">
+        <span>💰 Золото</span>
+        <span class="gold-val ${cls}">${stats.totalGold} / ${sc.goldBudget}</span>
+      </div>
+      <div class="meter-track">
+        <div class="meter-fill gold" style="width:${pct}%"></div>
+        <div class="meter-limit-line" style="left:100%"></div>
+      </div>
     `;
   }
 
+  // =====================================================================
+  // РЕНДЕР: слоты котла
+  // =====================================================================
+
+  function renderSlots(stats) {
+    const sc        = currentScenario();
+    const container = document.getElementById('cauldron-slots');
+    const LAYER_ICON = { stone: '🪨', elixir: '🧪', smoke: '💨', ritual: '🕯️' };
+    const CONN_LABEL  = { raw: 'raw', clean: 'clean', any: 'any' };
+
+    let html = '';
+    sc.slots.forEach((slot, idx) => {
+      const ing       = ingById(slotFills[slot.id]);
+      const isActive  = activeSlotId === slot.id;
+      const isConflict = stats.penaltySlotIds.has(slot.id);
+      const isWaste   = ing && wasteIds.has(ing.id);
+      const layerHint = slot.allowedLayers.map(l => LAYER_ICON[l]).join('/');
+
+      let cardCls = 'slot-card';
+      if (isActive)   cardCls += ' active';
+      if (ing && !isConflict && !isWaste) cardCls += ' filled';
+      if (isConflict) cardCls += ' conflict';
+      if (isWaste)    cardCls += ' waste';
+
+      const inDot  = ing ? `<div class="conn-dot ${ing.inputType}"  title="Вход: ${CONN_LABEL[ing.inputType]}"></div>`  : `<div class="conn-dot empty"></div>`;
+      const outDot = ing ? `<div class="conn-dot ${ing.outputType}" title="Выход: ${CONN_LABEL[ing.outputType]}"></div>` : `<div class="conn-dot empty"></div>`;
+
+      const clearBtn = ing ? `<button class="slot-clear" data-slot="${slot.id}" title="Убрать">×</button>` : '';
+
+      const conflictWarn = isConflict ? `<div class="slot-conflict-warn">⚡ Конфликт разъёмов −30% мощи</div>` : '';
+      const wasteWarn    = isWaste    ? `<div class="slot-waste-warn">⚠️ Лишний — почти не влияет на нужную ось</div>` : '';
+
+      html += `
+        <div class="${cardCls}" data-slot="${slot.id}">
+          <div class="slot-inner">
+            <div class="slot-connectors" title="Вход/Выход">
+              ${inDot}
+              ${outDot}
+            </div>
+            <div class="slot-body">
+              <div class="slot-label-row">
+                <span class="slot-label">${slot.label}</span>
+                <span class="slot-layer-hint">${layerHint}</span>
+              </div>
+              ${ing
+                ? `<div class="slot-ingredient">${ing.name}</div>`
+                : `<div class="slot-empty-text">${isActive ? '← выбери ингредиент справа' : 'нажми чтобы выбрать'}</div>`
+              }
+              ${conflictWarn}
+              ${wasteWarn}
+            </div>
+            ${clearBtn}
+          </div>
+        </div>`;
+
+      // Мостик между слотами
+      if (idx < sc.slots.length - 1) {
+        const nextIng = ingById(slotFills[sc.slots[idx + 1].id]);
+        let bridgeCls     = 'slot-bridge';
+        let bridgeContent = '<span class="bridge-icon">↓</span>';
+        if (ing && nextIng) {
+          const ok = isCompatible(ing.outputType, nextIng.inputType);
+          bridgeCls    += ok ? ' ok' : ' bad';
+          bridgeContent = ok
+            ? '<span class="bridge-icon">✓</span>'
+            : '<span class="bridge-icon">✗ конфликт</span>';
+        }
+        html += `<div class="${bridgeCls}">${bridgeContent}</div>`;
+      }
+    });
+
+    container.innerHTML = html;
+
+    // События на слоты
+    container.querySelectorAll('.slot-card').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.slot-clear')) return;
+        const slotId = card.dataset.slot;
+        if (activeSlotId === slotId) {
+          activeSlotId = null;
+        } else {
+          activeSlotId = slotId;
+          // Автопереключение на первый доступный слой
+          const slot = currentScenario().slots.find(s => s.id === slotId);
+          if (slot && !slot.allowedLayers.includes(currentLayer)) {
+            currentLayer = slot.allowedLayers[0];
+            syncTabBar();
+          }
+        }
+        updateUI(true);
+      });
+    });
+
+    container.querySelectorAll('.slot-clear').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const slotId = btn.dataset.slot;
+        slotFills[slotId] = null;
+        if (activeSlotId === slotId) activeSlotId = null;
+        updateUI(true);
+      });
+    });
+  }
+
+  // =====================================================================
+  // РЕНДЕР: метрики
+  // =====================================================================
+
   function renderMeters(stats) {
     const sc = currentScenario();
-    const maxGold = 70, maxHarm = 40, maxPower = 120, maxColl = 30;
+    const maxHarm = 40, maxPower = 120, maxColl = 30;
 
-    const goldPct  = Math.min(100, stats.totalGold / maxGold * 100);
     const harmPct  = Math.min(100, Math.max(0, stats.totalHarm / maxHarm * 100));
     const harmLim  = sc.harmLimit / maxHarm * 100;
     const adoptPct = stats.adoption;
     const forcePct = Math.min(100, stats.effectiveForce / maxPower * 100);
     const precPct  = Math.min(100, stats.effectivePrecision / maxPower * 100);
     const collPct  = Math.min(100, stats.totalCollateral / maxColl * 100);
-    const collLim  = sc.collateralLimit / maxColl * 100;
+    const collLim  = sc.collateralLimit < 999 ? sc.collateralLimit / maxColl * 100 : 100;
 
     const harmColor = stats.totalHarm > sc.harmLimit ? 'var(--danger)' : 'var(--text)';
     const collColor = stats.totalCollateral > sc.collateralLimit ? 'var(--danger)' : 'var(--text)';
 
     let html = `
       <div class="meter-row">
-        <div class="meter-label">
-          <span>💰 Золото</span>
-          <span>${stats.totalGold.toFixed(0)} <span style="color:var(--muted);font-weight:400">(ориентир ~${sc.costHint})</span></span>
-        </div>
-        <div class="meter-track"><div class="meter-fill gold" style="width:${goldPct}%"></div></div>
-      </div>
-      <div class="meter-row">
-        <div class="meter-label">
-          <span>☠️ Вред</span>
-          <span style="color:${harmColor}">${stats.totalHarm.toFixed(0)} / лимит ${sc.harmLimit}</span>
-        </div>
+        <div class="meter-label"><span>☠️ Вред</span>
+          <span style="color:${harmColor}">${stats.totalHarm.toFixed(0)} / лимит ${sc.harmLimit}</span></div>
         <div class="meter-track">
           <div class="meter-fill harm" style="width:${harmPct}%"></div>
           <div class="meter-limit-line" style="left:${harmLim}%"></div>
         </div>
       </div>
       <div class="meter-row">
-        <div class="meter-label"><span>💚 Гладкость (внедрение)</span><span>${stats.adoption.toFixed(0)}%</span></div>
+        <div class="meter-label"><span>💚 Принятие</span><span>${stats.adoption.toFixed(0)}%</span></div>
         <div class="meter-track"><div class="meter-fill smooth" style="width:${adoptPct}%"></div></div>
       </div>
       <div class="meter-row">
-        <div class="meter-label"><span>🛡️ Сила</span><span>${stats.effectiveForce.toFixed(0)}</span></div>
+        <div class="meter-label"><span>🛡️ Сила</span><span>${stats.effectiveForce.toFixed(1)}</span></div>
         <div class="meter-track"><div class="meter-fill force" style="width:${forcePct}%"></div></div>
       </div>
       <div class="meter-row">
-        <div class="meter-label"><span>⚡ Точность</span><span>${stats.effectivePrecision.toFixed(0)}</span></div>
+        <div class="meter-label"><span>⚡ Точность</span><span>${stats.effectivePrecision.toFixed(1)}</span></div>
         <div class="meter-track"><div class="meter-fill precision" style="width:${precPct}%"></div></div>
-      </div>
-    `;
+      </div>`;
 
-    if (stats.totalCollateral > 0) {
+    if (stats.totalCollateral > 0 || sc.collateralLimit < 999) {
       html += `
         <div class="meter-row">
-          <div class="meter-label">
-            <span>🎯 Залп по своим</span>
-            <span style="color:${collColor}">${stats.totalCollateral.toFixed(0)} / лимит ${sc.collateralLimit}</span>
-          </div>
+          <div class="meter-label"><span>🎯 Залп по своим</span>
+            <span style="color:${collColor}">${stats.totalCollateral.toFixed(0)} / лимит ${sc.collateralLimit < 999 ? sc.collateralLimit : '∞'}</span></div>
           <div class="meter-track">
             <div class="meter-fill collateral" style="width:${collPct}%"></div>
-            <div class="meter-limit-line" style="left:${collLim}%"></div>
+            ${sc.collateralLimit < 999 ? `<div class="meter-limit-line" style="left:${collLim}%"></div>` : ''}
           </div>
-        </div>
-      `;
+        </div>`;
     }
 
     document.getElementById('meters').innerHTML = html;
   }
 
-  function renderIngredients(wastes) {
-    const wasteIds = new Set((wastes || []).map(w => w.id));
-    const col      = document.getElementById('ingredients-col');
-    col.innerHTML  = '';
+  // =====================================================================
+  // РЕНДЕР: панель ингредиентов
+  // =====================================================================
 
-    INGREDIENTS
-      .filter(ing => ing.layer === currentLayer)
-      .forEach(ing => {
-        const d          = getDrops(ing.id);
-        const isActive   = d > 0;
-        const isWaste    = isActive && wasteIds.has(ing.id);
-        const isOverdose = ing.overdose && d > ing.overdose.threshold;
+  function renderIngredients(stats) {
+    const sc = currentScenario();
+    const col = document.getElementById('ingredients-col');
 
-        const tags = [];
-        if (ing.force > 0)      tags.push(`<span class="param-tag force">🛡️ Сила +${ing.force}</span>`);
-        if (ing.precision > 0)  tags.push(`<span class="param-tag precision">⚡ Точность +${ing.precision}</span>`);
-        if (ing.harm > 0)       tags.push(`<span class="param-tag harm">☠️ Вред +${ing.harm}/к²</span>`);
-        if (ing.harm < 0)       tags.push(`<span class="param-tag smooth">🌿 Вред ${ing.harm}</span>`);
-        if (ing.smooth > 0)     tags.push(`<span class="param-tag smooth">💚 Гладкость +${ing.smooth}</span>`);
-        if (ing.smooth < 0)     tags.push(`<span class="param-tag smoothbad">💚 Гладкость ${ing.smooth}</span>`);
-        if (ing.gold > 0)       tags.push(`<span class="param-tag gold">💰 Золото ${ing.gold}</span>`);
-        if (ing.overdose)       tags.push(`<span class="param-tag overdose">⚠️ Перебор от ${ing.overdose.threshold + 1}+ кап.</span>`);
+    const pickingSlot    = activeSlotId ? sc.slots.find(s => s.id === activeSlotId) : null;
+    const allowedLayers  = pickingSlot ? pickingSlot.allowedLayers : null;
+    const inUseIds       = new Set(Object.values(slotFills).filter(Boolean));
 
-        let cls = 'ingredient-card';
-        if (isActive)   cls += ' active';
-        if (isWaste)    cls += ' waste';
-        if (isOverdose) cls += ' overdosing';
+    // Баннер выбора
+    const bannerEl = document.getElementById('selection-banner');
+    if (pickingSlot) {
+      const LAYER_NAME = { stone: '🪨 Камни', elixir: '🧪 Эликсиры', smoke: '💨 Дым', ritual: '🕯️ Ритуалы' };
+      bannerEl.innerHTML = `🎯 Выбираешь для: <strong>«${pickingSlot.label}»</strong> — ${pickingSlot.allowedLayers.map(l => LAYER_NAME[l]).join(' или ')}`;
+      bannerEl.classList.add('visible');
+    } else {
+      bannerEl.classList.remove('visible');
+    }
 
-        const div = document.createElement('div');
-        div.className   = cls;
-        div.dataset.id  = ing.id;
-        div.innerHTML   = `
-          <div class="ing-header">
-            <span class="ing-name">${ing.name}</span>
-            <div class="drops-control">
-              <button class="drops-btn dec" data-id="${ing.id}">−</button>
-              <span class="drops-val" id="drops-${ing.id}">${d}</span>
-              <button class="drops-btn inc" data-id="${ing.id}">+</button>
-            </div>
-          </div>
-          <div class="ing-desc">${ing.desc}</div>
-          <div class="ing-params">${tags.join('')}</div>
-          <div class="waste-badge">⚠️ Лишний ингредиент — почти не влияет на нужную ось</div>
-          <div class="overdose-warn">🎯 Перебор! Залп по своим нарастает.</div>
-        `;
-        col.appendChild(div);
-      });
-
-    col.querySelectorAll('.drops-btn.inc').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
-        dropsById[id] = Math.min(3, (dropsById[id] || 0) + 1);
-        updateUI();
-      });
-    });
-    col.querySelectorAll('.drops-btn.dec').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
-        dropsById[id] = Math.max(0, (dropsById[id] || 0) - 1);
-        updateUI();
-      });
-    });
-  }
-
-  function updateDropValues(wastes) {
-    const wasteIds = new Set((wastes || []).map(w => w.id));
-    INGREDIENTS.forEach(ing => {
-      const d  = getDrops(ing.id);
-      const el = document.getElementById(`drops-${ing.id}`);
-      if (el) el.textContent = d;
-      const card = document.querySelector(`.ingredient-card[data-id="${ing.id}"]`);
-      if (card) {
-        const isOverdose = ing.overdose && d > ing.overdose.threshold;
-        card.classList.toggle('active',     d > 0);
-        card.classList.toggle('waste',      d > 0 && wasteIds.has(ing.id));
-        card.classList.toggle('overdosing', isOverdose);
+    // Вкладки: подсветка / затемнение
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      const layer = btn.dataset.layer;
+      if (allowedLayers) {
+        btn.classList.toggle('tab-dimmed', !allowedLayers.includes(layer));
+      } else {
+        btn.classList.remove('tab-dimmed');
       }
     });
+
+    col.innerHTML = '';
+
+    // Подсказка в режиме просмотра
+    if (!pickingSlot) {
+      const hint = document.createElement('div');
+      hint.className = 'browse-hint';
+      hint.textContent = '← Нажми на ячейку котла, чтобы выбрать ингредиент';
+      col.appendChild(hint);
+    }
+
+    const visibleIngs = INGREDIENTS.filter(ing => {
+      if (ing.layer !== currentLayer) return false;
+      if (allowedLayers && !allowedLayers.includes(ing.layer)) return false;
+      return true;
+    });
+
+    visibleIngs.forEach(ing => {
+      const isInUseElsewhere = inUseIds.has(ing.id) && slotFills[activeSlotId] !== ing.id;
+      const currentSlotIngCost = slotFills[activeSlotId] ? (ingById(slotFills[activeSlotId])?.gold || 0) : 0;
+      const canAfford = !pickingSlot || (stats.totalGold - currentSlotIngCost + ing.gold <= sc.goldBudget);
+      const isDisabled = pickingSlot && (isInUseElsewhere || !canAfford);
+      const isCurrentlyInSlot = Object.values(slotFills).includes(ing.id);
+      const isWaste = wasteIds.has(ing.id);
+
+      let cardCls = 'ingredient-card';
+      if (isCurrentlyInSlot && !pickingSlot) cardCls += ' in-use';
+      if (isWaste && isCurrentlyInSlot)      cardCls += ' waste';
+      if (isDisabled)  cardCls += ' disabled';
+      else if (pickingSlot) cardCls += ' selectable';
+
+      const tags = [];
+      if (ing.force > 0)       tags.push(`<span class="param-tag force">🛡️ +${ing.force}</span>`);
+      if (ing.precision > 0)   tags.push(`<span class="param-tag precision">⚡ +${ing.precision}</span>`);
+      if (ing.harm > 0)        tags.push(`<span class="param-tag harm">☠️ вред +${ing.harm}</span>`);
+      if (ing.harm < 0)        tags.push(`<span class="param-tag smooth">🌿 вред ${ing.harm}</span>`);
+      if (ing.smooth > 0)      tags.push(`<span class="param-tag smooth">💚 +${ing.smooth}</span>`);
+      if (ing.smooth < 0)      tags.push(`<span class="param-tag smoothbad">💚 ${ing.smooth}</span>`);
+      tags.push(`<span class="param-tag gold">💰 ${ing.gold}</span>`);
+      if (ing.collateralBase)  tags.push(`<span class="param-tag collateral">🎯 залп +${ing.collateralBase}</span>`);
+      const connIn  = { raw: '🔴', clean: '🟢', any: '⚪' };
+      const connOut = { raw: '🔴', clean: '🟢', any: '⚪' };
+      tags.push(`<span class="param-tag connector" title="Вход → Выход">${connIn[ing.inputType]}→${connOut[ing.outputType]}</span>`);
+
+      let actionHtml = '';
+      if (pickingSlot && !isDisabled) {
+        actionHtml = `<button class="btn-pick" data-ing="${ing.id}">Взять</button>`;
+      } else if (isDisabled && !canAfford) {
+        actionHtml = `<span class="disabled-reason">Дорого</span>`;
+      } else if (isDisabled && isInUseElsewhere) {
+        actionHtml = `<span class="disabled-reason">Уже в котле</span>`;
+      } else if (isCurrentlyInSlot && !pickingSlot) {
+        actionHtml = `<span class="in-use-badge">✓ В котле</span>`;
+      }
+
+      const div = document.createElement('div');
+      div.className  = cardCls;
+      div.dataset.id = ing.id;
+      div.innerHTML  = `
+        <div class="ing-header">
+          <span class="ing-name">${ing.name}</span>
+          ${actionHtml}
+        </div>
+        <div class="ing-desc">${ing.desc}</div>
+        <div class="ing-params">${tags.join('')}</div>
+        <div class="waste-badge">⚠️ Лишний — вклад в нужную ось меньше 10%</div>
+      `;
+      col.appendChild(div);
+    });
+
+    // События «Взять»
+    col.querySelectorAll('.btn-pick').forEach(btn => {
+      btn.addEventListener('click', () => {
+        slotFills[activeSlotId] = btn.dataset.ing;
+        activeSlotId = null;
+        updateUI(true);
+      });
+    });
+
+    // Клик по карточке в режиме выбора
+    col.querySelectorAll('.ingredient-card.selectable').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.btn-pick')) return;
+        slotFills[activeSlotId] = card.dataset.id;
+        activeSlotId = null;
+        updateUI(true);
+      });
+    });
+
+    updateTabBadges();
   }
 
+  // =====================================================================
+  // РЕНДЕР: бейджи вкладок
+  // =====================================================================
+
   function updateTabBadges() {
+    const inUseIds = new Set(Object.values(slotFills).filter(Boolean));
     ['stone', 'elixir', 'smoke', 'ritual'].forEach(layer => {
       const badge = document.getElementById(`badge-${layer}`);
       if (!badge) return;
-      const count = INGREDIENTS.filter(i => i.layer === layer && getDrops(i.id) > 0).length;
+      const count = INGREDIENTS.filter(i => i.layer === layer && inUseIds.has(i.id)).length;
       badge.textContent = count || '';
       badge.classList.toggle('visible', count > 0);
     });
   }
+
+  // Синхронизирует активную вкладку с currentLayer
+  function syncTabBar() {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.layer === currentLayer);
+    });
+  }
+
+  // =====================================================================
+  // РЕЗУЛЬТАТ
+  // =====================================================================
 
   function hideResult() {
     document.getElementById('result-panel').className = 'result-panel';
   }
 
   function showResult(stats) {
-    const result = calcResult(stats);
-    const sc     = currentScenario();
-    const wastes = wasteIngredients(stats);
-    const panel  = document.getElementById('result-panel');
-
+    const result  = calcResult(stats);
+    const sc      = currentScenario();
+    const panel   = document.getElementById('result-panel');
     const cssClass = result.startsWith('partial') ? 'partial' : result;
+
     panel.className = `result-panel show ${cssClass}`;
 
     const titles = {
@@ -737,54 +1084,70 @@
     };
     document.getElementById('result-title').textContent = titles[result];
 
-    let text = sc.debrief[result] || sc.debrief.partial;
+    let text = sc.debrief[result] || sc.debrief.partial || '';
+
     if (sc.id === 'latency' && result !== 'fail') {
-      const forceDrop = INGREDIENTS.filter(i => i.force > 10)
-        .reduce((s, i) => s + getDrops(i.id) * i.force, 0);
-      const precDrop = INGREDIENTS.filter(i => i.precision > 10)
-        .reduce((s, i) => s + getDrops(i.id) * i.precision, 0);
-      const extra = forceDrop > precDrop ? sc.debrief.force_debrief : sc.debrief.precision_debrief;
+      const forceSum = stats.filled
+        .filter(({ ing }) => ing && ing.force > 5)
+        .reduce((s, { ing }) => s + ing.force, 0);
+      const precSum = stats.filled
+        .filter(({ ing }) => ing && ing.precision > 5)
+        .reduce((s, { ing }) => s + ing.precision, 0);
+      const extra = forceSum > precSum ? sc.debrief.force_debrief : sc.debrief.precision_debrief;
       if (extra) text += ' ' + extra;
     }
+
     document.getElementById('result-text').textContent = text;
 
+    // Предупреждение о разъёмах
     let extrasHtml = '';
+    if (stats.penaltySlotIds.size > 0) {
+      extrasHtml += `<div style="margin-bottom:6px"><strong>⚡ Несовместимые разъёмы:</strong> часть мощи потеряна — ингредиенты не договорились о типе трафика.</div>`;
+    }
+    const wastes = stats.filled.filter(({ ing }) => ing && wasteIds.has(ing.id)).map(({ ing }) => ing.name);
     if (wastes.length > 0) {
-      extrasHtml = `<strong>🗑️ Лишнее в котле:</strong> ${wastes.map(w => w.name).join(', ')} — вклад в нужную ось меньше 10%.`;
+      extrasHtml += `<div><strong>🗑️ Лишнее:</strong> ${wastes.join(', ')} — вклад в нужную ось меньше 10%.</div>`;
     }
     document.getElementById('result-extras').innerHTML = extrasHtml;
-
-    document.getElementById('cauldron-visual').textContent =
-      result === 'success' ? '✨' : result.startsWith('partial') ? '🌡️' : '💣';
   }
 
+  // =====================================================================
+  // ГЛАВНЫЙ ЦИКЛ
+  // =====================================================================
+
   function updateUI(rerender) {
-    const stats  = calcStats();
-    const wastes = wasteIngredients(stats);
+    const stats = calcStats();
+    wasteIds    = calcWaste(stats);
+    renderGold(stats);
+    renderSlots(stats);
     renderMeters(stats);
-    if (rerender) renderIngredients(wastes);
-    else          updateDropValues(wastes);
-    updateTabBadges();
+    if (rerender) renderIngredients(stats);
+    else          updateTabBadges();
   }
 
   function resetCauldron() {
-    dropsById = {};
+    slotFills    = {};
+    activeSlotId = null;
+    wasteIds     = new Set();
     hideResult();
-    document.getElementById('cauldron-visual').textContent = '🫧';
     updateUI(true);
   }
 
-  // ===== СОБЫТИЯ =====
+  // =====================================================================
+  // СОБЫТИЯ
+  // =====================================================================
 
   document.getElementById('btn-brew').addEventListener('click', () => {
-    const stats    = calcStats();
-    const cauldron = document.getElementById('cauldron-visual');
-    cauldron.classList.add('brewing');
+    const stats  = calcStats();
+    const brewBtn = document.getElementById('btn-brew');
+    brewBtn.textContent = '🌀 Варится...';
+    brewBtn.disabled = true;
     setTimeout(() => {
-      cauldron.classList.remove('brewing');
+      brewBtn.textContent = '⚗️ Сварить зелье';
+      brewBtn.disabled = false;
       showResult(stats);
       updateUI(true);
-    }, 500);
+    }, 600);
   });
 
   document.getElementById('btn-reset').addEventListener('click', resetCauldron);
@@ -797,18 +1160,18 @@
 
   document.getElementById('tab-bar').addEventListener('click', e => {
     const btn = e.target.closest('.tab-btn');
-    if (!btn) return;
+    if (!btn || btn.classList.contains('tab-dimmed')) return;
     currentLayer = btn.dataset.layer;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    syncTabBar();
     updateUI(true);
   });
 
-  // ===== ЗАПУСК =====
+  // =====================================================================
+  // ЗАПУСК
+  // =====================================================================
 
   renderQuest();
-  renderIngredients([]);
-  updateUI(false);
+  updateUI(true);
 </script>
 </body>
 </html>
