@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Зельевар Staff-инженера</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --success: #3fb950;
+      --warn: #d29922;
+      --danger: #f85149;
+      --tox-color: #f85149;
+      --cost-color: #d29922;
+      --adoption-color: #3fb950;
+      --radius: 10px;
+      --font: 'Manrope', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    header {
+      padding: 20px 24px 0;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      gap: 16px;
+      padding: 16px 24px 40px;
+      min-height: calc(100vh - 60px);
+    }
+
+    @media (max-width: 900px) {
+      .game-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ---- Cards ---- */
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ---- Quest column ---- */
+
+    .quest-card {
+      position: sticky;
+      top: 16px;
+    }
+
+    .quest-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .quest-badge.ddos {
+      background: rgba(248, 81, 73, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(248, 81, 73, 0.4);
+    }
+
+    .quest-badge.latency {
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(88, 166, 255, 0.4);
+    }
+
+    .quest-requester {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .quest-story {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .quest-needs {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.85rem;
+    }
+
+    .quest-needs strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .quest-need-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      padding: 2px 0;
+    }
+
+    .quest-need-row span:last-child {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .btn-next {
+      margin-top: 16px;
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-next:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ---- Cauldron column ---- */
+
+    .cauldron-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cauldron-visual {
+      text-align: center;
+      font-size: 4rem;
+      padding: 16px 0 8px;
+      transition: transform 0.3s;
+    }
+
+    .cauldron-visual.brewing {
+      animation: brew 0.5s ease-in-out;
+    }
+
+    @keyframes brew {
+      0% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.1) rotate(-5deg); }
+      50% { transform: scale(1.15) rotate(5deg); }
+      75% { transform: scale(1.05) rotate(-3deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .meter-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .meter-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .meter-label span:last-child {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .meter-track {
+      height: 8px;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .meter-fill.cost    { background: var(--cost-color); }
+    .meter-fill.tox     { background: var(--tox-color); }
+    .meter-fill.adoption { background: var(--adoption-color); }
+    .meter-fill.ddos    { background: #a371f7; }
+    .meter-fill.latency { background: var(--accent); }
+
+    .tox-limit-line {
+      position: relative;
+    }
+
+    .cauldron-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .btn-brew {
+      flex: 1;
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-brew:hover { background: #79b8ff; }
+    .btn-brew:active { transform: scale(0.97); }
+
+    .btn-reset {
+      padding: 12px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-reset:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* ---- Result panel ---- */
+
+    .result-panel {
+      display: none;
+      border-radius: var(--radius);
+      padding: 18px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .result-panel.show { display: block; }
+
+    .result-panel.success {
+      background: rgba(63, 185, 80, 0.1);
+      border: 1px solid rgba(63, 185, 80, 0.4);
+    }
+
+    .result-panel.partial {
+      background: rgba(210, 153, 34, 0.1);
+      border: 1px solid rgba(210, 153, 34, 0.4);
+    }
+
+    .result-panel.fail {
+      background: rgba(248, 81, 73, 0.1);
+      border: 1px solid rgba(248, 81, 73, 0.4);
+    }
+
+    .result-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .result-panel.success .result-title { color: var(--success); }
+    .result-panel.partial .result-title { color: var(--warn); }
+    .result-panel.fail .result-title    { color: var(--danger); }
+
+    .result-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .result-extras {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .result-extras strong {
+      color: var(--warn);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- Ingredients column ---- */
+
+    .ingredients-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: calc(100vh - 100px);
+    }
+
+    .ingredient-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      transition: border-color 0.2s;
+    }
+
+    .ingredient-card.active {
+      border-color: var(--accent);
+    }
+
+    .ingredient-card.waste {
+      border-color: var(--warn);
+      opacity: 0.8;
+    }
+
+    .ing-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .ing-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .drops-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drops-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .drops-btn:hover {
+      background: var(--surface);
+      border-color: var(--accent);
+    }
+
+    .drops-val {
+      font-size: 1rem;
+      font-weight: 700;
+      min-width: 18px;
+      text-align: center;
+      color: var(--accent);
+    }
+
+    .ing-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .ing-params {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .param-tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: var(--surface2);
+      color: var(--muted);
+    }
+
+    .param-tag.ddos    { background: rgba(163, 113, 247, 0.15); color: #a371f7; }
+    .param-tag.latency { background: rgba(88, 166, 255, 0.15);  color: var(--accent); }
+    .param-tag.tox     { background: rgba(248, 81, 73, 0.15);   color: var(--danger); }
+    .param-tag.taste   { background: rgba(63, 185, 80, 0.15);   color: var(--success); }
+    .param-tag.tastebad{ background: rgba(210, 153, 34, 0.15);  color: var(--warn); }
+    .param-tag.cost    { background: rgba(210, 153, 34, 0.1);   color: var(--cost-color); }
+    .param-tag.waste   { background: rgba(210, 153, 34, 0.15);  color: var(--warn); }
+
+    .waste-badge {
+      display: none;
+      font-size: 0.7rem;
+      color: var(--warn);
+      margin-top: 4px;
+    }
+
+    .ingredient-card.waste .waste-badge {
+      display: block;
+    }
+
+    /* ---- Tooltip-like section label ---- */
+
+    .col-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🧪 Зельевар Staff-инженера</h1>
+  <p>Составь зелье. Не убей пациента. Сдай задачу.</p>
+</header>
+
+<div class="game-layout">
+  <!-- Левая колонка: Просьба -->
+  <div>
+    <div class="col-label">Просьба</div>
+    <div class="card quest-card" id="quest-card">
+      <span class="quest-badge" id="quest-badge"></span>
+      <div class="quest-requester" id="quest-requester"></div>
+      <div class="quest-story" id="quest-story"></div>
+      <div class="quest-needs">
+        <strong>Что нужно зелью:</strong>
+        <div id="quest-needs-list"></div>
+      </div>
+      <button class="btn-next" id="btn-next">Следующая просьба →</button>
+    </div>
+  </div>
+
+  <!-- Средняя колонка: Котёл -->
+  <div class="cauldron-col">
+    <div class="col-label">Котёл</div>
+    <div class="card">
+      <div class="cauldron-visual" id="cauldron-visual">🫧</div>
+      <div id="meters"></div>
+      <div class="cauldron-actions">
+        <button class="btn-brew" id="btn-brew">Сварить зелье</button>
+        <button class="btn-reset" id="btn-reset">Сброс</button>
+      </div>
+    </div>
+    <div class="result-panel" id="result-panel">
+      <div class="result-title" id="result-title"></div>
+      <div class="result-text" id="result-text"></div>
+      <div class="result-extras" id="result-extras"></div>
+    </div>
+  </div>
+
+  <!-- Правая колонка: Ингредиенты -->
+  <div>
+    <div class="col-label">Ингредиенты</div>
+    <div class="ingredients-col" id="ingredients-col"></div>
+  </div>
+</div>
+
+<script>
+  // ===== ДАННЫЕ =====
+
+  const INGREDIENTS = [
+    {
+      id: 'rate_limit',
+      name: '💧 Капли Rate Limit',
+      desc: 'Ставим лимиты на запросы. Работает грубо, но надёжно. Птицы не рады.',
+      cost: 2, baseTox: 8, taste: -5, ddos: 25, latency: 0
+    },
+    {
+      id: 'ddos_screen',
+      name: '🛡️ Дорогой DDoS-экран',
+      desc: 'Большой экран, большой счёт. Прайс-лист толще птичьей стаи.',
+      cost: 20, baseTox: 3, taste: -2, ddos: 40, latency: 0
+    },
+    {
+      id: 'cache_powder',
+      name: '🫙 Порошок Кеширования',
+      desc: 'Кешируем всё. Может протухнуть — зато быстро. Иногда.',
+      cost: 5, baseTox: 6, taste: 0, ddos: 15, latency: 18
+    },
+    {
+      id: 'waf_rune',
+      name: '🔮 Руны WAF',
+      desc: 'Магические правила фильтрации. Иногда блокируют нужных, зато красиво.',
+      cost: 8, baseTox: 7, taste: -4, ddos: 20, latency: 5
+    },
+    {
+      id: 'feature_flag',
+      name: '🕯️ Свеча Фиче-Флага',
+      desc: 'Можно всё откатить одной рукой. Команда счастлива. Power ~ 0.',
+      cost: 2, baseTox: -1, taste: 12, ddos: 1, latency: 2
+    },
+    {
+      id: 'canary_dust',
+      name: '🐤 Канареечная Пыль',
+      desc: '5% пользователей идут первыми. Если упало — откатили, канарейку не заметили.',
+      cost: 3, baseTox: -2, taste: 10, ddos: 0, latency: 3
+    },
+    {
+      id: 'observability',
+      name: '🔭 Свиток Наблюдения',
+      desc: 'Метрики, дашборд, алерты. Не чинит, но мы хотя бы знаем что сломалось.',
+      cost: 6, baseTox: 1, taste: 8, ddos: 0, latency: 22
+    },
+    {
+      id: 'tracing',
+      name: '🔷 Кристалл Трейсинга',
+      desc: 'Каждый запрос оставляет след. Узкое место найдём точно.',
+      cost: 7, baseTox: 1, taste: 2, ddos: 2, latency: 28
+    },
+    {
+      id: 'metrics',
+      name: '⚡ Громоотвод Метрик',
+      desc: 'Гистограммы латентности. P99 теперь виден невооружённым глазом.',
+      cost: 4, baseTox: 0, taste: 6, ddos: 0, latency: 18
+    },
+    {
+      id: 'queue_tuner',
+      name: '🧵 Перо Настройки Очередей',
+      desc: 'Тонкая настройка тайм-аутов и пулов. Нудно, но помогает.',
+      cost: 5, baseTox: 2, taste: 3, ddos: 0, latency: 24
+    },
+    {
+      id: 'reactor_dust',
+      name: '💨 Пыль Бессмысленного Реактора',
+      desc: 'Переписать на Rust? Звучит круто. Эффекта ноль, дедлайн сорван.',
+      cost: 15, baseTox: 10, taste: -8, ddos: 2, latency: 1
+    },
+    {
+      id: 'blockchain',
+      name: '⛓️ Кристалл Блокчейна',
+      desc: 'Добавляет серьёзности и непредсказуемости в равных пропорциях.',
+      cost: 18, baseTox: 12, taste: -10, ddos: 0, latency: 0
+    }
+  ];
+
+  const SCENARIOS = [
+    {
+      id: 'ddos',
+      axis: 'ddos',
+      badge: 'ddos',
+      badgeText: 'DDoS-атака',
+      requester: '🐦 Птицелов Мирон',
+      story: 'Мирон ловит жирных фазанов на поляне Высокой Нагрузки. Но тут прилетают вороны — тысячи ворон — и мешают сетям летать. Жертв нет, но фазаны недоступны.',
+      need: '«Нужно прогнать ворон. Сеть должна дышать. Бюджет не резиновый.»',
+      needDdos: 60,
+      needLatency: 0,
+      toxLimit: 18,
+      costHint: 25,
+      debrief: {
+        success: '🎉 Вороны рассеялись. Фазаны пойманы. Мирон доволен и прислал корзину с перепёлками.',
+        partial: '⚠️ Вороны отступили, но зелье оказалось токсичным: два фазана сбежали, команда жалуется на побочки.',
+        fail: '💀 Вороны не заметили зелья. Фазаны в панике. Мирон требует постмортем.'
+      }
+    },
+    {
+      id: 'latency',
+      axis: 'latency',
+      badge: 'latency',
+      badgeText: 'Высокая латентность',
+      requester: '🏹 Иван-царевич',
+      story: 'Иван шлёт стрелы-письма царевне-лягушке на болото. Стрелы летят... и зависают в воздухе на p99. Царевна думает, Иван молчит. Отношения под угрозой.',
+      need: '«Стрелы должны долетать быстро. P95 важнее P50. Зелье не должно навредить стреле.»',
+      needDdos: 0,
+      needLatency: 60,
+      toxLimit: 15,
+      costHint: 20,
+      debrief: {
+        success: '🎉 Стрелы долетают моментально. Царевна получила письмо. Свадьба назначена.',
+        partial: '⚠️ Стрелы долетели, но зелье дало побочку: у стрел облезло оперение. Тёщ недовольна.',
+        fail: '💀 Стрелы всё ещё висят в воздухе. Царевна решила не ждать и ушла в другой дата-центр.',
+        ddos_debrief: 'Стрелы застряли не в очереди — их перехватывали вороны. Ты налил ddos-зелья в latency-проблему.',
+        latency_debrief: 'Стрелы стояли в очереди у ворот тайм-аута. Правильное зелье, правильная причина.'
+      }
+    }
+  ];
+
+  // ===== СОСТОЯНИЕ =====
+
+  let currentScenarioIdx = 0;
+  let dropsById = {};
+
+  function currentScenario() {
+    return SCENARIOS[currentScenarioIdx];
+  }
+
+  function getDrops(id) {
+    return dropsById[id] || 0;
+  }
+
+  // ===== ВЫЧИСЛЕНИЯ =====
+
+  function calcStats() {
+    let totalCost = 0, totalTox = 0, totalTaste = 0, rawDdos = 0, rawLatency = 0;
+    INGREDIENTS.forEach(ing => {
+      const d = getDrops(ing.id);
+      totalCost    += ing.cost * d;
+      totalTox     += ing.baseTox * d * d;
+      totalTaste   += ing.taste * d;
+      rawDdos      += ing.ddos * d;
+      rawLatency   += ing.latency * d;
+    });
+    const adoption = Math.min(100, Math.max(0, 60 + totalTaste));
+    const factor = 0.3 + 0.7 * adoption / 100;
+    const effectiveDdos    = rawDdos    * factor;
+    const effectiveLatency = rawLatency * factor;
+    return { totalCost, totalTox, totalTaste, adoption, rawDdos, rawLatency, effectiveDdos, effectiveLatency };
+  }
+
+  function calcResult(stats) {
+    const sc = currentScenario();
+    const need  = sc.axis === 'ddos' ? sc.needDdos : sc.needLatency;
+    const power = sc.axis === 'ddos' ? stats.effectiveDdos : stats.effectiveLatency;
+    if (power < need) return 'fail';
+    if (stats.totalTox > sc.toxLimit) return 'partial';
+    return 'success';
+  }
+
+  function wasteIngredients(stats) {
+    const sc = currentScenario();
+    const need = sc.axis === 'ddos' ? sc.needDdos : sc.needLatency;
+    const threshold = need * 0.10;
+    return INGREDIENTS.filter(ing => {
+      const d = getDrops(ing.id);
+      if (d === 0) return false;
+      const contribution = sc.axis === 'ddos' ? ing.ddos * d : ing.latency * d;
+      return contribution < threshold;
+    });
+  }
+
+  // ===== РЕНДЕР =====
+
+  function renderQuest() {
+    const sc = currentScenario();
+    document.getElementById('quest-badge').textContent = sc.badgeText;
+    document.getElementById('quest-badge').className = `quest-badge ${sc.badge}`;
+    document.getElementById('quest-requester').textContent = sc.requester;
+    document.getElementById('quest-story').textContent = sc.story;
+
+    const needsList = document.getElementById('quest-needs-list');
+    needsList.innerHTML = '';
+    needsList.innerHTML += `
+      <div class="quest-need-row">
+        <span>Нужная ось</span>
+        <span>${sc.axis === 'ddos' ? '🛡️ DDoS-защита' : '⚡ Снижение латентности'}</span>
+      </div>
+      <div class="quest-need-row">
+        <span>Power нужен</span>
+        <span>≥ ${sc.axis === 'ddos' ? sc.needDdos : sc.needLatency}</span>
+      </div>
+      <div class="quest-need-row">
+        <span>Лимит токсичности</span>
+        <span>≤ ${sc.toxLimit}</span>
+      </div>
+      <div class="quest-need-row">
+        <span>Ориентир по стоимости</span>
+        <span>~${sc.costHint}</span>
+      </div>
+    `;
+    document.getElementById('quest-needs-list').innerHTML += `
+      <div style="margin-top:8px;font-size:0.82rem;color:var(--muted);font-style:italic;">${sc.need}</div>
+    `;
+  }
+
+  function renderMeters(stats) {
+    const sc = currentScenario();
+    const maxCost = 60, maxTox = 40, maxPower = 120;
+
+    const toxPct    = Math.min(100, stats.totalTox / maxTox * 100);
+    const costPct   = Math.min(100, stats.totalCost / maxCost * 100);
+    const adoptPct  = stats.adoption;
+    const dodosPct  = Math.min(100, stats.effectiveDdos / maxPower * 100);
+    const latPct    = Math.min(100, stats.effectiveLatency / maxPower * 100);
+    const toxLimit  = sc.toxLimit / maxTox * 100;
+
+    document.getElementById('meters').innerHTML = `
+      <div class="meter-row">
+        <div class="meter-label">
+          <span>💰 Стоимость</span>
+          <span>${stats.totalCost.toFixed(0)} <span style="color:var(--muted);font-weight:400">(ориентир ~${sc.costHint})</span></span>
+        </div>
+        <div class="meter-track"><div class="meter-fill cost" style="width:${costPct}%"></div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">
+          <span>☠️ Токсичность</span>
+          <span style="color:${stats.totalTox > sc.toxLimit ? 'var(--danger)' : 'var(--text)'}">${stats.totalTox.toFixed(0)} / лимит ${sc.toxLimit}</span>
+        </div>
+        <div class="meter-track" style="position:relative">
+          <div class="meter-fill tox" style="width:${toxPct}%"></div>
+          <div style="position:absolute;top:0;height:100%;width:2px;background:rgba(255,255,255,0.4);left:${toxLimit}%"></div>
+        </div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">
+          <span>💚 Adoption (внедряемость)</span>
+          <span>${stats.adoption.toFixed(0)}%</span>
+        </div>
+        <div class="meter-track"><div class="meter-fill adoption" style="width:${adoptPct}%"></div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">
+          <span>🛡️ DDoS power</span>
+          <span>${stats.effectiveDdos.toFixed(0)}</span>
+        </div>
+        <div class="meter-track"><div class="meter-fill ddos" style="width:${dodosPct}%"></div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">
+          <span>⚡ Latency power</span>
+          <span>${stats.effectiveLatency.toFixed(0)}</span>
+        </div>
+        <div class="meter-track"><div class="meter-fill latency" style="width:${latPct}%"></div></div>
+      </div>
+    `;
+  }
+
+  function renderIngredients(wastes) {
+    const wasteIds = new Set((wastes || []).map(w => w.id));
+    const col = document.getElementById('ingredients-col');
+    col.innerHTML = '';
+
+    INGREDIENTS.forEach(ing => {
+      const d = getDrops(ing.id);
+      const isActive = d > 0;
+      const isWaste  = isActive && wasteIds.has(ing.id);
+
+      const tags = [];
+      if (ing.ddos > 0)    tags.push(`<span class="param-tag ddos">🛡️ ddos +${ing.ddos}</span>`);
+      if (ing.latency > 0) tags.push(`<span class="param-tag latency">⚡ latency +${ing.latency}</span>`);
+      if (ing.baseTox > 0) tags.push(`<span class="param-tag tox">☠️ tox +${ing.baseTox}</span>`);
+      if (ing.baseTox < 0) tags.push(`<span class="param-tag taste">☠️ tox ${ing.baseTox}</span>`);
+      if (ing.taste > 0)   tags.push(`<span class="param-tag taste">💚 taste +${ing.taste}</span>`);
+      if (ing.taste < 0)   tags.push(`<span class="param-tag tastebad">💚 taste ${ing.taste}</span>`);
+      if (ing.cost > 0)    tags.push(`<span class="param-tag cost">💰 cost ${ing.cost}</span>`);
+
+      const div = document.createElement('div');
+      div.className = `ingredient-card${isActive ? ' active' : ''}${isWaste ? ' waste' : ''}`;
+      div.dataset.id = ing.id;
+      div.innerHTML = `
+        <div class="ing-header">
+          <span class="ing-name">${ing.name}</span>
+          <div class="drops-control">
+            <button class="drops-btn dec" data-id="${ing.id}">−</button>
+            <span class="drops-val" id="drops-${ing.id}">${d}</span>
+            <button class="drops-btn inc" data-id="${ing.id}">+</button>
+          </div>
+        </div>
+        <div class="ing-desc">${ing.desc}</div>
+        <div class="ing-params">${tags.join('')}</div>
+        <div class="waste-badge">⚠️ Лишний ингредиент — почти не влияет на нужную ось</div>
+      `;
+      col.appendChild(div);
+    });
+
+    col.querySelectorAll('.drops-btn.inc').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        dropsById[id] = Math.min(3, (dropsById[id] || 0) + 1);
+        updateUI();
+      });
+    });
+
+    col.querySelectorAll('.drops-btn.dec').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        dropsById[id] = Math.max(0, (dropsById[id] || 0) - 1);
+        updateUI();
+      });
+    });
+  }
+
+  function updateDropValues(wastes) {
+    const wasteIds = new Set((wastes || []).map(w => w.id));
+    INGREDIENTS.forEach(ing => {
+      const d = getDrops(ing.id);
+      const valEl = document.getElementById(`drops-${ing.id}`);
+      if (valEl) valEl.textContent = d;
+      const card = document.querySelector(`.ingredient-card[data-id="${ing.id}"]`);
+      if (card) {
+        card.classList.toggle('active', d > 0);
+        card.classList.toggle('waste', d > 0 && wasteIds.has(ing.id));
+      }
+    });
+  }
+
+  function hideResult() {
+    const panel = document.getElementById('result-panel');
+    panel.className = 'result-panel';
+  }
+
+  function showResult(stats) {
+    const result = calcResult(stats);
+    const sc = currentScenario();
+    const wastes = wasteIngredients(stats);
+    const panel = document.getElementById('result-panel');
+    panel.className = `result-panel show ${result}`;
+
+    const titles = {
+      success: '✅ Зелье сварено удачно!',
+      partial: '⚠️ Сработало, но с побочками',
+      fail: '💀 Зелье не помогло'
+    };
+
+    document.getElementById('result-title').textContent = titles[result];
+
+    let debriefText = sc.debrief[result];
+    if (sc.id === 'latency' && result !== 'fail') {
+      const ddosDrop = INGREDIENTS.filter(i => i.ddos > 10).reduce((s, i) => s + getDrops(i.id) * i.ddos, 0);
+      const latDrop  = INGREDIENTS.filter(i => i.latency > 10).reduce((s, i) => s + getDrops(i.id) * i.latency, 0);
+      if (result === 'success' || result === 'partial') {
+        const extra = ddosDrop > latDrop ? sc.debrief.ddos_debrief : sc.debrief.latency_debrief;
+        debriefText += (extra ? ' ' + extra : '');
+      }
+    }
+    document.getElementById('result-text').textContent = debriefText;
+
+    let extrasHtml = '';
+    if (wastes.length > 0) {
+      extrasHtml = `<strong>🗑️ Лишнее в котле:</strong> ${wastes.map(w => w.name).join(', ')} — вклад в нужную ось меньше 10%.`;
+    }
+    document.getElementById('result-extras').innerHTML = extrasHtml;
+
+    const cauldron = document.getElementById('cauldron-visual');
+    cauldron.textContent = result === 'success' ? '✨' : result === 'partial' ? '🌡️' : '💣';
+  }
+
+  function updateUI(rerender) {
+    const stats = calcStats();
+    const wastes = wasteIngredients(stats);
+    renderMeters(stats);
+    if (rerender) {
+      renderIngredients(wastes);
+    } else {
+      updateDropValues(wastes);
+    }
+  }
+
+  function resetCauldron() {
+    dropsById = {};
+    hideResult();
+    document.getElementById('cauldron-visual').textContent = '🫧';
+    updateUI(true);
+  }
+
+  // ===== СОБЫТИЯ =====
+
+  document.getElementById('btn-brew').addEventListener('click', () => {
+    const stats = calcStats();
+    const cauldron = document.getElementById('cauldron-visual');
+    cauldron.classList.add('brewing');
+    setTimeout(() => {
+      cauldron.classList.remove('brewing');
+      showResult(stats);
+      updateUI(true);
+    }, 500);
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', resetCauldron);
+
+  document.getElementById('btn-next').addEventListener('click', () => {
+    currentScenarioIdx = (currentScenarioIdx + 1) % SCENARIOS.length;
+    resetCauldron();
+    renderQuest();
+  });
+
+  // ===== ЗАПУСК =====
+
+  renderQuest();
+  renderIngredients([]);
+  updateUI(false);
+</script>
+</body>
+</html>
