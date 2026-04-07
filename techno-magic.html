@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Техномаг: Путь в Staff</title>
+<style>
+:root {
+  --bg:        #0d1019;
+  --surface:   #161b28;
+  --surface2:  #1f263a;
+  --border:    #2a3150;
+  --text:      #dde1f0;
+  --muted:     #6b7494;
+  --accent:    #8b7cf8;
+  --success:   #3ec97b;
+  --danger:    #f05f5f;
+  --warn:      #d4a017;
+  --radius:    10px;
+
+  /* element stihiy */
+  --sight:   #7bb8f8;
+  --memory:  #b08af7;
+  --flow:    #3fd0b8;
+  --seal:    #f09050;
+  --stitch:  #3fb950;
+  --anchor:  #c8a060;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:14px;}
+header h1{font-size:1.05rem;font-weight:700;}
+header .sub{font-size:.76rem;color:var(--muted);}
+.quest-nav{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.quest-nav .q-idx{font-size:.8rem;color:var(--muted);}
+
+/* BUTTONS */
+.btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.82rem;transition:background .15s,border-color .15s;}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+.btn.primary:hover{opacity:.85;}
+.btn.danger{border-color:var(--danger);color:var(--danger);}
+.btn.danger:hover{background:var(--danger);color:#fff;}
+
+/* LAYOUT */
+main{flex:1;display:grid;grid-template-columns:280px 1fr 310px;overflow:hidden;}
+.col{padding:14px;overflow-y:auto;height:calc(100vh - 48px);}
+.col-left{border-right:1px solid var(--border);}
+.col-right{border-left:1px solid var(--border);}
+
+/* QUEST CARD */
+.quest-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;}
+.q-badge{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:.68rem;color:var(--muted);margin-bottom:5px;}
+.q-title{font-size:.98rem;font-weight:700;margin-bottom:4px;}
+.q-story{font-size:.78rem;color:var(--muted);line-height:1.5;margin-bottom:8px;}
+.q-translation{background:var(--surface2);border-left:3px solid var(--accent);padding:7px 10px;border-radius:4px;font-size:.76rem;font-style:italic;margin-bottom:8px;color:#b8b0f8;}
+.q-hint{background:rgba(139,124,248,.1);border:1px solid rgba(139,124,248,.25);border-radius:6px;padding:6px 10px;font-size:.74rem;color:#a99ef7;line-height:1.4;}
+.q-props{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.q-prop{padding:2px 9px;border-radius:12px;font-size:.7rem;font-weight:700;border:1px solid var(--border);color:var(--muted);background:var(--surface2);}
+.q-prop.fragile{border-color:var(--danger);color:var(--danger);}
+.q-prop.complex{border-color:var(--warn);color:var(--warn);}
+.reqs-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.req-chip{padding:3px 9px;border-radius:16px;font-size:.73rem;font-weight:700;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);}
+.req-chip.met{border-color:var(--success);color:var(--success);}
+.req-chip.unmet{border-color:var(--danger);color:var(--danger);}
+
+/* CAULDRON (center) */
+.cauldron-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cauldron-label{font-weight:700;font-size:.92rem;}
+.budget-badge{display:flex;align-items:center;gap:4px;background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);border-radius:20px;padding:3px 10px;font-size:.8rem;font-weight:700;color:var(--warn);}
+.budget-badge.over{border-color:var(--danger);color:var(--danger);background:rgba(240,95,95,.12);}
+
+/* SCHEME SELECTOR */
+.scheme-selector{margin-bottom:12px;}
+.scheme-selector-label{font-size:.72rem;color:var(--muted);margin-bottom:6px;}
+.scheme-pills{display:flex;flex-wrap:wrap;gap:5px;}
+.scheme-pill{padding:4px 11px;border-radius:18px;font-size:.76rem;font-weight:600;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s;color:var(--muted);}
+.scheme-pill:hover{border-color:var(--accent);color:var(--text);}
+.scheme-pill.active{background:rgba(139,124,248,.18);border-color:var(--accent);color:var(--accent);}
+.scheme-pill.locked{opacity:.3;pointer-events:none;}
+
+/* ACTIVE SCHEMES */
+.schemes-workspace{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.scheme-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.scheme-header{background:var(--surface2);padding:6px 10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);}
+.scheme-header .sh-icon{font-size:.95rem;}
+.scheme-header .sh-name{font-weight:700;font-size:.82rem;flex:1;}
+.scheme-header .sh-tags{display:flex;gap:3px;}
+.scheme-tag{padding:1px 6px;border-radius:8px;font-size:.65rem;background:rgba(139,124,248,.15);color:var(--accent);border:1px solid rgba(139,124,248,.3);}
+.scheme-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.78rem;padding:1px 4px;border-radius:3px;}
+.scheme-remove:hover{color:var(--danger);}
+.scheme-slots{display:flex;flex-wrap:wrap;gap:7px;padding:8px;}
+
+/* SLOT */
+.slot{width:120px;border:1.5px dashed var(--border);border-radius:8px;min-height:72px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;}
+.slot:hover{border-style:solid;border-color:var(--accent);}
+.slot.active-pick{border-style:solid;border-color:var(--accent);box-shadow:0 0 0 2px rgba(139,124,248,.28);}
+.slot.filled{border-style:solid;}
+.slot-elem-bar{height:3px;width:100%;}
+.slot-inner{padding:5px 7px;}
+.slot-elem-label{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.slot-content-empty{font-size:.7rem;color:var(--muted);text-align:center;padding:8px 4px;}
+.slot-chant-name{font-size:.73rem;font-weight:700;line-height:1.3;margin-bottom:3px;}
+.slot-chant-eff{display:flex;flex-wrap:wrap;gap:2px;}
+.slot-remove{position:absolute;top:3px;right:4px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.7rem;padding:1px 3px;}
+.slot-remove:hover{color:var(--danger);}
+.slot-fit{position:absolute;bottom:3px;right:5px;font-size:.65rem;}
+
+/* stihiy colors on slots */
+.slot[data-el="sight"]  .slot-elem-bar{background:var(--sight);}
+.slot[data-el="memory"] .slot-elem-bar{background:var(--memory);}
+.slot[data-el="flow"]   .slot-elem-bar{background:var(--flow);}
+.slot[data-el="seal"]   .slot-elem-bar{background:var(--seal);}
+.slot[data-el="stitch"] .slot-elem-bar{background:var(--stitch);}
+.slot[data-el="anchor"] .slot-elem-bar{background:var(--anchor);}
+
+.slot.filled[data-el="sight"]  {border-color:var(--sight);}
+.slot.filled[data-el="memory"] {border-color:var(--memory);}
+.slot.filled[data-el="flow"]   {border-color:var(--flow);}
+.slot.filled[data-el="seal"]   {border-color:var(--seal);}
+.slot.filled[data-el="stitch"] {border-color:var(--stitch);}
+.slot.filled[data-el="anchor"] {border-color:var(--anchor);}
+
+/* ELEGANCE BAR */
+.elegance-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);}
+.el-label{font-size:.72rem;color:var(--muted);flex:1;}
+.el-stars{font-size:.88rem;letter-spacing:2px;}
+.el-word{font-size:.76rem;font-weight:700;}
+.el-word.plain{color:var(--muted);}
+.el-word.sturdy{color:var(--warn);}
+.el-word.clean{color:#7bb8f8;}
+.el-word.elegant{color:var(--success);}
+
+/* ACTIONS */
+.actions{display:flex;gap:8px;margin-bottom:10px;}
+.actions .btn{flex:1;text-align:center;}
+
+/* RESULT */
+#result-panel{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-top:8px;}
+.res-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.res-icon{font-size:1.8rem;}
+.res-title{font-size:.98rem;font-weight:700;}
+.res-sub{font-size:.76rem;color:var(--muted);}
+.event-rows{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.ev{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:7px;font-size:.8rem;font-weight:600;}
+.ev.good{background:rgba(62,201,123,.1);color:#3ec97b;}
+.ev.bad {background:rgba(240,95,95,.1); color:#f05f5f;}
+.ev.warn{background:rgba(212,160,23,.1);color:#d4a017;}
+.ev.info{background:rgba(123,184,248,.1);color:#7bb8f8;}
+.res-story{font-size:.78rem;color:var(--muted);line-height:1.5;padding:7px 10px;background:var(--surface2);border-radius:6px;margin-bottom:8px;}
+.detail-toggle{background:none;border:1px dashed var(--border);color:var(--muted);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:.76rem;width:100%;transition:all .15s;}
+.detail-toggle:hover{border-color:var(--accent);color:var(--accent);}
+#detail-body{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.det-item{background:var(--surface2);border-radius:6px;padding:5px 9px;font-size:.74rem;}
+.det-item .dl{color:var(--muted);font-size:.66rem;margin-bottom:2px;}
+.det-item .dv{font-weight:700;}
+.dv.ok{color:var(--success);} .dv.bad{color:var(--danger);}
+
+/* RIGHT — CHANT LIBRARY */
+.pick-banner{display:none;align-items:center;gap:7px;background:rgba(139,124,248,.14);border:1px solid rgba(139,124,248,.35);border-radius:8px;padding:7px 10px;margin-bottom:8px;font-size:.8rem;}
+.pick-banner.show{display:flex;}
+.pick-cancel{margin-left:auto;background:none;border:none;color:var(--accent);cursor:pointer;font-size:.76rem;}
+.filter-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.filter-btn{padding:3px 9px;border-radius:16px;font-size:.72rem;border:1px solid var(--border);background:var(--surface2);cursor:pointer;color:var(--muted);transition:all .14s;}
+.filter-btn:hover{border-color:var(--accent);color:var(--text);}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.chant-list{display:flex;flex-direction:column;gap:5px;}
+.chant-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 10px;cursor:pointer;transition:border-color .16s;position:relative;}
+.chant-card:hover{border-color:var(--accent);}
+.chant-card.placed{opacity:.55;pointer-events:none;border-color:#7bb8f8;}
+.chant-card.incompatible{opacity:.35;pointer-events:none;}
+.chant-card.native-pick{border-color:var(--success);}
+.chant-card.weak-pick{border-color:var(--warn);}
+.chant-name{font-size:.8rem;font-weight:700;margin-bottom:2px;}
+.chant-desc{font-size:.72rem;color:var(--muted);margin-bottom:5px;line-height:1.4;}
+.chant-meta{display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
+.el-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:3px;}
+.affinity-tag{padding:1px 6px;border-radius:9px;font-size:.67rem;font-weight:700;border:1px solid;}
+.cost-tag{padding:1px 6px;border-radius:9px;font-size:.67rem;font-weight:700;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.35);color:var(--warn);}
+.risk-tag{padding:1px 6px;border-radius:9px;font-size:.67rem;background:rgba(240,95,95,.1);border:1px solid rgba(240,95,95,.3);color:#f05f5f;}
+.eleg-tag{padding:1px 6px;border-radius:9px;font-size:.67rem;background:rgba(62,201,123,.1);border:1px solid rgba(62,201,123,.3);color:#3ec97b;}
+.fit-note{font-size:.66rem;margin-top:3px;}
+.fit-native{color:var(--success);}
+.fit-weak{color:var(--warn);}
+.placed-label{position:absolute;top:4px;right:6px;font-size:.64rem;color:#7bb8f8;background:rgba(123,184,248,.1);border-radius:3px;padding:1px 4px;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+</style>
+</head>
+<body>
+<header>
+  <span style="font-size:1.3rem">🔮</span>
+  <div>
+    <h1>Техномаг: Путь в Staff</h1>
+    <div class="sub">Выбери схемы → зачаруй ячейки → оцени изящество решения</div>
+  </div>
+  <div class="quest-nav">
+    <span class="q-idx" id="q-idx">1 / 3</span>
+    <button class="btn" id="btn-prev">◀</button>
+    <button class="btn" id="btn-next">▶</button>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: quest -->
+  <div class="col col-left" id="col-quest"></div>
+
+  <!-- CENTER: workspace -->
+  <div class="col">
+    <div class="cauldron-top">
+      <span class="cauldron-label">🧪 Рабочий контур</span>
+      <div class="budget-badge" id="budget-badge">⚗️ 0 / 0</div>
+    </div>
+    <div class="scheme-selector">
+      <div class="scheme-selector-label">Доступные схемы — нажми чтобы активировать:</div>
+      <div class="scheme-pills" id="scheme-pills"></div>
+    </div>
+    <div class="schemes-workspace" id="schemes-workspace"></div>
+    <div class="elegance-row" id="elegance-row">
+      <span class="el-label">Изящество решения</span>
+      <span class="el-stars" id="el-stars">○○○○○</span>
+      <span class="el-word plain" id="el-word">—</span>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="btn-cast">✦ Применить контур</button>
+      <button class="btn danger"  id="btn-reset">↺ Сброс</button>
+    </div>
+    <div id="result-panel"></div>
+  </div>
+
+  <!-- RIGHT: chants -->
+  <div class="col col-right" id="col-chants">
+    <div class="pick-banner" id="pick-banner">
+      <span id="pick-banner-text">Выбираешь наговор</span>
+      <button class="pick-cancel" id="pick-cancel">✕ Отмена</button>
+    </div>
+    <div class="filter-bar" id="filter-bar"></div>
+    <div class="chant-list" id="chant-list"></div>
+  </div>
+</main>
+
+<script>
+// ─── ELEMENT META ──────────────────────────────────────────────────────────
+const ELEMENT_META = {
+  sight:  { name:'Взор',   color:'#7bb8f8', desc:'Наблюдение, измерение, распознавание' },
+  memory: { name:'Память', color:'#b08af7', desc:'Хранение, индексирование, чтение' },
+  flow:   { name:'Поток',  color:'#3fd0b8', desc:'Проводка, распределение, сглаживание' },
+  seal:   { name:'Печать', color:'#f09050', desc:'Правила, границы, проверки, контракт' },
+  stitch: { name:'Шов',    color:'#3fb950', desc:'Выкатка, переключение, безопасное внедрение' },
+  anchor: { name:'Якорь',  color:'#c8a060', desc:'Стабилизация, упрощение, удержание формы' },
+};
+
+// смежность стихий: родная = 1.0, смежная = 0.6, чужая = 0.2
+const AFFINITY_MATRIX = {
+  sight:  { sight:1.0, memory:0.6, flow:0.6, seal:0.2, stitch:0.2, anchor:0.2 },
+  memory: { memory:1.0, sight:0.6, flow:0.6, anchor:0.6, seal:0.2, stitch:0.2 },
+  flow:   { flow:1.0, sight:0.6, memory:0.6, stitch:0.6, seal:0.2, anchor:0.2 },
+  seal:   { seal:1.0, memory:0.6, anchor:0.6, sight:0.2, flow:0.2, stitch:0.2 },
+  stitch: { stitch:1.0, flow:0.6, seal:0.6, sight:0.2, memory:0.2, anchor:0.2 },
+  anchor: { anchor:1.0, seal:0.6, memory:0.6, flow:0.2, sight:0.2, stitch:0.2 },
+};
+
+function fitScore(chantAffinity, slotAffinity) {
+  return (AFFINITY_MATRIX[chantAffinity] || {})[slotAffinity] || 0.2;
+}
+
+// ─── SCHEMES ──────────────────────────────────────────────────────────────
+const SCHEMES = [
+  {
+    id: 'eye',
+    name: '👁 Схема Взора',
+    desc: 'Замечает всё, что входит. Распознаёт, записывает след.',
+    icon: '👁',
+    baseTags: ['visibility','audit','access'],
+    slots: [
+      { slotId:'eye_in',   elementName:'Вход',         elementAffinity:'sight'  },
+      { slotId:'eye_rec',  elementName:'Распознавание', elementAffinity:'sight'  },
+      { slotId:'eye_trail',elementName:'След',          elementAffinity:'memory' },
+    ],
+  },
+  {
+    id: 'knowledge',
+    name: '📚 Схема Знания',
+    desc: 'Хранит, индексирует и поднимает записанное.',
+    icon: '📚',
+    baseTags: ['storage','search','retrieval'],
+    slots: [
+      { slotId:'kn_write', elementName:'Запись',   elementAffinity:'memory' },
+      { slotId:'kn_index', elementName:'Индекс',   elementAffinity:'memory' },
+      { slotId:'kn_read',  elementName:'Чтение',   elementAffinity:'flow'   },
+    ],
+  },
+  {
+    id: 'word',
+    name: '📖 Схема Слова',
+    desc: 'Принимает запрос, преобразует, возвращает ответ.',
+    icon: '📖',
+    baseTags: ['api','transform','response'],
+    slots: [
+      { slotId:'wd_req',   elementName:'Запрос',        elementAffinity:'seal'   },
+      { slotId:'wd_trans', elementName:'Преобразование', elementAffinity:'flow'   },
+      { slotId:'wd_resp',  elementName:'Ответ',          elementAffinity:'stitch' },
+    ],
+  },
+  {
+    id: 'session',
+    name: '🔑 Схема Сессии',
+    desc: 'Держит состояние доступа: узнаёт, решает, продлевает.',
+    icon: '🔑',
+    baseTags: ['access','identity','state'],
+    slots: [
+      { slotId:'ss_id',   elementName:'Узнавание', elementAffinity:'sight'  },
+      { slotId:'ss_dec',  elementName:'Решение',   elementAffinity:'seal'   },
+      { slotId:'ss_keep', elementName:'Продление', elementAffinity:'anchor' },
+    ],
+  },
+  {
+    id: 'flow',
+    name: '🌊 Схема Потока',
+    desc: 'Проводит сообщения, сглаживает пики, перераспределяет.',
+    icon: '🌊',
+    baseTags: ['queue','throughput','resilience'],
+    slots: [
+      { slotId:'fl_in',   elementName:'Входной поток', elementAffinity:'flow'   },
+      { slotId:'fl_dist', elementName:'Распределение', elementAffinity:'flow'   },
+      { slotId:'fl_out',  elementName:'Выход',         elementAffinity:'stitch' },
+    ],
+  },
+];
+
+// ─── CHANTS (наговоры) ────────────────────────────────────────────────────
+const CHANTS = [
+  // SIGHT chants
+  { id:'logging',      affinity:'sight',  name:'✍ Летопись (Logging)',    desc:'Записывает каждое событие. Шум и стоимость хранения.',
+    effects:['visibility'], risk:1, cost:2, eleganceDelta:0,
+    allowedTags:['visibility','audit','search'] },
+  { id:'metrics',      affinity:'sight',  name:'📊 Счётные Руны (Metrics)', desc:'Считает агрегаты. Полезно, но не показывает причину.',
+    effects:['visibility'], risk:0, cost:2, eleganceDelta:1,
+    allowedTags:['visibility','access'] },
+  { id:'tracing',      affinity:'sight',  name:'🔷 Нить Следа (Tracing)',   desc:'Показывает путь запроса насквозь. Оверхед.',
+    effects:['visibility','search'], risk:1, cost:4, eleganceDelta:2,
+    allowedTags:['visibility','search','audit'] },
+  { id:'auditTrail',   affinity:'sight',  name:'📋 Дозорная Книга (Audit)', desc:'Неизменяемый след действий. Нужна дисциплина.',
+    effects:['audit','visibility'], risk:0, cost:3, eleganceDelta:1,
+    allowedTags:['audit','access','identity'] },
+
+  // MEMORY chants
+  { id:'indexing',     affinity:'memory', name:'🗂 Указатель (Indexing)',    desc:'Ускоряет поиск системно. Замедляет запись.',
+    effects:['search','speed'], risk:2, cost:3, eleganceDelta:2,
+    allowedTags:['search','retrieval','storage'] },
+  { id:'cache',        affinity:'memory', name:'🫙 Склад (Cache)',           desc:'Быстрый возврат. Риск устаревших данных.',
+    effects:['speed'], risk:3, cost:2, eleganceDelta:0,
+    allowedTags:['speed','api','response'] },
+  { id:'dedupe',       affinity:'memory', name:'🔍 Дедупликатор',            desc:'Убирает повторы. Нужна стабильность ключа.',
+    effects:['correctness'], risk:1, cost:2, eleganceDelta:2,
+    allowedTags:['storage','queue','retrieval'] },
+
+  // FLOW chants
+  { id:'batching',     affinity:'flow',   name:'📦 Пачка (Batching)',         desc:'Группирует запросы. Снижает накладные, добавляет задержку.',
+    effects:['throughput','speed'], risk:1, cost:2, eleganceDelta:2,
+    allowedTags:['queue','throughput','storage'] },
+  { id:'retry',        affinity:'flow',   name:'🔁 Повторная Попытка (Retry)',desc:'Устойчивость к сбоям. Риск шторма.',
+    effects:['resilience'], risk:3, cost:2, eleganceDelta:-1,
+    allowedTags:['resilience','queue','api'] },
+  { id:'rateLimit',    affinity:'flow',   name:'💧 Заслонка (Rate Limit)',    desc:'Режет лишний поток. Может задеть легитимных.',
+    effects:['resilience','access'], risk:4, cost:1, eleganceDelta:-1,
+    allowedTags:['access','resilience','throughput'], conflicts:['canary'] },
+
+  // SEAL chants
+  { id:'validation',   affinity:'seal',   name:'📐 Мерная Грамота (Validation)',desc:'Проверяет форму входа. Без неё данные ломают систему.',
+    effects:['correctness','access'], risk:0, cost:2, eleganceDelta:3,
+    allowedTags:['api','access','identity','storage'] },
+  { id:'shadowRead',   affinity:'seal',   name:'🪞 Теневое Чтение (Shadow Read)',desc:'Проверяет новый путь без риска. Дополнительный расход.',
+    effects:['visibility','correctness'], risk:0, cost:4, eleganceDelta:3,
+    allowedTags:['search','retrieval','api'] },
+
+  // STITCH chants
+  { id:'canary',       affinity:'stitch', name:'🐤 Канарейка (Canary)',       desc:'Выкатка на малую долю. Конфликтует с жёстким отсечением.',
+    effects:['rollout'], risk:0, cost:3, eleganceDelta:3,
+    allowedTags:['api','access','queue','resilience'], conflicts:['rateLimit'] },
+  { id:'featureFlag',  affinity:'stitch', name:'🕯 Переключатель (Feature Flag)',desc:'Откат одной кнопкой. Добавляет ветвление в код.',
+    effects:['rollout'], risk:0, cost:2, eleganceDelta:2,
+    allowedTags:['api','access','response','throughput'] },
+
+  // ANCHOR chants
+  { id:'tokenSession', affinity:'anchor', name:'🧿 Токен Сессии',             desc:'Устойчивое состояние без лишних обращений к базе.',
+    effects:['speed','identity'], risk:1, cost:2, eleganceDelta:2,
+    allowedTags:['identity','access','state'] },
+  { id:'idempotency',  affinity:'anchor', name:'🪝 Идемпотент-Руна',           desc:'Повторы не ломают мир. Требует дополнительного ключа.',
+    effects:['correctness','resilience'], risk:0, cost:3, eleganceDelta:3,
+    allowedTags:['queue','storage','api','throughput'] },
+];
+
+// ─── QUESTS ───────────────────────────────────────────────────────────────
+const QUESTS = [
+  {
+    id: 'barn',
+    badge: 'Задание 1 / 3 · Junior',
+    title: '🏚 Страж Амбара',
+    story: 'Ночью кто-то трётся возле амбара. Хозяин не знает — это вор, случайный прохожий или свой. Каждое утро находит другие засовы и не помнит, кто и когда входил.',
+    translation: 'Отсутствие аутентификации и аудита. Нет журнала доступа.',
+    hint: 'Нужно узнавать, кто входит (identity), принимать решение о доступе (access) и оставлять след (audit). Схемы Взора и Сессии.',
+    requiredTags: ['identity','access','audit'],
+    availableSchemes: ['eye','session'],
+    budget: 10, riskLimit: 4, eleganceGoal: 3,
+    targetProps: { fragile: false, complex: false },
+    debrief: {
+      solved:   'Амбар защищён. Хозяин видит всякого, кто входит и выходит.',
+      partial:  'Лучше, чем было, но в контуре есть дыра — либо не видно кто, либо не решается впускать.',
+      unsolved: 'Амбар всё ещё открыт. Утром снова чужой засов.',
+    },
+  },
+  {
+    id: 'search',
+    badge: 'Задание 2 / 3 · Mid',
+    title: '📜 Библиотекарь Без Памяти',
+    story: 'Летописец каждый раз перелистывает все свитки с начала, чтобы найти нужный. Посетители уходят не дождавшись. Добавляются новые свитки — становится только хуже.',
+    translation: 'Полнотекстовый поиск без индекса. N+1 по всей коллекции на каждый запрос.',
+    hint: 'Нужно: быстрый поиск (search), корректные результаты, безопасный запуск новой версии. Схемы Знания и Слова.',
+    requiredTags: ['search','speed','rollout'],
+    availableSchemes: ['knowledge','word'],
+    budget: 12, riskLimit: 3, eleganceGoal: 4,
+    targetProps: { fragile: false, complex: true },
+    debrief: {
+      solved:   'Свитки теперь под рукой. Поиск работает. Обновление прошло тихо.',
+      partial:  'Быстрее, но что-то пошло не так: либо данные кривые, либо выкатка рискованная.',
+      unsolved: 'Летописец по-прежнему листает всё подряд. Посетители ждут.',
+    },
+  },
+  {
+    id: 'flow',
+    badge: 'Задание 3 / 3 · Senior',
+    title: '🌊 Запруда Гонцов',
+    story: 'В час пик тысячи гонцов одновременно врываются в почтовую залу. Половина теряется, половина застревает. Когда давление падает, пропущенные письма идут повторно и создают дублей.',
+    translation: 'Нет очереди и rate limit. Повторные доставки без idempotency создают дубли. Система не выдерживает пик.',
+    hint: 'Нужно: сглаживание потока (throughput), устойчивость к повторам (resilience), корректность данных (correctness). Схемы Потока и Слова.',
+    requiredTags: ['throughput','resilience','correctness'],
+    availableSchemes: ['flow','word'],
+    budget: 14, riskLimit: 3, eleganceGoal: 4,
+    targetProps: { fragile: false, complex: true },
+    debrief: {
+      solved:   'Гонцы идут порядком. Дублей нет. Пики сглажены.',
+      partial:  'Поток успокоился, но дубли всё ещё возникают или система слишком жёстко режет.',
+      unsolved: 'Зала по-прежнему в хаосе. Дубли, потери, давка.',
+    },
+  },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────
+let questIdx = 0;
+
+// fills: { slotId -> chantId | null }
+let fills = {};
+
+// activeSchemeIds: Set of scheme ids player activated
+let activeSchemeIds = new Set();
+
+// pick mode
+let pickSlotId       = null;
+let pickSlotAffinity = null;
+
+// chant filter
+let filterEl = 'all';
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+const q    = () => QUESTS[questIdx];
+const sch  = id => SCHEMES.find(s => s.id === id);
+const ch   = id => CHANTS.find(c => c.id === id);
+const allQ = () => SCHEMES
+  .filter(s => activeSchemeIds.has(s.id))
+  .flatMap(s => s.slots);
+
+function placedChants() {
+  return Object.entries(fills)
+    .filter(([,cid]) => cid)
+    .map(([slotId, cid]) => ({ slotId, c: ch(cid) }));
+}
+
+function slotById(slotId) {
+  for (const s of SCHEMES) {
+    const slot = s.slots.find(sl => sl.slotId === slotId);
+    if (slot) return { scheme: s, slot };
+  }
+  return null;
+}
+
+function placedChantIds() {
+  return new Set(Object.values(fills).filter(Boolean));
+}
+
+// ─── CALC ─────────────────────────────────────────────────────────────────
+function calcStats() {
+  const placed = placedChants();
+  const quest  = q();
+
+  let totalCost = 0, totalRisk = 0, elegance = 0;
+  const coveredTags = new Set();
+  const activeSchemes = Array.from(activeSchemeIds);
+  activeSchemes.forEach(sid => {
+    const sc = sch(sid);
+    if (sc) sc.baseTags.forEach(t => coveredTags.add(t));
+  });
+
+  // natvie/weak fit breakdown
+  const fits = [];
+  const conflictIds = new Set();
+  // detect conflicts
+  placed.forEach(({ c:a }) => {
+    placed.forEach(({ c:b }) => {
+      if (a && b && a.id !== b.id) {
+        if ((a.conflicts||[]).includes(b.id)) { conflictIds.add(a.id); conflictIds.add(b.id); }
+      }
+    });
+  });
+
+  placed.forEach(({ slotId, c }) => {
+    if (!c) return;
+    const info = slotById(slotId);
+    const slotEl = info?.slot.elementAffinity || 'sight';
+    const score  = fitScore(c.affinity, slotEl);
+    const isConflict = conflictIds.has(c.id);
+
+    totalCost += c.cost;
+    totalRisk += isConflict ? c.risk * 2 : c.risk;
+
+    // coverage: nagovor tags × affinity score
+    (c.allowedTags || []).forEach(t => {
+      if (quest.requiredTags.includes(t)) coveredTags.add(t);
+    });
+    // also add effects
+    (c.effects || []).forEach(e => coveredTags.add(e));
+
+    // elegance contribution
+    let eDelta = c.eleganceDelta;
+    if (score >= 0.9) eDelta += 1;          // native fit bonus
+    else if (score <= 0.3) eDelta -= 2;     // wrong stihiya penalty
+    if (isConflict) eDelta -= 3;
+    elegance += eDelta;
+
+    fits.push({ slotId, c, score, isConflict });
+  });
+
+  // coverage: how many required tags are covered
+  const reqCovered = quest.requiredTags.filter(t => coveredTags.has(t)).length;
+  const coverage   = quest.requiredTags.length > 0 ? reqCovered / quest.requiredTags.length : 1;
+
+  // raw elegance to 0-5 scale
+  const rawEl = Math.max(0, Math.min(10, elegance));
+  const nativePct = fits.length > 0
+    ? fits.filter(f => f.score >= 0.9).length / fits.length
+    : 0;
+  const wasteCount = placed.filter(({ c }) => {
+    if (!c) return false;
+    const useful = quest.requiredTags.some(t => (c.allowedTags||[]).includes(t) || (c.effects||[]).includes(t));
+    return !useful;
+  }).length;
+
+  // elegance 0-5: raw scaled + penalties
+  const elegScore = Math.max(0, Math.min(5,
+    Math.round(rawEl * 0.4 + nativePct * 2 - wasteCount * 0.8)
+  ));
+
+  return {
+    totalCost, totalRisk, coverage, elegScore, fits, conflictIds,
+    wasteCount, nativePct, rawEl, reqCovered,
+  };
+}
+
+function calcResult(stats) {
+  const quest  = q();
+  const solved = stats.coverage >= 1.0 && stats.totalCost <= quest.budget;
+  const partial = !solved && stats.coverage >= 0.67 && stats.totalCost <= quest.budget * 1.2;
+  const overBudget = stats.totalCost > quest.budget;
+  const overRisk   = stats.totalRisk > quest.riskLimit;
+  const hasConflict = stats.conflictIds.size > 0;
+  const eleganceLabel = stats.elegScore >= 5 ? 'Изящное' :
+                        stats.elegScore >= 4 ? 'Стройное' :
+                        stats.elegScore >= 2 ? 'Надёжное' : 'Грубое';
+  return { solved, partial, overBudget, overRisk, hasConflict, eleganceLabel };
+}
+
+// ─── RENDER QUEST ──────────────────────────────────────────────────────────
+function renderQuest() {
+  const quest = q();
+  const stats = calcStats();
+
+  const reqChips = quest.requiredTags.map(tag => {
+    const covered = stats.reqCovered > 0 &&
+      Array.from(activeSchemeIds).some(sid => {
+        const sc = sch(sid);
+        if (!sc) return false;
+        if (sc.baseTags.includes(tag)) return true;
+        return false;
+      }) ||
+      placedChants().some(({ c }) =>
+        c && ((c.allowedTags||[]).includes(tag) || (c.effects||[]).includes(tag))
+      );
+    return `<span class="req-chip ${covered ? 'met' : 'unmet'}">${tag}</span>`;
+  }).join('');
+
+  const props = [];
+  if (quest.targetProps.fragile) props.push(`<span class="q-prop fragile">💔 Хрупкая</span>`);
+  if (quest.targetProps.complex) props.push(`<span class="q-prop complex">🧩 Сложная</span>`);
+
+  document.getElementById('col-quest').innerHTML = `
+    <div class="quest-card">
+      <div class="q-badge">${quest.badge}</div>
+      <div class="q-title">${quest.title}</div>
+      <div class="q-story">${quest.story}</div>
+      <div class="q-translation">${quest.translation}</div>
+      ${props.length ? `<div class="q-props">${props.join('')}</div>` : ''}
+      <div class="reqs-row">${reqChips}</div>
+      <div class="q-hint">${quest.hint}</div>
+    </div>`;
+}
+
+// ─── RENDER BUDGET ──────────────────────────────────────────────────────────
+function renderBudget(stats) {
+  const el = document.getElementById('budget-badge');
+  const over = stats.totalCost > q().budget;
+  el.textContent = `⚗️ ${stats.totalCost} / ${q().budget}`;
+  el.className = 'budget-badge' + (over ? ' over' : '');
+}
+
+// ─── RENDER ELEGANCE ────────────────────────────────────────────────────────
+function renderElegance(stats) {
+  const s = stats.elegScore;
+  const stars = '★'.repeat(s) + '○'.repeat(5 - s);
+  const label = s >= 5 ? 'Изящное' : s >= 4 ? 'Стройное' : s >= 2 ? 'Надёжное' : 'Грубое';
+  const cls   = s >= 5 ? 'elegant' : s >= 4 ? 'clean' : s >= 2 ? 'sturdy' : 'plain';
+  document.getElementById('el-stars').textContent = stars;
+  const ew = document.getElementById('el-word');
+  ew.textContent = label; ew.className = `el-word ${cls}`;
+}
+
+// ─── RENDER SCHEME PILLS ────────────────────────────────────────────────────
+function renderSchemePills() {
+  const avail = q().availableSchemes;
+  const html = SCHEMES.filter(s => avail.includes(s.id)).map(s => {
+    const active = activeSchemeIds.has(s.id);
+    return `<button class="scheme-pill ${active ? 'active' : ''}" data-sid="${s.id}">${s.icon} ${s.name.replace(/^.+ /,'')}</button>`;
+  }).join('');
+  document.getElementById('scheme-pills').innerHTML = html;
+  document.querySelectorAll('.scheme-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sid = btn.dataset.sid;
+      if (activeSchemeIds.has(sid)) activeSchemeIds.delete(sid);
+      else activeSchemeIds.add(sid);
+      updateUI(false);
+    });
+  });
+}
+
+// ─── RENDER SCHEMES WORKSPACE ───────────────────────────────────────────────
+function renderSchemesWorkspace() {
+  const stats = calcStats();
+  const fitMap = {};
+  stats.fits.forEach(f => { fitMap[f.slotId] = f; });
+
+  if (activeSchemeIds.size === 0) {
+    document.getElementById('schemes-workspace').innerHTML =
+      `<div style="color:var(--muted);font-size:.78rem;padding:8px;text-align:center">Активируй хотя бы одну схему выше ↑</div>`;
+    return;
+  }
+
+  const html = SCHEMES.filter(s => activeSchemeIds.has(s.id)).map(scheme => {
+    const slotsHtml = scheme.slots.map(slot => {
+      const cid  = fills[slot.slotId];
+      const c    = ch(cid);
+      const info = fitMap[slot.slotId];
+      const isActive = pickSlotId === slot.slotId;
+      const elMeta = ELEMENT_META[slot.elementAffinity] || {};
+
+      let bodyHtml;
+      if (c) {
+        const fitTip = info?.score >= 0.9 ? '✦' : info?.score >= 0.55 ? '≈' : '✗';
+        const fitCls = info?.score >= 0.9 ? 'fit-native' : info?.score >= 0.55 ? 'fit-weak' : '';
+        const conflictWarn = stats.conflictIds.has(c.id) ? ' ⚡' : '';
+        bodyHtml = `
+          <div class="slot-chant-name">${c.name}${conflictWarn}</div>
+          <span class="slot-remove" data-slot="${slot.slotId}">✕</span>
+          <span class="slot-fit ${fitCls}">${fitTip}</span>`;
+      } else {
+        bodyHtml = `<div class="slot-content-empty">+ выбрать</div>`;
+      }
+
+      return `<div class="slot ${c ? 'filled' : ''} ${isActive ? 'active-pick' : ''}"
+        data-slot="${slot.slotId}" data-el="${slot.elementAffinity}">
+        <div class="slot-elem-bar"></div>
+        <div class="slot-inner">
+          <div class="slot-elem-label">${elMeta.name || slot.elementName}</div>
+          ${bodyHtml}
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="scheme-block">
+      <div class="scheme-header">
+        <span class="sh-icon">${scheme.icon}</span>
+        <span class="sh-name">${scheme.name}</span>
+        <div class="sh-tags">${scheme.baseTags.map(t => `<span class="scheme-tag">${t}</span>`).join('')}</div>
+        <button class="scheme-remove" data-sid="${scheme.id}">✕</button>
+      </div>
+      <div class="scheme-slots">${slotsHtml}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('schemes-workspace').innerHTML = html;
+
+  // slot click
+  document.querySelectorAll('.slot').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      const sid = el.dataset.slot;
+      if (pickSlotId === sid) { pickSlotId = null; pickSlotAffinity = null; }
+      else {
+        pickSlotId = sid;
+        const info = slotById(sid);
+        pickSlotAffinity = info?.slot.elementAffinity || null;
+      }
+      updateUI(false);
+    });
+  });
+  // slot remove
+  document.querySelectorAll('.slot-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      fills[btn.dataset.slot] = null;
+      if (pickSlotId === btn.dataset.slot) { pickSlotId = null; pickSlotAffinity = null; }
+      updateUI(false);
+    });
+  });
+  // scheme remove
+  document.querySelectorAll('.scheme-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      activeSchemeIds.delete(btn.dataset.sid);
+      updateUI(false);
+    });
+  });
+}
+
+// ─── RENDER PICK BANNER ──────────────────────────────────────────────────────
+function renderPickBanner() {
+  const banner = document.getElementById('pick-banner');
+  if (pickSlotId) {
+    const elMeta = ELEMENT_META[pickSlotAffinity] || {};
+    document.getElementById('pick-banner-text').textContent =
+      `Зачаровываешь ячейку «${elMeta.name || pickSlotAffinity}» — ищи наговор`;
+    banner.classList.add('show');
+    // filter by matching affinity
+    filterEl = pickSlotAffinity || 'all';
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.el === filterEl);
+    });
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+// ─── RENDER FILTER BAR ───────────────────────────────────────────────────────
+function renderFilterBar() {
+  const filters = [{ el:'all', name:'Все' }, ...Object.entries(ELEMENT_META).map(([k,v]) => ({ el:k, name:v.name }))];
+  document.getElementById('filter-bar').innerHTML = filters.map(f =>
+    `<button class="filter-btn ${filterEl === f.el ? 'active' : ''}" data-el="${f.el}">${f.name}</button>`
+  ).join('');
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => { filterEl = btn.dataset.el; updateUI(false); });
+  });
+}
+
+// ─── RENDER CHANTS ───────────────────────────────────────────────────────────
+function renderChants() {
+  const placed = placedChantIds();
+  const conflictIds = calcStats().conflictIds;
+
+  const visibleChants = CHANTS.filter(c => filterEl === 'all' || c.affinity === filterEl);
+  const slotEl = pickSlotAffinity;
+
+  const html = visibleChants.map(c => {
+    const isPlaced = placed.has(c.id);
+    const score    = slotEl ? fitScore(c.affinity, slotEl) : null;
+    const isNative = score !== null && score >= 0.9;
+    const isWeak   = score !== null && score >= 0.5 && score < 0.9;
+    const hasConflict = conflictIds.has(c.id);
+    const elMeta = ELEMENT_META[c.affinity] || {};
+
+    let pickCls = '';
+    if (pickSlotId && !isPlaced) {
+      if (isNative) pickCls = 'native-pick';
+      else if (isWeak) pickCls = 'weak-pick';
+    }
+
+    const affinityStyle = `color:${elMeta.color||'#aaa'};border-color:${elMeta.color||'#aaa'}`;
+    const tags = [
+      `<span class="affinity-tag" style="${affinityStyle}">${elMeta.name || c.affinity}</span>`,
+      `<span class="cost-tag">⚗️ ${c.cost}</span>`,
+      c.risk > 0 ? `<span class="risk-tag">⚠️ риск ${c.risk}</span>` : '',
+      c.eleganceDelta > 0 ? `<span class="eleg-tag">✦ +${c.eleganceDelta}</span>` : '',
+    ].filter(Boolean).join('');
+
+    let fitNote = '';
+    if (pickSlotId && score !== null) {
+      if (isNative) fitNote = `<div class="fit-note fit-native">✦ Родная стихия — полный эффект</div>`;
+      else if (isWeak) fitNote = `<div class="fit-note fit-weak">≈ Смежная стихия — ослабленный эффект</div>`;
+      else fitNote = `<div class="fit-note" style="color:var(--danger);font-size:.65rem">✗ Чужая стихия — риск и потеря силы</div>`;
+    }
+    if (hasConflict) fitNote += `<div class="fit-note" style="color:var(--danger);font-size:.65rem">⚡ Конфликт с другим наговором</div>`;
+
+    const incompatible = pickSlotId && score !== null && score < 0.19;
+
+    return `<div class="chant-card ${isPlaced ? 'placed' : ''} ${incompatible && !isPlaced ? 'incompatible' : ''} ${pickCls}"
+      data-cid="${c.id}" ${isPlaced ? '' : `onclick="onChantClick('${c.id}')"`}>
+      ${isPlaced ? '<span class="placed-label">В контуре</span>' : ''}
+      <div class="chant-name">${c.name}</div>
+      <div class="chant-desc">${c.desc}</div>
+      <div class="chant-meta">${tags}</div>
+      ${fitNote}
+    </div>`;
+  }).join('');
+
+  document.getElementById('chant-list').innerHTML = html ||
+    `<div style="color:var(--muted);font-size:.78rem;padding:10px">Нет наговоров этой стихии</div>`;
+}
+
+// ─── SHOW RESULT ──────────────────────────────────────────────────────────────
+function showResult() {
+  const stats  = calcStats();
+  const result = calcResult(stats);
+  const quest  = q();
+
+  let mainIcon, mainTitle;
+  if (result.solved)        { mainIcon = '✦'; mainTitle = result.eleganceLabel + ' решение'; }
+  else if (result.partial)  { mainIcon = '◈'; mainTitle = 'Частично решено'; }
+  else                      { mainIcon = '✗'; mainTitle = 'Контур не работает'; }
+
+  const debriefText = result.solved ? quest.debrief.solved :
+                      result.partial ? quest.debrief.partial : quest.debrief.unsolved;
+
+  const coverageRow = stats.coverage >= 1.0
+    ? `<div class="ev good"><span>✓</span> Все требования покрыты (${stats.reqCovered}/${quest.requiredTags.length})</div>`
+    : `<div class="ev bad"><span>✗</span> Покрыто ${stats.reqCovered} из ${quest.requiredTags.length} требований</div>`;
+
+  const budgetRow = result.overBudget
+    ? `<div class="ev bad"><span>✗</span> Бюджет превышен (${stats.totalCost} > ${quest.budget})</div>`
+    : `<div class="ev good"><span>✓</span> Бюджет соблюдён (${stats.totalCost} / ${quest.budget})</div>`;
+
+  const riskRow = result.overRisk
+    ? `<div class="ev warn"><span>⚠</span> Слишком рискованно — побочки будут (риск ${stats.totalRisk} > ${quest.riskLimit})</div>`
+    : `<div class="ev good"><span>✓</span> Риск в норме (${stats.totalRisk} / ${quest.riskLimit})</div>`;
+
+  const conflictRow = result.hasConflict
+    ? `<div class="ev warn"><span>⚡</span> Конфликтующие наговоры — они ослабляют друг друга</div>` : '';
+
+  const wasteRow = stats.wasteCount > 0
+    ? `<div class="ev warn"><span>↯</span> ${stats.wasteCount} лишних наговора — не вносят вклад в задачу</div>` : '';
+
+  const elegRow = `<div class="ev info"><span>✦</span> Изящество: ${stats.elegScore}/5 — ${result.eleganceLabel}</div>`;
+
+  document.getElementById('result-panel').innerHTML = `
+    <div class="res-header">
+      <div class="res-icon">${mainIcon}</div>
+      <div><div class="res-title">${mainTitle}</div><div class="res-sub">${quest.title}</div></div>
+    </div>
+    <div class="event-rows">
+      ${coverageRow}${budgetRow}${riskRow}${conflictRow}${wasteRow}${elegRow}
+    </div>
+    <div class="res-story">${debriefText}</div>
+    <button class="detail-toggle" onclick="toggleDetail()">▾ Показать детали</button>
+    <div id="detail-body">
+      <div class="det-grid">
+        <div class="det-item"><div class="dl">Покрытие</div><div class="dv ${stats.coverage>=1.0?'ok':'bad'}">${Math.round(stats.coverage*100)}%</div></div>
+        <div class="det-item"><div class="dl">Стоимость / бюджет</div><div class="dv ${result.overBudget?'bad':'ok'}">${stats.totalCost} / ${quest.budget}</div></div>
+        <div class="det-item"><div class="dl">Риск / лимит</div><div class="dv ${result.overRisk?'bad':'ok'}">${stats.totalRisk} / ${quest.riskLimit}</div></div>
+        <div class="det-item"><div class="dl">Родных ячеек</div><div class="dv ok">${Math.round(stats.nativePct*100)}%</div></div>
+        <div class="det-item"><div class="dl">Изящество</div><div class="dv ok">${stats.elegScore}/5</div></div>
+        <div class="det-item"><div class="dl">Лишних наговоров</div><div class="dv ${stats.wasteCount>0?'bad':'ok'}">${stats.wasteCount}</div></div>
+      </div>
+    </div>`;
+  document.getElementById('result-panel').style.display = 'block';
+}
+
+function toggleDetail() {
+  const el  = document.getElementById('detail-body');
+  const btn = document.querySelector('.detail-toggle');
+  const vis = el.style.display === 'block';
+  el.style.display = vis ? 'none' : 'block';
+  btn.textContent  = vis ? '▾ Показать детали' : '▴ Скрыть детали';
+}
+
+function hideResult() {
+  const el = document.getElementById('result-panel');
+  el.style.display = 'none'; el.innerHTML = '';
+}
+
+// ─── PICK ─────────────────────────────────────────────────────────────────────
+function onChantClick(cid) {
+  if (!pickSlotId) return;
+  fills[pickSlotId] = cid;
+  pickSlotId = null; pickSlotAffinity = null;
+  updateUI(false);
+}
+
+// ─── UPDATE UI ───────────────────────────────────────────────────────────────
+function updateUI(showBrew) {
+  const stats = calcStats();
+  renderQuest();
+  renderBudget(stats);
+  renderElegance(stats);
+  renderSchemePills();
+  renderSchemesWorkspace();
+  renderPickBanner();
+  renderFilterBar();
+  renderChants();
+  if (!showBrew) hideResult();
+}
+
+function initQuest() {
+  fills = {};
+  activeSchemeIds = new Set();
+  pickSlotId = null; pickSlotAffinity = null;
+  filterEl = 'all';
+  document.getElementById('q-idx').textContent = `${questIdx+1} / ${QUESTS.length}`;
+  updateUI(false);
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+document.getElementById('btn-cast').addEventListener('click', () => {
+  pickSlotId = null; pickSlotAffinity = null;
+  showResult();
+  renderSchemesWorkspace(); renderPickBanner(); renderChants();
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  fills = {}; pickSlotId = null; pickSlotAffinity = null;
+  updateUI(false);
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (questIdx < QUESTS.length-1) { questIdx++; initQuest(); }
+});
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (questIdx > 0) { questIdx--; initQuest(); }
+});
+document.getElementById('pick-cancel').addEventListener('click', () => {
+  pickSlotId = null; pickSlotAffinity = null; updateUI(false);
+});
+document.addEventListener('click', e => {
+  if (!pickSlotId) return;
+  if (!e.target.closest('main')) { pickSlotId = null; pickSlotAffinity = null; updateUI(false); }
+});
+
+initQuest();
+</script>
+</body>
+</html>
