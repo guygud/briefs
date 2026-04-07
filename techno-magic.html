@@ -61,10 +61,8 @@ main{flex:1;display:grid;grid-template-columns:280px 1fr 310px;overflow:hidden;}
 .q-prop{padding:2px 9px;border-radius:12px;font-size:.7rem;font-weight:700;border:1px solid var(--border);color:var(--muted);background:var(--surface2);}
 .q-prop.fragile{border-color:var(--danger);color:var(--danger);}
 .q-prop.complex{border-color:var(--warn);color:var(--warn);}
-.reqs-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
-.req-chip{padding:3px 9px;border-radius:16px;font-size:.73rem;font-weight:700;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);}
-.req-chip.met{border-color:var(--success);color:var(--success);}
-.req-chip.unmet{border-color:var(--danger);color:var(--danger);}
+.reqs-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.el-req-chip{padding:4px 10px;border-radius:18px;font-size:.73rem;font-weight:700;border:1.5px solid;display:inline-block;transition:opacity .15s;}
 
 /* CAULDRON (center) */
 .cauldron-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -173,7 +171,6 @@ main{flex:1;display:grid;grid-template-columns:280px 1fr 310px;overflow:hidden;}
 .chant-card:hover{border-color:var(--accent);}
 .chant-card.placed{opacity:.55;pointer-events:none;border-color:#7bb8f8;}
 .chant-card.incompatible{opacity:.35;pointer-events:none;}
-.chant-card.native-pick{border-color:var(--success);}
 .chant-card.weak-pick{border-color:var(--warn);}
 .chant-name{font-size:.8rem;font-weight:700;margin-bottom:2px;}
 .chant-desc{font-size:.72rem;color:var(--muted);margin-bottom:5px;line-height:1.4;}
@@ -201,7 +198,7 @@ main{flex:1;display:grid;grid-template-columns:280px 1fr 310px;overflow:hidden;}
     <div class="sub">Выбери схемы → зачаруй ячейки → оцени изящество решения</div>
   </div>
   <div class="quest-nav">
-    <span class="q-idx" id="q-idx">1 / 3</span>
+    <span class="q-idx" id="q-idx">1 / 4</span>
     <button class="btn" id="btn-prev">◀</button>
     <button class="btn" id="btn-next">▶</button>
   </div>
@@ -336,78 +333,62 @@ const SCHEMES = [
 
 // ─── CHANTS (наговоры) ────────────────────────────────────────────────────
 const CHANTS = [
-  // SIGHT chants
-  { id:'logging',      affinity:'sight',  name:'✍ Летопись (Logging)',    desc:'Записывает каждое событие. Шум и стоимость хранения.',
-    effects:['visibility'], risk:1, cost:2, eleganceDelta:0,
-    allowedTags:['visibility','audit','search'] },
-  { id:'metrics',      affinity:'sight',  name:'📊 Счётные Руны (Metrics)', desc:'Считает агрегаты. Полезно, но не показывает причину.',
-    effects:['visibility'], risk:0, cost:2, eleganceDelta:1,
-    allowedTags:['visibility','access'] },
-  { id:'tracing',      affinity:'sight',  name:'🔷 Нить Следа (Tracing)',   desc:'Показывает путь запроса насквозь. Оверхед.',
-    effects:['visibility','search'], risk:1, cost:4, eleganceDelta:2,
-    allowedTags:['visibility','search','audit'] },
-  { id:'auditTrail',   affinity:'sight',  name:'📋 Дозорная Книга (Audit)', desc:'Неизменяемый след действий. Нужна дисциплина.',
-    effects:['audit','visibility'], risk:0, cost:3, eleganceDelta:1,
-    allowedTags:['audit','access','identity'] },
+  // SIGHT
+  { id:'logging',      affinity:'sight',  name:'✍ Летопись (Logging)',             desc:'Записывает каждое событие. Шум и стоимость хранения.',
+    elementPower:{ sight:8 },             risk:1, cost:2, eleganceDelta:0 },
+  { id:'metrics',      affinity:'sight',  name:'📊 Счётные Руны (Metrics)',         desc:'Считает агрегаты. Полезно, но не показывает причину.',
+    elementPower:{ sight:8 },             risk:0, cost:2, eleganceDelta:1 },
+  { id:'tracing',      affinity:'sight',  name:'🔷 Нить Следа (Tracing)',           desc:'Показывает путь запроса насквозь. Оверхед.',
+    elementPower:{ sight:14, memory:4 },  risk:1, cost:4, eleganceDelta:2 },
+  { id:'auditTrail',   affinity:'sight',  name:'📋 Дозорная Книга (Audit)',         desc:'Неизменяемый след действий. Нужна дисциплина.',
+    elementPower:{ sight:6, seal:6 },     risk:0, cost:3, eleganceDelta:1 },
 
-  // MEMORY chants
-  { id:'indexing',     affinity:'memory', name:'🗂 Указатель (Indexing)',    desc:'Ускоряет поиск системно. Замедляет запись.',
-    effects:['search','speed'], risk:2, cost:3, eleganceDelta:2,
-    allowedTags:['search','retrieval','storage'] },
-  { id:'cache',        affinity:'memory', name:'🫙 Склад (Cache)',           desc:'Быстрый возврат. Риск устаревших данных.',
-    effects:['speed'], risk:3, cost:2, eleganceDelta:0,
-    allowedTags:['speed','api','response'] },
-  { id:'dedupe',       affinity:'memory', name:'🔍 Дедупликатор',            desc:'Убирает повторы. Нужна стабильность ключа.',
-    effects:['correctness'], risk:1, cost:2, eleganceDelta:2,
-    allowedTags:['storage','queue','retrieval'] },
+  // MEMORY
+  { id:'indexing',     affinity:'memory', name:'🗂 Указатель (Indexing)',            desc:'Ускоряет поиск системно. Замедляет запись.',
+    elementPower:{ memory:14, sight:4 },  risk:2, cost:3, eleganceDelta:2 },
+  { id:'cache',        affinity:'memory', name:'🫙 Склад (Cache)',                   desc:'Быстрый возврат. Риск устаревших данных.',
+    elementPower:{ memory:8 },            risk:3, cost:2, eleganceDelta:0 },
+  { id:'dedupe',       affinity:'memory', name:'🔍 Дедупликатор',                    desc:'Убирает повторы. Нужна стабильность ключа.',
+    elementPower:{ memory:10, seal:4 },   risk:1, cost:2, eleganceDelta:2 },
 
-  // FLOW chants
-  { id:'batching',     affinity:'flow',   name:'📦 Пачка (Batching)',         desc:'Группирует запросы. Снижает накладные, добавляет задержку.',
-    effects:['throughput','speed'], risk:1, cost:2, eleganceDelta:2,
-    allowedTags:['queue','throughput','storage'] },
-  { id:'retry',        affinity:'flow',   name:'🔁 Повторная Попытка (Retry)',desc:'Устойчивость к сбоям. Риск шторма.',
-    effects:['resilience'], risk:3, cost:2, eleganceDelta:-1,
-    allowedTags:['resilience','queue','api'] },
-  { id:'rateLimit',    affinity:'flow',   name:'💧 Заслонка (Rate Limit)',    desc:'Режет лишний поток. Может задеть легитимных.',
-    effects:['resilience','access'], risk:4, cost:1, eleganceDelta:-1,
-    allowedTags:['access','resilience','throughput'], conflicts:['canary'] },
+  // FLOW
+  { id:'batching',     affinity:'flow',   name:'📦 Пачка (Batching)',                desc:'Группирует запросы. Снижает накладные, добавляет задержку.',
+    elementPower:{ flow:12 },             risk:1, cost:2, eleganceDelta:2 },
+  { id:'retry',        affinity:'flow',   name:'🔁 Повторная Попытка (Retry)',       desc:'Устойчивость к сбоям. Риск шторма.',
+    elementPower:{ flow:10, anchor:4 },   risk:3, cost:2, eleganceDelta:-1 },
+  { id:'rateLimit',    affinity:'flow',   name:'💧 Заслонка (Rate Limit)',           desc:'Режет лишний поток. Может задеть легитимных.',
+    elementPower:{ flow:8, seal:6 },      risk:4, cost:1, eleganceDelta:-1, conflicts:['canary'] },
 
-  // SEAL chants
-  { id:'validation',   affinity:'seal',   name:'📐 Мерная Грамота (Validation)',desc:'Проверяет форму входа. Без неё данные ломают систему.',
-    effects:['correctness','access'], risk:0, cost:2, eleganceDelta:3,
-    allowedTags:['api','access','identity','storage'] },
-  { id:'shadowRead',   affinity:'seal',   name:'🪞 Теневое Чтение (Shadow Read)',desc:'Проверяет новый путь без риска. Дополнительный расход.',
-    effects:['visibility','correctness'], risk:0, cost:4, eleganceDelta:3,
-    allowedTags:['search','retrieval','api'] },
+  // SEAL
+  { id:'validation',   affinity:'seal',   name:'📐 Мерная Грамота (Validation)',     desc:'Проверяет форму входа. Без неё данные ломают систему.',
+    elementPower:{ seal:14, memory:4 },   risk:0, cost:2, eleganceDelta:3 },
+  { id:'shadowRead',   affinity:'seal',   name:'🪞 Теневое Чтение (Shadow Read)',    desc:'Проверяет новый путь без риска. Дополнительный расход.',
+    elementPower:{ seal:12, sight:6 },    risk:0, cost:4, eleganceDelta:3 },
 
-  // STITCH chants
-  { id:'canary',       affinity:'stitch', name:'🐤 Канарейка (Canary)',       desc:'Выкатка на малую долю. Конфликтует с жёстким отсечением.',
-    effects:['rollout'], risk:0, cost:3, eleganceDelta:3,
-    allowedTags:['api','access','queue','resilience'], conflicts:['rateLimit'] },
-  { id:'featureFlag',  affinity:'stitch', name:'🕯 Переключатель (Feature Flag)',desc:'Откат одной кнопкой. Добавляет ветвление в код.',
-    effects:['rollout'], risk:0, cost:2, eleganceDelta:2,
-    allowedTags:['api','access','response','throughput'] },
+  // STITCH
+  { id:'canary',       affinity:'stitch', name:'🐤 Канарейка (Canary)',              desc:'Выкатка на малую долю. Конфликтует с жёстким отсечением.',
+    elementPower:{ stitch:14 },           risk:0, cost:3, eleganceDelta:3, conflicts:['rateLimit'] },
+  { id:'featureFlag',  affinity:'stitch', name:'🕯 Переключатель (Feature Flag)',    desc:'Откат одной кнопкой. Добавляет ветвление в код.',
+    elementPower:{ stitch:10 },           risk:0, cost:2, eleganceDelta:2 },
 
-  // ANCHOR chants
-  { id:'tokenSession', affinity:'anchor', name:'🧿 Токен Сессии',             desc:'Устойчивое состояние без лишних обращений к базе.',
-    effects:['speed','identity'], risk:1, cost:2, eleganceDelta:2,
-    allowedTags:['identity','access','state'] },
-  { id:'idempotency',  affinity:'anchor', name:'🪝 Идемпотент-Руна',           desc:'Повторы не ломают мир. Требует дополнительного ключа.',
-    effects:['correctness','resilience'], risk:0, cost:3, eleganceDelta:3,
-    allowedTags:['queue','storage','api','throughput'] },
+  // ANCHOR
+  { id:'tokenSession', affinity:'anchor', name:'🧿 Токен Сессии',                   desc:'Устойчивое состояние без лишних обращений к базе.',
+    elementPower:{ anchor:10, seal:4 },   risk:1, cost:2, eleganceDelta:2 },
+  { id:'idempotency',  affinity:'anchor', name:'🪝 Идемпотент-Руна',                 desc:'Повторы не ломают мир. Требует дополнительного ключа.',
+    elementPower:{ anchor:14, seal:4 },   risk:0, cost:3, eleganceDelta:3 },
 ];
 
 // ─── QUESTS ───────────────────────────────────────────────────────────────
 const QUESTS = [
   {
     id: 'barn',
-    badge: 'Задание 1 / 3 · Junior',
+    badge: 'Задание 1 / 4 · Junior',
     title: '🏚 Страж Амбара',
     story: 'Ночью кто-то трётся возле амбара. Хозяин не знает — это вор, случайный прохожий или свой. Каждое утро находит другие засовы и не помнит, кто и когда входил.',
     translation: 'Отсутствие аутентификации и аудита. Нет журнала доступа.',
-    hint: 'Нужно узнавать, кто входит (identity), принимать решение о доступе (access) и оставлять след (audit). Схемы Взора и Сессии.',
-    requiredTags: ['identity','access','audit'],
-    availableSchemes: ['eye','session'],
+    hint: 'Нужно видеть, кто входит (Взор) и установить правила доступа (Печать). В этом задании у каждой схемы доступно 2 ячейки.',
+    elementReqs: { sight:10, seal:8 },
+    slotsPerScheme: 2,
     budget: 10, riskLimit: 4, eleganceGoal: 3,
     targetProps: { fragile: false, complex: false },
     debrief: {
@@ -418,13 +399,13 @@ const QUESTS = [
   },
   {
     id: 'search',
-    badge: 'Задание 2 / 3 · Mid',
+    badge: 'Задание 2 / 4 · Mid',
     title: '📜 Библиотекарь Без Памяти',
     story: 'Летописец каждый раз перелистывает все свитки с начала, чтобы найти нужный. Посетители уходят не дождавшись. Добавляются новые свитки — становится только хуже.',
     translation: 'Полнотекстовый поиск без индекса. N+1 по всей коллекции на каждый запрос.',
-    hint: 'Нужно: быстрый поиск (search), корректные результаты, безопасный запуск новой версии. Схемы Знания и Слова.',
-    requiredTags: ['search','speed','rollout'],
-    availableSchemes: ['knowledge','word'],
+    hint: 'Нужно ускорить хранение и поиск (Память) и безопасно выкатить изменение (Шов). Шов — смежная стихия с Потоком, 2 ячейки.',
+    elementReqs: { memory:12, stitch:8 },
+    slotsPerScheme: 2,
     budget: 12, riskLimit: 3, eleganceGoal: 4,
     targetProps: { fragile: false, complex: true },
     debrief: {
@@ -435,19 +416,36 @@ const QUESTS = [
   },
   {
     id: 'flow',
-    badge: 'Задание 3 / 3 · Senior',
+    badge: 'Задание 3 / 4 · Senior',
     title: '🌊 Запруда Гонцов',
     story: 'В час пик тысячи гонцов одновременно врываются в почтовую залу. Половина теряется, половина застревает. Когда давление падает, пропущенные письма идут повторно и создают дублей.',
     translation: 'Нет очереди и rate limit. Повторные доставки без idempotency создают дубли. Система не выдерживает пик.',
-    hint: 'Нужно: сглаживание потока (throughput), устойчивость к повторам (resilience), корректность данных (correctness). Схемы Потока и Слова.',
-    requiredTags: ['throughput','resilience','correctness'],
-    availableSchemes: ['flow','word'],
+    hint: 'Нужен сильный поток (Поток), стабильность при повторах (Якорь) и контракт на входе (Печать). Открыты все 3 ячейки схемы.',
+    elementReqs: { flow:14, anchor:10, seal:6 },
+    slotsPerScheme: 3,
     budget: 14, riskLimit: 3, eleganceGoal: 4,
     targetProps: { fragile: false, complex: true },
     debrief: {
       solved:   'Гонцы идут порядком. Дублей нет. Пики сглажены.',
       partial:  'Поток успокоился, но дубли всё ещё возникают или система слишком жёстко режет.',
       unsolved: 'Зала по-прежнему в хаосе. Дубли, потери, давка.',
+    },
+  },
+  {
+    id: 'staff',
+    badge: 'Задание 4 / 4 · Staff',
+    title: '⚡ Великий Сбой',
+    story: 'Три гильдии одновременно подали жалобу. Почтовая зала теряет письма. Библиотека не отвечает на запросы. Амбарный сторож не узнаёт постоянных посетителей. Всё началось с одного тихого обновления — никто не знает, что именно сломалось.',
+    translation: 'Инцидент нулевого уровня: нарушена работа трёх сервисов — очередь сообщений, полнотекстовый поиск, авторизация. Первопричина неизвестна.',
+    hint: 'Нужен сквозной взор (Взор), надёжный поток (Поток), контракт на входе (Печать) и безопасная выкатка исправления (Шов). Все схемы, 3 ячейки.',
+    elementReqs: { sight:12, flow:12, seal:10, stitch:8 },
+    slotsPerScheme: 3,
+    budget: 16, riskLimit: 3, eleganceGoal: 5,
+    targetProps: { fragile: true, complex: true },
+    debrief: {
+      solved:   'Контур охватил все слабые точки. Сбой локализован, исправление выкачено. Три сервиса снова в норме.',
+      partial:  'Часть контура сработала, но что-то упущено. Один из сервисов всё ещё нестабилен.',
+      unsolved: 'Сбой продолжается. Пока не видно всей картины — непонятно, что чинить.',
     },
   },
 ];
@@ -498,18 +496,13 @@ function placedChantIds() {
 function calcStats() {
   const placed = placedChants();
   const quest  = q();
+  const reqs   = quest.elementReqs || {};
 
-  let totalCost = 0, totalRisk = 0, elegance = 0;
-  const coveredTags = new Set();
-  const activeSchemes = Array.from(activeSchemeIds);
-  activeSchemes.forEach(sid => {
-    const sc = sch(sid);
-    if (sc) sc.baseTags.forEach(t => coveredTags.add(t));
-  });
-
-  // natvie/weak fit breakdown
+  let totalCost = 0, totalRisk = 0;
+  const accumulated = {}; // el -> accumulated power
   const fits = [];
   const conflictIds = new Set();
+
   // detect conflicts
   placed.forEach(({ c:a }) => {
     placed.forEach(({ c:b }) => {
@@ -519,9 +512,10 @@ function calcStats() {
     });
   });
 
+  let eleganceRaw = 0;
   placed.forEach(({ slotId, c }) => {
     if (!c) return;
-    const info = slotById(slotId);
+    const info   = slotById(slotId);
     const slotEl = info?.slot.elementAffinity || 'sight';
     const score  = fitScore(c.affinity, slotEl);
     const isConflict = conflictIds.has(c.id);
@@ -529,46 +523,44 @@ function calcStats() {
     totalCost += c.cost;
     totalRisk += isConflict ? c.risk * 2 : c.risk;
 
-    // coverage: nagovor tags × affinity score
-    (c.allowedTags || []).forEach(t => {
-      if (quest.requiredTags.includes(t)) coveredTags.add(t);
-    });
-    // also add effects
-    (c.effects || []).forEach(e => coveredTags.add(e));
+    // accumulate elemental power scaled by fit
+    for (const [el, power] of Object.entries(c.elementPower || {})) {
+      accumulated[el] = (accumulated[el] || 0) + Math.round(power * score);
+    }
 
     // elegance contribution
     let eDelta = c.eleganceDelta;
-    if (score >= 0.9) eDelta += 1;          // native fit bonus
-    else if (score <= 0.3) eDelta -= 2;     // wrong stihiya penalty
+    if (score >= 0.9) eDelta += 1;
+    else if (score <= 0.3) eDelta -= 2;
     if (isConflict) eDelta -= 3;
-    elegance += eDelta;
+    eleganceRaw += eDelta;
 
     fits.push({ slotId, c, score, isConflict });
   });
 
-  // coverage: how many required tags are covered
-  const reqCovered = quest.requiredTags.filter(t => coveredTags.has(t)).length;
-  const coverage   = quest.requiredTags.length > 0 ? reqCovered / quest.requiredTags.length : 1;
+  // coverage: fraction of elementReqs met
+  const reqEntries = Object.entries(reqs);
+  const metCount   = reqEntries.filter(([el, needed]) => (accumulated[el] || 0) >= needed).length;
+  const coverage   = reqEntries.length > 0 ? metCount / reqEntries.length : 1;
 
-  // raw elegance to 0-5 scale
-  const rawEl = Math.max(0, Math.min(10, elegance));
   const nativePct = fits.length > 0
-    ? fits.filter(f => f.score >= 0.9).length / fits.length
-    : 0;
+    ? fits.filter(f => f.score >= 0.9).length / fits.length : 0;
+
+  // waste: chants contributing 0 power to any required element
   const wasteCount = placed.filter(({ c }) => {
     if (!c) return false;
-    const useful = quest.requiredTags.some(t => (c.allowedTags||[]).includes(t) || (c.effects||[]).includes(t));
-    return !useful;
+    return !Object.keys(reqs).some(el => (c.elementPower || {})[el]);
   }).length;
 
-  // elegance 0-5: raw scaled + penalties
+  const rawEl    = Math.max(0, Math.min(10, eleganceRaw));
   const elegScore = Math.max(0, Math.min(5,
     Math.round(rawEl * 0.4 + nativePct * 2 - wasteCount * 0.8)
   ));
 
   return {
     totalCost, totalRisk, coverage, elegScore, fits, conflictIds,
-    wasteCount, nativePct, rawEl, reqCovered,
+    wasteCount, nativePct, rawEl, accumulated,
+    metCount, reqCount: reqEntries.length,
   };
 }
 
@@ -590,18 +582,14 @@ function renderQuest() {
   const quest = q();
   const stats = calcStats();
 
-  const reqChips = quest.requiredTags.map(tag => {
-    const covered = stats.reqCovered > 0 &&
-      Array.from(activeSchemeIds).some(sid => {
-        const sc = sch(sid);
-        if (!sc) return false;
-        if (sc.baseTags.includes(tag)) return true;
-        return false;
-      }) ||
-      placedChants().some(({ c }) =>
-        c && ((c.allowedTags||[]).includes(tag) || (c.effects||[]).includes(tag))
-      );
-    return `<span class="req-chip ${covered ? 'met' : 'unmet'}">${tag}</span>`;
+  const reqChips = Object.entries(quest.elementReqs || {}).map(([el, needed]) => {
+    const current = stats.accumulated[el] || 0;
+    const met     = current >= needed;
+    const meta    = ELEMENT_META[el] || {};
+    const color   = meta.color || '#aaa';
+    const bg      = met ? color + '22' : 'transparent';
+    const opacity = met ? 1 : 0.55;
+    return `<span class="el-req-chip" style="color:${color};border-color:${color};background:${bg};opacity:${opacity}" title="${meta.name||el}: ${meta.desc||''}">${meta.name||el}: ${current}/${needed}</span>`;
   }).join('');
 
   const props = [];
@@ -641,8 +629,7 @@ function renderElegance(stats) {
 
 // ─── RENDER SCHEME PILLS ────────────────────────────────────────────────────
 function renderSchemePills() {
-  const avail = q().availableSchemes;
-  const html = SCHEMES.filter(s => avail.includes(s.id)).map(s => {
+  const html = SCHEMES.map(s => {
     const active = activeSchemeIds.has(s.id);
     return `<button class="scheme-pill ${active ? 'active' : ''}" data-sid="${s.id}">${s.icon} ${s.name.replace(/^.+ /,'')}</button>`;
   }).join('');
@@ -670,7 +657,7 @@ function renderSchemesWorkspace() {
   }
 
   const html = SCHEMES.filter(s => activeSchemeIds.has(s.id)).map(scheme => {
-    const slotsHtml = scheme.slots.map(slot => {
+    const slotsHtml = scheme.slots.slice(0, q().slotsPerScheme).map(slot => {
       const cid  = fills[slot.slotId];
       const c    = ch(cid);
       const info = fitMap[slot.slotId];
@@ -786,16 +773,11 @@ function renderChants() {
   const html = visibleChants.map(c => {
     const isPlaced = placed.has(c.id);
     const score    = slotEl ? fitScore(c.affinity, slotEl) : null;
-    const isNative = score !== null && score >= 0.9;
     const isWeak   = score !== null && score >= 0.5 && score < 0.9;
     const hasConflict = conflictIds.has(c.id);
     const elMeta = ELEMENT_META[c.affinity] || {};
 
-    let pickCls = '';
-    if (pickSlotId && !isPlaced) {
-      if (isNative) pickCls = 'native-pick';
-      else if (isWeak) pickCls = 'weak-pick';
-    }
+    const pickCls = (pickSlotId && !isPlaced && isWeak) ? 'weak-pick' : '';
 
     const affinityStyle = `color:${elMeta.color||'#aaa'};border-color:${elMeta.color||'#aaa'}`;
     const tags = [
@@ -807,9 +789,8 @@ function renderChants() {
 
     let fitNote = '';
     if (pickSlotId && score !== null) {
-      if (isNative) fitNote = `<div class="fit-note fit-native">✦ Родная стихия — полный эффект</div>`;
-      else if (isWeak) fitNote = `<div class="fit-note fit-weak">≈ Смежная стихия — ослабленный эффект</div>`;
-      else fitNote = `<div class="fit-note" style="color:var(--danger);font-size:.65rem">✗ Чужая стихия — риск и потеря силы</div>`;
+      if (isWeak) fitNote = `<div class="fit-note fit-weak">≈ Смежная стихия — ослабленный эффект</div>`;
+      else if (score < 0.19) fitNote = `<div class="fit-note" style="color:var(--danger);font-size:.65rem">✗ Чужая стихия — риск и потеря силы</div>`;
     }
     if (hasConflict) fitNote += `<div class="fit-note" style="color:var(--danger);font-size:.65rem">⚡ Конфликт с другим наговором</div>`;
 
@@ -844,8 +825,8 @@ function showResult() {
                       result.partial ? quest.debrief.partial : quest.debrief.unsolved;
 
   const coverageRow = stats.coverage >= 1.0
-    ? `<div class="ev good"><span>✓</span> Все требования покрыты (${stats.reqCovered}/${quest.requiredTags.length})</div>`
-    : `<div class="ev bad"><span>✗</span> Покрыто ${stats.reqCovered} из ${quest.requiredTags.length} требований</div>`;
+    ? `<div class="ev good"><span>✓</span> Все стихии покрыты (${stats.metCount}/${stats.reqCount})</div>`
+    : `<div class="ev bad"><span>✗</span> Покрыто ${stats.metCount} из ${stats.reqCount} стихий</div>`;
 
   const budgetRow = result.overBudget
     ? `<div class="ev bad"><span>✗</span> Бюджет превышен (${stats.totalCost} > ${quest.budget})</div>`
@@ -875,7 +856,7 @@ function showResult() {
     <button class="detail-toggle" onclick="toggleDetail()">▾ Показать детали</button>
     <div id="detail-body">
       <div class="det-grid">
-        <div class="det-item"><div class="dl">Покрытие</div><div class="dv ${stats.coverage>=1.0?'ok':'bad'}">${Math.round(stats.coverage*100)}%</div></div>
+        <div class="det-item"><div class="dl">Стихий покрыто</div><div class="dv ${stats.coverage>=1.0?'ok':'bad'}">${stats.metCount}/${stats.reqCount}</div></div>
         <div class="det-item"><div class="dl">Стоимость / бюджет</div><div class="dv ${result.overBudget?'bad':'ok'}">${stats.totalCost} / ${quest.budget}</div></div>
         <div class="det-item"><div class="dl">Риск / лимит</div><div class="dv ${result.overRisk?'bad':'ok'}">${stats.totalRisk} / ${quest.riskLimit}</div></div>
         <div class="det-item"><div class="dl">Родных ячеек</div><div class="dv ok">${Math.round(stats.nativePct*100)}%</div></div>
