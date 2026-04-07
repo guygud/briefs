@@ -70,17 +70,21 @@ main{flex:1;display:grid;grid-template-columns:280px 1fr 310px;overflow:hidden;}
 .budget-badge{display:flex;align-items:center;gap:4px;background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);border-radius:20px;padding:3px 10px;font-size:.8rem;font-weight:700;color:var(--warn);}
 .budget-badge.over{border-color:var(--danger);color:var(--danger);background:rgba(240,95,95,.12);}
 
-/* SCHEME SELECTOR */
-.scheme-selector{margin-bottom:12px;}
-.scheme-selector-label{font-size:.72rem;color:var(--muted);margin-bottom:6px;}
-.scheme-pills{display:flex;flex-wrap:wrap;gap:5px;}
-.scheme-pill{padding:4px 11px;border-radius:18px;font-size:.76rem;font-weight:600;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s;color:var(--muted);}
-.scheme-pill:hover{border-color:var(--accent);color:var(--text);}
-.scheme-pill.active{background:rgba(139,124,248,.18);border-color:var(--accent);color:var(--accent);}
-.scheme-pill.locked{opacity:.3;pointer-events:none;}
+/* SCHEME SLOTS */
+.schemes-workspace{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.scheme-slot-block{border:1.5px dashed var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s;}
+.scheme-slot-block.empty:hover{border-color:var(--accent);}
+.scheme-slot-block.filled-slot{border-style:solid;background:var(--surface);}
+.scheme-slot-block.picking{border-style:solid;border-color:var(--accent);background:var(--surface);}
+.scheme-slot-add{width:100%;padding:16px 12px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.82rem;display:flex;align-items:center;justify-content:center;gap:8px;transition:color .15s;font-family:inherit;}
+.scheme-slot-block.empty:hover .scheme-slot-add{color:var(--text);}
+.scheme-slot-pick-header{padding:7px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(139,124,248,.1);font-size:.78rem;color:var(--muted);}
+.scheme-picker-pills{padding:8px;display:flex;flex-wrap:wrap;gap:5px;}
+.scheme-pick-pill{padding:5px 12px;border-radius:18px;font-size:.76rem;font-weight:600;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s;color:var(--muted);}
+.scheme-pick-pill:hover{border-color:var(--accent);color:var(--text);}
+.scheme-pick-pill.used{opacity:.3;pointer-events:none;}
 
-/* ACTIVE SCHEMES */
-.schemes-workspace{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+/* ACTIVE SCHEMES (scheme-block used inside filled slot) */
 .scheme-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .scheme-header{background:var(--surface2);padding:6px 10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);}
 .scheme-header .sh-icon{font-size:.95rem;}
@@ -213,10 +217,6 @@ main{flex:1;display:grid;grid-template-columns:280px 1fr 310px;overflow:hidden;}
     <div class="cauldron-top">
       <span class="cauldron-label">🧪 Рабочий контур</span>
       <div class="budget-badge" id="budget-badge">⚗️ 0 / 0</div>
-    </div>
-    <div class="scheme-selector">
-      <div class="scheme-selector-label">Доступные схемы — нажми чтобы активировать:</div>
-      <div class="scheme-pills" id="scheme-pills"></div>
     </div>
     <div class="schemes-workspace" id="schemes-workspace"></div>
     <div class="elegance-row" id="elegance-row">
@@ -388,7 +388,7 @@ const QUESTS = [
     translation: 'Отсутствие аутентификации и аудита. Нет журнала доступа.',
     hint: 'Нужно видеть, кто входит (Взор) и установить правила доступа (Печать). В этом задании у каждой схемы доступно 2 ячейки.',
     elementReqs: { sight:10, seal:8 },
-    slotsPerScheme: 2,
+    numSchemeSlots: 2,
     budget: 10, riskLimit: 4, eleganceGoal: 3,
     targetProps: { fragile: false, complex: false },
     debrief: {
@@ -405,7 +405,7 @@ const QUESTS = [
     translation: 'Полнотекстовый поиск без индекса. N+1 по всей коллекции на каждый запрос.',
     hint: 'Нужно ускорить хранение и поиск (Память) и безопасно выкатить изменение (Шов). Шов — смежная стихия с Потоком, 2 ячейки.',
     elementReqs: { memory:12, stitch:8 },
-    slotsPerScheme: 2,
+    numSchemeSlots: 2,
     budget: 12, riskLimit: 3, eleganceGoal: 4,
     targetProps: { fragile: false, complex: true },
     debrief: {
@@ -422,7 +422,7 @@ const QUESTS = [
     translation: 'Нет очереди и rate limit. Повторные доставки без idempotency создают дубли. Система не выдерживает пик.',
     hint: 'Нужен сильный поток (Поток), стабильность при повторах (Якорь) и контракт на входе (Печать). Открыты все 3 ячейки схемы.',
     elementReqs: { flow:14, anchor:10, seal:6 },
-    slotsPerScheme: 3,
+    numSchemeSlots: 3,
     budget: 14, riskLimit: 3, eleganceGoal: 4,
     targetProps: { fragile: false, complex: true },
     debrief: {
@@ -439,7 +439,7 @@ const QUESTS = [
     translation: 'Инцидент нулевого уровня: нарушена работа трёх сервисов — очередь сообщений, полнотекстовый поиск, авторизация. Первопричина неизвестна.',
     hint: 'Нужен сквозной взор (Взор), надёжный поток (Поток), контракт на входе (Печать) и безопасная выкатка исправления (Шов). Все схемы, 3 ячейки.',
     elementReqs: { sight:12, flow:12, seal:10, stitch:8 },
-    slotsPerScheme: 3,
+    numSchemeSlots: 3,
     budget: 16, riskLimit: 3, eleganceGoal: 5,
     targetProps: { fragile: true, complex: true },
     debrief: {
@@ -456,12 +456,15 @@ let questIdx = 0;
 // fills: { slotId -> chantId | null }
 let fills = {};
 
-// activeSchemeIds: Set of scheme ids player activated
-let activeSchemeIds = new Set();
+// schemeSlots: Array<schemeId|null>, length = q().numSchemeSlots
+let schemeSlots = [];
 
-// pick mode
+// pick mode: chant
 let pickSlotId       = null;
 let pickSlotAffinity = null;
+
+// pick mode: scheme — which scheme slot index is being assigned
+let pickSchemeSlotIdx = null;
 
 // chant filter
 let filterEl = 'all';
@@ -470,9 +473,14 @@ let filterEl = 'all';
 const q    = () => QUESTS[questIdx];
 const sch  = id => SCHEMES.find(s => s.id === id);
 const ch   = id => CHANTS.find(c => c.id === id);
-const allQ = () => SCHEMES
-  .filter(s => activeSchemeIds.has(s.id))
-  .flatMap(s => s.slots);
+const allQ = () => schemeSlots.filter(Boolean)
+  .flatMap(sid => { const s = sch(sid); return s ? s.slots : []; });
+
+function clearFillsForScheme(schemeId) {
+  const sc = sch(schemeId);
+  if (!sc) return;
+  sc.slots.forEach(slot => { fills[slot.slotId] = null; });
+}
 
 function placedChants() {
   return Object.entries(fills)
@@ -627,40 +635,43 @@ function renderElegance(stats) {
   ew.textContent = label; ew.className = `el-word ${cls}`;
 }
 
-// ─── RENDER SCHEME PILLS ────────────────────────────────────────────────────
-function renderSchemePills() {
-  const html = SCHEMES.map(s => {
-    const active = activeSchemeIds.has(s.id);
-    return `<button class="scheme-pill ${active ? 'active' : ''}" data-sid="${s.id}">${s.icon} ${s.name.replace(/^.+ /,'')}</button>`;
-  }).join('');
-  document.getElementById('scheme-pills').innerHTML = html;
-  document.querySelectorAll('.scheme-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sid = btn.dataset.sid;
-      if (activeSchemeIds.has(sid)) activeSchemeIds.delete(sid);
-      else activeSchemeIds.add(sid);
-      updateUI(false);
-    });
-  });
-}
-
 // ─── RENDER SCHEMES WORKSPACE ───────────────────────────────────────────────
 function renderSchemesWorkspace() {
-  const stats = calcStats();
+  const stats  = calcStats();
   const fitMap = {};
   stats.fits.forEach(f => { fitMap[f.slotId] = f; });
 
-  if (activeSchemeIds.size === 0) {
-    document.getElementById('schemes-workspace').innerHTML =
-      `<div style="color:var(--muted);font-size:.78rem;padding:8px;text-align:center">Активируй хотя бы одну схему выше ↑</div>`;
-    return;
-  }
+  const usedSchemes = new Set(schemeSlots.filter(Boolean));
 
-  const html = SCHEMES.filter(s => activeSchemeIds.has(s.id)).map(scheme => {
-    const slotsHtml = scheme.slots.slice(0, q().slotsPerScheme).map(slot => {
-      const cid  = fills[slot.slotId];
-      const c    = ch(cid);
-      const info = fitMap[slot.slotId];
+  const html = schemeSlots.map((sid, idx) => {
+    // ── empty slot ──────────────────────────────────────────────────────────
+    if (!sid) {
+      if (pickSchemeSlotIdx === idx) {
+        const pills = SCHEMES.map(s => {
+          const inUse = usedSchemes.has(s.id);
+          return `<button class="scheme-pick-pill ${inUse ? 'used' : ''}" data-idx="${idx}" data-sid="${s.id}">${s.icon} ${s.name.replace(/^.+ /,'')}</button>`;
+        }).join('');
+        return `<div class="scheme-slot-block picking">
+          <div class="scheme-slot-pick-header">
+            <span>Слот ${idx+1} — выбери схему:</span>
+            <button class="ss-cancel" data-idx="${idx}" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:.76rem">✕ Отмена</button>
+          </div>
+          <div class="scheme-picker-pills">${pills}</div>
+        </div>`;
+      }
+      return `<div class="scheme-slot-block empty">
+        <button class="scheme-slot-add" data-idx="${idx}">＋ Слот ${idx+1} — назначить схему</button>
+      </div>`;
+    }
+
+    // ── filled slot ─────────────────────────────────────────────────────────
+    const scheme = sch(sid);
+    if (!scheme) return '';
+
+    const slotsHtml = scheme.slots.map(slot => {
+      const cid    = fills[slot.slotId];
+      const c      = ch(cid);
+      const info   = fitMap[slot.slotId];
       const isActive = pickSlotId === slot.slotId;
       const elMeta = ELEMENT_META[slot.elementAffinity] || {};
 
@@ -687,12 +698,12 @@ function renderSchemesWorkspace() {
       </div>`;
     }).join('');
 
-    return `<div class="scheme-block">
+    return `<div class="scheme-slot-block filled-slot">
       <div class="scheme-header">
         <span class="sh-icon">${scheme.icon}</span>
         <span class="sh-name">${scheme.name}</span>
-        <div class="sh-tags">${scheme.baseTags.map(t => `<span class="scheme-tag">${t}</span>`).join('')}</div>
-        <button class="scheme-remove" data-sid="${scheme.id}">✕</button>
+        <span style="font-size:.66rem;color:var(--muted);margin-left:2px">· слот ${idx+1}</span>
+        <button class="ss-clear" data-idx="${idx}" style="margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.78rem;padding:2px 5px;border-radius:3px">✕</button>
       </div>
       <div class="scheme-slots">${slotsHtml}</div>
     </div>`;
@@ -700,7 +711,56 @@ function renderSchemesWorkspace() {
 
   document.getElementById('schemes-workspace').innerHTML = html;
 
-  // slot click
+  // scheme slot — open picker
+  document.querySelectorAll('.scheme-slot-add').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      pickSchemeSlotIdx = parseInt(btn.dataset.idx);
+      pickSlotId = null; pickSlotAffinity = null;
+      updateUI(false);
+    });
+  });
+
+  // scheme picker — cancel
+  document.querySelectorAll('.ss-cancel').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      pickSchemeSlotIdx = null;
+      updateUI(false);
+    });
+  });
+
+  // scheme picker — assign scheme to slot
+  document.querySelectorAll('.scheme-pick-pill:not(.used)').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.idx);
+      const sid = btn.dataset.sid;
+      if (schemeSlots[idx]) clearFillsForScheme(schemeSlots[idx]);
+      schemeSlots[idx] = sid;
+      pickSchemeSlotIdx = null;
+      updateUI(false);
+    });
+  });
+
+  // clear scheme from slot
+  document.querySelectorAll('.ss-clear').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.idx);
+      const oldSid = schemeSlots[idx];
+      if (oldSid) clearFillsForScheme(oldSid);
+      // cancel chant pick if it was in this scheme
+      if (pickSlotId && sch(oldSid)?.slots.some(s => s.slotId === pickSlotId)) {
+        pickSlotId = null; pickSlotAffinity = null;
+      }
+      schemeSlots[idx] = null;
+      pickSchemeSlotIdx = null;
+      updateUI(false);
+    });
+  });
+
+  // chant slot click — enter pick mode
   document.querySelectorAll('.slot').forEach(el => {
     el.addEventListener('click', e => {
       e.stopPropagation();
@@ -711,23 +771,17 @@ function renderSchemesWorkspace() {
         const info = slotById(sid);
         pickSlotAffinity = info?.slot.elementAffinity || null;
       }
+      pickSchemeSlotIdx = null;
       updateUI(false);
     });
   });
-  // slot remove
+
+  // chant slot remove
   document.querySelectorAll('.slot-remove').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       fills[btn.dataset.slot] = null;
       if (pickSlotId === btn.dataset.slot) { pickSlotId = null; pickSlotAffinity = null; }
-      updateUI(false);
-    });
-  });
-  // scheme remove
-  document.querySelectorAll('.scheme-remove').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      activeSchemeIds.delete(btn.dataset.sid);
       updateUI(false);
     });
   });
@@ -894,7 +948,6 @@ function updateUI(showBrew) {
   renderQuest();
   renderBudget(stats);
   renderElegance(stats);
-  renderSchemePills();
   renderSchemesWorkspace();
   renderPickBanner();
   renderFilterBar();
@@ -904,8 +957,9 @@ function updateUI(showBrew) {
 
 function initQuest() {
   fills = {};
-  activeSchemeIds = new Set();
+  schemeSlots = new Array(q().numSchemeSlots).fill(null);
   pickSlotId = null; pickSlotAffinity = null;
+  pickSchemeSlotIdx = null;
   filterEl = 'all';
   document.getElementById('q-idx').textContent = `${questIdx+1} / ${QUESTS.length}`;
   updateUI(false);
@@ -914,11 +968,15 @@ function initQuest() {
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
 document.getElementById('btn-cast').addEventListener('click', () => {
   pickSlotId = null; pickSlotAffinity = null;
+  pickSchemeSlotIdx = null;
   showResult();
   renderSchemesWorkspace(); renderPickBanner(); renderChants();
 });
 document.getElementById('btn-reset').addEventListener('click', () => {
-  fills = {}; pickSlotId = null; pickSlotAffinity = null;
+  fills = {};
+  schemeSlots = new Array(q().numSchemeSlots).fill(null);
+  pickSlotId = null; pickSlotAffinity = null;
+  pickSchemeSlotIdx = null;
   updateUI(false);
 });
 document.getElementById('btn-next').addEventListener('click', () => {
@@ -931,8 +989,12 @@ document.getElementById('pick-cancel').addEventListener('click', () => {
   pickSlotId = null; pickSlotAffinity = null; updateUI(false);
 });
 document.addEventListener('click', e => {
-  if (!pickSlotId) return;
-  if (!e.target.closest('main')) { pickSlotId = null; pickSlotAffinity = null; updateUI(false); }
+  if (!pickSlotId && pickSchemeSlotIdx === null) return;
+  if (!e.target.closest('main')) {
+    pickSlotId = null; pickSlotAffinity = null;
+    pickSchemeSlotIdx = null;
+    updateUI(false);
+  }
 });
 
 initQuest();
